@@ -1,0 +1,355 @@
+* Fundamento de Programação, Aula 01
+
+** Exercício 1
+   ID: `zuxa-esel-qese-pave`
+
+   @comment
+   https://codecheck.io/private/resume/21102308566qx6cbh5dm4i6bezvgwbnobot/zuxa-esel-qese-pave/15KMZ9PQ030ROC6VKIE354URC
+   @end
+
+** Exercício 2
+
+   > O programa max2.py lê dois números e mostra o maior deles. Teste-o e analise-o.
+   > Altere o programa para fazer o mesmo, mas usando uma instrução condicional
+   > em vez da função pré-definida max.
+
+   @code python
+   # This program finds the maximum of two numbers.
+   # It used the built-in max function.
+   # Can you do it with a conditional statement (if / if-else) instead?
+   # Sure can :)
+
+   x1 = float(input("number? "))
+   x2 = float(input("number? "))
+
+   mx = x1
+
+   if x2 > x1:
+       mx = x2
+
+   print("Maximum:", mx)
+   @end
+
+** Exercício 3
+
+   > Copie o programa anterior para max3.py e modifique esta cópia para achar o maior
+   > de três números, sem usar a função max. Consegue fazê-lo só com duas
+   > comparações?
+
+   @code python
+   x1 = float(input("number? "))
+   x2 = float(input("number? "))
+   x3 = float(input("number? "))
+
+   mx = x1
+
+   if x2 > mx:
+       mx = x2
+   if x3 > mx:
+       mx = x3
+
+   print("Maximum:", mx)
+   @end
+
+   >  E consegue achar o maior de quatro números só com três comparações?
+
+   @code python
+   x1 = float(input("number? "))
+   x2 = float(input("number? "))
+   x3 = float(input("number? "))
+   x4 = float(input("number? "))
+
+   mx = x1
+
+   if x2 > mx:
+       mx = x2
+   if x3 > mx:
+       mx = x3
+   if x4 > mx:
+       mx = x4
+
+   print("Maximum:", mx)
+   @end
+
+** Exercício 4
+
+   > Escreva um programa que leia um número inteiro e mostre uma mensagem indicando
+   > se o número é par ou ímpar.
+
+   @code python
+   x1 = int(input("number? "))
+
+   if x1 % 2 == 0:
+       print(x1, "is even")
+   else:
+       print(x1, "is odd")
+   @end
+
+** Exercício 5
+
+   > Um certo tarifário de telefone cobra 0.12 € por minuto, cobrado ao segundo após
+   > o primeiro minuto. Por exemplo, chamadas de 10 s, de 30 s ou de 60 s custam
+   > 0.12 €. Uma chamada de 90 s custa 0.18 €. Faça um programa que calcule o
+   > custo de uma chamada sabendo a duração em segundos.
+
+   @code python
+   secs = int(input("seconds? "))
+
+   rate = 0.12
+   cost = rate
+
+   if secs > 60:
+       remainingSecs = secs - 60
+       cost += remainingSecs / 60 * rate
+
+   print("The cost of the call is", cost, "euros")
+   @end
+
+** Exercício 6
+
+   > Execute o programa age.py e teste-o com vários valores de entrada. Analise o
+   > código-fonte para perceber como funciona. Consegue detetar o erro semântico?
+
+   O problema com o programa é que considera pessoas com a idade de 13 anos como
+   "grown-up", enquanto que estas deviam ser consideradas como "teenager".
+
+   > Que valores de age produzem a categoria "grown-up"?
+
+   Idealmente deviam ser todos os valores maiores que 19 (exclusivo), max com o
+   atual erro semântico são considerados "grown-up" aqueles maiores que 19 e os
+   que tem 13 anos.
+
+   > Corrija o erro. Consegue reescrever o código com uma instrução if-elif-else? 
+   > Tente simplificar o código para eliminar condições redundantes.
+
+   @code python
+   age = int(input("Age? "))
+
+    if age < 0:
+       print("ERROR: invalid age!")
+       exit(1)
+
+   print("Age:", age)
+
+   if age < 13:
+       cat = "child"
+   elif age < 20:
+       cat = "teenager"
+   else:
+       cat = "grown-up"
+
+   print("Category:", cat)
+   @end
+
+** Exercício 7
+
+   > O índice de massa corporal (IMC) é uma medida usada para avaliar se uma pessoa
+   > tem um peso saudável para a sua estatura. O programa imc.py determina o IMC
+   > do utilizador e classifica-o apenas em duas categorias. Experimente o
+   > programa e analise-o. Modifique-o para dar uma de 4 categorias de acordo com
+   > a tabela abaixo. Evite testar condições redundantes no programa.
+
+   @table
+   IMC (kg/m^2): | <18.5 | [18.5, 25[ | [25,30[ | 30 ou mais
+   Categoria:    | Magro | Saudável   | Forte   | Obseo     
+   @end
+
+   @code python
+   print("Índice de Massa Corporal")
+
+   altura = float(input("Altura (m)? "))
+   peso = float(input("Peso (kg)? "))
+
+   imc = peso / altura**2
+
+   print("IMC:", imc, "kg/m2")
+
+   # Determinar a categoria de IMC:
+   if imc < 18.5:
+       categoria = "Magro"
+   elif imc < 25:
+       categoria = "Saudável"
+   elif imc < 30:
+       categoria = "Forte"
+   else:
+       categoria = "Obeso"
+
+   print("Categoria:", categoria)
+   @end
+
+** Exercício 8
+
+   > O diagrama de fases da Kryptonite (substância fictícia) é muito invulgar (ver
+   > figura ao lado). Diz-nos que em condições normais de temperatura e pressão
+   > (ponto assinalado na figura), a Kryptonite é sólida, mas se a temperatura for
+   > superior a 400 Kelvin e a pressão estiver acima de 50 kPa, passa à fase
+   > líquida. Também pode passar à fase gasosa se a pressão for baixa e a
+   > temperatura suficientemente elevada. O programa kryptonite.py pede a
+   > temperatura e a pressão e deveria indicar a fase correspondente, mas tem
+   > vários erros.
+
+   > Execute o programa e veja o erro sintático reportado. Detete-o e corrija-o.
+
+   @code diff
+   -print("At {} K and {} kPa, Kryptonite is in the {} phase.".format(T, P, phase)
+   +print("At {} K and {} kPa, Kryptonite is in the {} phase.".format(T, P, phase))
+   @end
+
+   > Volte a executar. Ocorre um TypeError? Porquê? Corrija.
+
+   @code diff
+   -T = input("Temperature (K)? ")
+   -P = input("Pressure (kPa)? ")
+   +T = float(input("Temperature (K)? "))
+   +P = float(input("Pressure (kPa)? "))
+   @end
+
+   > Agora deve conseguir executar o programa, mas ainda tem erros semânticos. Por
+   > exemplo, a 300 K e 100 kPa a fase devia ser SOLID. Modifique as instruções
+   > condicionais para determinar a fase corretamente.
+
+   @code python
+   print("Kryptonite phase classifier")
+
+   T = float(input("Temperature (K)? "))
+   P = float(input("Pressure (kPa)? "))
+
+   # Define the line that divides the GAS and SOLID forms, this can be calculated
+   # by using (y2 - y1)/(x2 - x1) to get the slope, replacing with the known
+   # points we get (50 - 0)/(400 - 0) = 50/400 = 1/8
+   line = 1 / 8 * T
+
+   if P > 50.0 and T > 400:
+       phase = "LIQUID"
+   elif P < line:
+       phase = "GAS"
+   else:
+       phase = "SOLID"
+
+   print("At {} K and {} kPa, Kryptonite is in the {} phase.".format(T, P, phase))
+   @end
+
+   > Ajuste a string de formato do resultado para a temperatura aparecer com 1 casa
+   > decimal e a pressão com 3.
+
+   @code python
+   print("Kryptonite phase classifier")
+
+   T = float(input("Temperature (K)? "))
+   P = float(input("Pressure (kPa)? "))
+
+   # Define the line that divides the GAS and SOLID forms, this can be calculated
+   # by using (y2 - y1)/(x2 - x1) to get the slope, replacing with the known
+   # points we get (50 - 0)/(400 - 0) = 50/400 = 1/8
+   line = 1 / 8 * T
+
+   if P > 50.0 and T > 400:
+       phase = "LIQUID"
+   elif P < line:
+       phase = "GAS"
+   else:
+       phase = "SOLID"
+
+   print("At {:.1f} K and {:.3f} kPa, Kryptonite is in the {} phase.".format(T, P, phase))
+   @end
+
+** Exercício 9
+
+   > Escreva um programa que peça as notas de duas componentes de avaliação, CTP e CP, e
+   > calcule a nota final (inteira) de um aluno de Fundamentos de Programação. Se alguma
+   > componente for inferior à nota mínima, a nota final deve ser 66 (significa Reprovado por
+   > Nota Mínima). Se o aluno reprovar por nota mínima ou nota inferior a 10, o programa
+   > deve pedir as notas de recurso, ATPR e APR, e calcular a nova nota final. 
+
+   @code python
+   ctp = float(input("Nota CTP? "))
+   cp = float(input("Nota CP? "))
+
+   NOTA_MIN = 6.5
+   WEIGHT_CTP = 0.3
+   WEIGHT_CP = 0.7
+
+   reprovado = False
+   final = WEIGHT_CP * cp + WEIGHT_CTP * ctp
+
+   reprovado = ctp < NOTA_MIN or cp < NOTA_MIN or final < 10
+
+   if reprovado:
+       atpr = float(input("Nota ATPR? "))
+       apr = float(input("Nota APR? "))
+
+       final = WEIGHT_CP * apr + WEIGHT_CTP * atpr
+
+       if atpr < NOTA_MIN or apr < NOTA_MIN or final < 10:
+           final = 66
+
+   print(f"A sua nota final é {final:.5g}")
+   @end
+
+** Exercício 10
+
+   > Desafio: Um dardo atinge o alvo nas coordenadas (x, y). Complete o programa
+   > darts.py para mostrar a pontuação obtida.
+
+   @code python
+   import math
+
+   print("Enter the coordinates in mm from the center of the board.")
+   x = float(input("x? "))
+   y = float(input("y? "))
+
+   # Points of the sectors, clockwise from the top
+   # Example: the sector right from the center is POINTS[5] == 6.
+   POINTS = (20, 1, 18, 4, 13, 6, 10, 15, 2, 17, 3, 19, 7, 16, 8, 11, 14, 9, 12, 5)
+
+   TARGET_RADIUS = 170
+   OUTER_RING_END = TARGET_RADIUS - 8
+   INNER_RING_START = 107
+   INNER_RING_END = INNER_RING_START - 8
+
+   CENTRAL_OUTER_RING_START = 16
+   CENTRAL_INNER_RING_START = 6.35
+
+   SECTOR_SIZE = math.pi * 2 / len(POINTS)
+
+   distance = math.sqrt(x**2 + y**2)
+
+   # Now for some math tricks, the coordinates are provided in cartesian
+   # coordinates, but if we convert them to polar coordinates then we can easily
+   # get the sector that the coordinates belong to
+   #
+   # The cartesian to polar coordinates is as follows:
+   #   r = sqrt(x^2 + y^2)
+   #   theta = atan2(y, x)
+   # where r is the distance, theta is the angle and atan2 is the 2-argument
+   # arctangent.
+   #
+   # But we need to do some more transformations to fit our problem, first we must
+   # swap x and y in the atan2 function, this is because the atan2 is
+   # counter-clockwise and starts from the x-axis and our problem assumes that the
+   # sectors are in clockwise order and start from the y-axis.
+   #
+   # Furthermore we need to rotate the result by half the sector angle, because in
+   # the dart board is symmetrical along the y-axis.
+   angle = math.atan2(x, y) + SECTOR_SIZE / 2
+   if angle < 0:
+       angle += 2 * math.pi
+
+   # Now that we know the angle we can just divide it by the sector angle and get
+   # the non-decimal part.
+   sector = int(angle // SECTOR_SIZE)
+   score = POINTS[sector]
+
+   if distance <= CENTRAL_INNER_RING_START:
+       score = 50
+   elif distance <= CENTRAL_OUTER_RING_START:
+       score = 25
+   elif INNER_RING_END <= distance and distance <= INNER_RING_START:
+       score *= 3
+   elif OUTER_RING_END <= distance and distance <= TARGET_RADIUS:
+       score *= 2
+   elif distance > TARGET_RADIUS:
+       score = 0
+
+   print(score)
+   @end

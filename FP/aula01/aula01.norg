@@ -1,0 +1,264 @@
+* Fundamento de Programação, Aula 01
+
+** Exercício 1
+
+   > Escreva um programa que lê um valor de temperatura em graus Celsius,
+   > converte-o para graus Fahrenheit e imprime o resultado na forma "XX ºC = YY ºF".
+   > A fórmula de conversão de graus Celsius (C) para graus Fahrenheit (F)
+   > é a seguinte: F = 1.8∙C + 32.
+
+   @code python
+    # Pede ao utilizador para inserir a temperatura em celsius
+    valorStr = input("Temperature (ºC)? ")
+
+    # Tenta transformar de uma string para um float
+    valor = float(valorStr)
+
+    # Converte de celsius para fahrenheit
+    valorFahrenheit = 1.8 * valor + 32
+
+    # Mostra ao utilizador o resultado
+    print(f"{valor} ºC = {valorFahrenheit} ºF")
+   @end
+
+** Exercício 2
+
+   > Repare no seguinte exemplo de interação com um programa em Python.
+   > O texto à frente dos pontos de interrogação foi introduzido pela
+   > utilizadora. Consegue fazer um programa semelhante?
+
+   @code python
+    # Pede ao utilizador para inserir o nome
+    nome = input("Como te chamas? ")
+
+    # Pede ao utilizador para inserir o ano em que nasceu
+    anoStr = input("Como te chamas? ")
+
+    # Tenta transformar de uma string para um int
+    ano = int(anoStr)
+
+    # Calcula a idade do utilizador em 2020
+    idade2020 = 2020 - ano
+
+    print(f"{nome}, em 2020 farás 33 anos.")
+   @end
+
+** Exercício 3
+
+   > Um automóvel faz uma viagem entre duas cidades com velocidade média v1
+   > e regressa pelo mesmo percurso com velocidade média v2. Escreva um programa
+   > que peça os dois valores, v1 e v2, e calcule e imprima a velocidade média
+   > da viagem completa.
+
+   @code python
+    # Pede ao utilizador para inserir a primeira velocidade
+    v1Str = input("Insira a primeira velocidade (v1): ")
+    # Tenta transformar a string inserida num float
+    v1 = float(v1Str)
+
+    # Pede ao utilizador para inserir a segunda velocidade
+    v2Str = input("Insira a segunda velocidade (v2): ")
+    # Tenta transformar a string inserida num float
+    v2 = float(v2Str)
+
+    # Note que a velocidade média é calculada pela distância percorrida
+    # a dividir pelo tempo total: v=d/t.
+    #
+    # Como nós temos duas velocidades, v1 e v2, e a distância percorrida
+    # é a mesma nas duas, as velocidades são definidas por v1=d/t1 e v2=d/t2,
+    # logo queremos calcular v=2d/(t1 + t2) ou seja
+    # v=2d/(d/v1 + d/v2)
+    # <=> v = 2d/((dv2 + dv1)/v1v2)
+    # <=> v = 2d/(d(v1 + v2)/v1v2)
+    # <=> v = 2dv1v2/(d(v1 + v2)
+    # <=> v = 2v1v2/(v1 + v2)
+    v = 2 * v1 * v2 / (v1 + v2)
+
+    # Formata e imprime os resultados
+    print("A velocidade média é", v)
+   @end
+
+** Exercício 4
+
+   > Escreva um programa que dado um tempo em segundos lido do teclado, mostre
+   > na consola o tempo com o formato hh:mm:ss.
+
+   @code python
+    # Pede ao utilizador para inserir o tempo em segundos
+    secsStr = input("Segundos (s)? ")
+
+    # Tenta transformar de uma string para um int
+    rawSecs = int(secsStr)
+
+    # Calculate the time components
+    secs = rawSecs % 60
+    mins = (rawSecs // 60) % 60
+    hours = rawSecs // 3600
+
+    # Formata e imprime os resultados
+    print(f"{hours:02d}:{mins:02d}:{secs:02d}")
+   @end
+
+** Exercício 5
+
+   > Um triângulo retângulo tem catetos A e B e hipotenusa C. Escreva um programa
+   > que leia os comprimentos dos catetos e determine a hipotenusa, bem como o
+   > valor do ângulo (em graus) entre o lado A e a hipotenusa.
+
+   @code python
+    import math
+
+    # Pede ao utilizador para inserir o comprimento dos catetos
+    catetoA = float(input("Comprimento do cateto A (m)? "))
+    catetoB = float(input("Comprimento do cateto B (m)? "))
+
+    # Calcula a hipotenusa
+    hipo = math.sqrt(catetoA**2 + catetoB**2)
+
+    # Calcula o ângulo em radianos entre a hipotenusa e o cateto A
+    angleRad = math.acos(catetoA / hipo)
+    # Transforma de radianos para graus
+    angle = angleRad * 180 / math.pi
+
+    # Formata e imprime os resultados
+    print(f"A hipotenusa têm {hipo} m e faz um ângulo de {angle} graus com o cateto A")
+   @end
+
+** Exercício 6
+
+   > O programa points.py lê as coordenadas cartesianas de dois pontos, (x1, y1) e
+   > (x2, y2). Complete-o para calcular e imprimir a distância entre os pontos.
+
+   @code python
+    import math
+
+    # This program reads the coordinates of two points (x1,y1) and (x2,y2).
+
+    x1 = float(input("x1? "))
+    y1 = float(input("y1? "))
+    x2 = float(input("x2? "))
+    y2 = float(input("y2? "))
+
+    # Find and print the distance between the points!
+    #
+    # The distance between two points is given by the square root
+    # of the squares of the difference between the components of the
+    # two points
+    distance = math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
+
+    # Format and print
+    print(f"A distância entre os dois pontos é {distance}")
+   @end
+
+** Exercício 7
+
+   > Num prédio com R/C e 3 andares e 2 moradores por andar, cada morador sobe e
+   > desce 2 vezes por dia no elevador (entre o R/C e o seu andar). Se cada andar
+   > tem uma altura de 3m, quantos km percorre o elevador por ano? Admitindo que o
+   > elevador viaja à velocidade constante de 1 m/s, quantas horas está o elevador
+   > em funcionamento num ano? Generalize o programa para um prédio de A andares e
+   > M moradores por piso.
+
+   @code python
+    # Número de andares no prédio e a sua altura em metros
+    andares = int(input("Quantos andares? "))
+    aAltura = 3
+    # Número de moradores por andar
+    aMorador = int(input("Quantos moradores por andar? "))
+    # Número de viagens por dia por morador
+    mViagens = 2
+    # velocidade em metros por segundo
+    velocidade = 1
+
+    # Tempo em segundos gastos num andar por n° do andar (s/i) por dia
+    andarTempo = mViagens * aMorador * aAltura / velocidade
+
+    # sum(andares, 1, \a -> andarTempo * a)
+    # <=> andarTempo * (andares * (1 + andares)) / 2
+    # <=> andarTempo * (andares + andares^2) / 2
+
+    # Tempo gasto por dia em segundos
+    tempoDia = andarTempo * (andares + andares**2) / 2
+
+    # Tempo gasto por ano
+    tempo = tempoDia * 365
+    tempoMinutos = int(tempo / 60 % 60)
+    tempoHoras = int(tempo // 3600)
+
+    print(
+        f"O elevador está em funcionamento {tempoHoras:d} horas e {tempoMinutos:d} minutos por ano"
+    )
+   @end
+
+** Exercício 8
+
+   > Um livro custa 20€ a fabricar (PF). Suponha que o preço de capa de um livro é
+   > 24,95€ (PC) e que o mesmo paga uma taxa de IVA de 23% (IMP). Acresce sobre o
+   > valor do livro uma taxa para compensar os autores pelas cópias de 0,20€ fixos
+   > (SPA).
+   >   PC = (PF + Lucro) * (100% + IMP) + SPA
+   > Para uma tiragem de 500 exemplares: qual o lucro da livraria? Qual o total
+   > de impostos?
+
+   @code python
+    # Preço de fabrico
+    PF = 20
+    # Preço de capa
+    PC = 24.95
+    # taxa de IVA
+    IMP = 0.23
+    # Taxa fixa a pagar aos autores
+    SPA = 0.20
+
+    # Lucro por exemplar
+    #
+    # PC = (PF + Lucro) * (1 + IMP) + SPA
+    # <=> PC = PF * (1 + IMP) + Lucro * (1 + IMP) + SPA
+    # <=> PC = PF * (1 + IMP) + Lucro * (1 + IMP) + SPA
+    # <=> PC - PF * (1 + IMP) - SPA = Lucro * (1 + IMP)
+    # <=> PC / (1 + IMP) - PF - SPA / (1 + IMP) = Lucro
+    custoAcrescido = 1 + IMP
+    lucro = PC / custoAcrescido - PF - SPA / custoAcrescido
+
+    # Calcula o lucro total
+    exemplares = int(input("Quantos exemplares? "))
+    lucroTotal = exemplares * lucro
+
+    print(f"O lucro para {exemplares} é de {lucroTotal} euros")
+   @end
+
+** Exercício 9
+
+   > Se sair de casa às 6:52 e percorrer 1 km a andar (fazendo 10 min por km), depois
+   > correr 3 km ao ritmo de 6 min por km e depois voltar a casa a andar, a que
+   > horas chego a casa para o pequeno almoço?
+
+   @code python
+    # Minutos por km a andar
+    vAndar = 10
+    # Minutos por km a correr
+    vCorrer = 6
+
+    # Minutos de saída de casa 6:52
+    minutosSaida = 6 * 60 + 52
+
+    # Distâncias a andar e a correr
+    distanciaAndar = float(input("Quanto andou (km)? "))
+    distanciaCorrer = float(input("Quanto correu (km)? "))
+
+    # Distância total percorrida após sair de casa e antes de começar regressar
+    distanciaTotal = distanciaAndar + distanciaCorrer
+    # Tempo gasto após sair de casa e antes de começar regressar
+    tempoFora = distanciaAndar * vAndar + distanciaCorrer * vCorrer
+
+    # Tempo gasto a regressar
+    tempoDentro = distanciaTotal * vAndar
+
+    # Tempo total
+    minutosChegada = minutosSaida + tempoFora + tempoDentro
+    # Formatar
+    horas = int(minutosChegada // 60)
+    minutos = int(minutosChegada % 60)
+
+    print(f"Chego a casa as {horas:02d}:{minutos:02d}")
+   @end
