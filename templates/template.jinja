@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Resumos Universidade</title>
+        <style>
+            body {
+                margin: 40px auto;
+                max-width: 650px;
+                line-height: 1.6;
+                font-size: 18px;
+                color: #444;
+                padding: 0 10px;
+                background-color: #EEEEEE;
+            }
+
+            h1,
+            h2,
+            h3 {
+                line-height: 1.2;
+            }
+
+            @media (prefers-color-scheme: dark) {
+                body {
+                    background: #333;
+                    color: #EEE;
+                }
+
+                a:link { color: lightskyblue; }
+                a:visited { color: #6d4b8d; }
+                a:hover { color: #EEE; }
+                a:active { color: #ff4040; text-decoration:none; font-weight:normal; }
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Resumos Universidade</h1>
+        <ul>
+            {%- for item in sitemap recursive %}
+                <li>
+                    {%- if item.href -%}
+                        <a href="{{ item.href|e }}">{{item.title}}</a>
+                    {%- else %}
+                        {{item.title}}
+                    {%- endif %}
+                    {%- if item.children -%}
+                        <ul>
+                            {{ loop(item.children) }}
+                        </ul>
+                    {%- endif %}
+                </li>
+            {%- endfor %}
+        </ul>
+    </body>
+</html>

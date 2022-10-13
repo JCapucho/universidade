@@ -1,4 +1,5 @@
 {
+  description = "Site para os resumos da universidade";
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
 
@@ -18,36 +19,51 @@
       neorg-pandoc = hCallPackage ./nix/neorg-pandoc.nix {
         inherit neorg-pandoc-src;
       };
-    in {
-      # packages.default = pkgs.mkDerivation {
-      #   pname = "export";
-      #   version = "0.1";
-      #
-      #   buildInputs = [
-      #     pandoc
-      #     neorg-pandoc
-      #   ];
-      #
-      #   buildPhase = ''
-      #     mkdir -p $out
-      #     ./build.sh
-      #   '';
-      #
-      #   src = ./.;
-      # };
-      devShell = pkgs.mkShell {
-        buildInputs = with pkgs; [
-          black
-          ghostscript
-          imagemagick
-          python3Packages.python-lsp-server
-          python3Packages.matplotlib
-          pandoc
-          neorg-pandoc
-          dotnet-sdk
-          nodePackages.prettier
-          jdk
+
+      python-packages = python-packages:
+        with python-packages; [
+          jinja2
+          matplotlib
         ];
+      python = pkgs.python3.withPackages python-packages;
+
+      sharedPackages = with pkgs; [
+        python
+        ghostscript
+        imagemagick
+        pandoc
+        neorg-pandoc
+      ];
+    in {
+      packages.default = pkgs.stdenv.mkDerivation {
+        pname = "export";
+        version = "0.1";
+
+        buildInputs = sharedPackages;
+
+        dontInstall = true;
+
+        buildPhase = ''
+          runHook preBuild
+
+          mkdir -p $out
+          python3 ./build.py --build-dir $out
+
+          runHook postBuild
+        '';
+
+        src = ./.;
+      };
+      devShells.default = pkgs.mkShell {
+        buildInputs = with pkgs;
+          [
+            black
+            python3Packages.python-lsp-server
+            dotnet-sdk
+            nodePackages.prettier
+            jdk
+          ]
+          ++ sharedPackages;
       };
     });
 }

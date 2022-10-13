@@ -1,0 +1,24 @@
+[
+  {
+    "name": "FP",
+    "title": "Fundamentos da Programação",
+    "builder": "FP/build.py",
+    "children": [
+      {
+        "name": "aula00",
+        "title": "Aula 00",
+        "path": "FP/aula00/aula00.norg"
+      },
+      {
+        "name": "aula01",
+        "title": "Aula 01",
+        "path": "FP/aula01/aula01.norg"
+      },
+      {
+        "name": "aula02",
+        "title": "Aula 02",
+        "path": "FP/aula02/aula02.norg"
+      }
+    ]
+  }
+]
