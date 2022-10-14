@@ -3,6 +3,7 @@
     "name": "FP",
     "title": "Fundamentos da Programação",
     "builder": "FP/build.py",
+    "args": ["--template", "templates/GitHub.html5"],
     "children": [
       {
         "name": "aula00",

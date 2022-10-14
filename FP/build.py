@@ -24,6 +24,12 @@ parser.add_argument(
     help="The partial path (without extension) to the output file",
 )
 parser.add_argument(
+    "--template",
+    metavar="PATH",
+    type=Path,
+    help="The template to use",
+)
+parser.add_argument(
     "title",
     metavar="TITLE",
     type=str,
@@ -37,7 +43,6 @@ shutil.copytree(args.source.parent / "res", args.out / "res", dirs_exist_ok=True
 
 process = subprocess.Popen(["neorg-pandoc", args.source], stdout=subprocess.PIPE)
 
-template = script_dir / "templates" / "elegant_bootstrap_menu.html"
 index_out = args.out / "index.html"
 
 process = subprocess.run(
@@ -48,7 +53,7 @@ process = subprocess.run(
         # fmt: off
         "-f", "json",
         "--metadata", f"title={args.title}",
-        "--template", template,
+        "--template", args.template,
         "-o", index_out,
         # fmt: on
     ],

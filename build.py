@@ -38,6 +38,9 @@ def runPage(object, state):
     if "builder" in object:
         child_state["builder"] = object["builder"]
 
+    if "args" in object:
+        child_state["args"] = object["args"]
+
     if "path" in object:
         object["href"] = child_state["path"] / "index.html"
 
@@ -47,6 +50,9 @@ def runPage(object, state):
             object["path"],
             args.build_dir / child_state["path"],
         ]
+
+        if "args" in child_state:
+            builderArgs.extend(child_state["args"])
 
         if "title" in object:
             builderArgs.append(object["title"])
