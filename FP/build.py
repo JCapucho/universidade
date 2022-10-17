@@ -54,6 +54,7 @@ process = subprocess.run(
         "-f", "json",
         "--metadata", f"title={args.title}",
         "--template", args.template,
+        "--mathjax",
         "-o", index_out,
         # fmt: on
     ],

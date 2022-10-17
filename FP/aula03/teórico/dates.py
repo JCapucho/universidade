@@ -1,8 +1,10 @@
 
 # This function checks if year is a leap year.
 # It is wrong: 1900 was a common year!
+# (See: https://en.wikipedia.org/wiki/Leap_year)
 def isLeapYear(year):
     return year%4 == 0
+
 
 # This function has a semantic error: February in a leap year should return 29!
 # Correct it.
@@ -12,6 +14,7 @@ def monthDays(year, month):
         # For example: MONTHDAYS[3] is the number of days in March.
     days = MONTHDAYS[month]
     return days
+
 
 # This is wrong, too.
 def nextDay(year, month, day):
@@ -43,5 +46,8 @@ def main():
     y, m, d = nextDay(2017, 12, 31)
     print(y, m, d)    # 2018 1 1 ?
 
+
 # call the main function
-main()
+if __name__ == "__main__":
+    main()
+

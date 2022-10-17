@@ -19,6 +19,11 @@
         "name": "aula02",
         "title": "Aula 02",
         "path": "FP/aula02/aula02.norg"
+      },
+      {
+        "name": "aula03",
+        "title": "Aula 03",
+        "path": "FP/aula03/aula03.norg"
       }
     ]
   }

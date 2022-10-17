@@ -1,0 +1,447 @@
+@document.meta
+    title: Aula 03
+    description: Time to get functional
+    author: João Capucho
+@end
+
+* Exercício 1
+
+  > Execute no PythonTutor este programa passo-a-passo: {https://pythontutor.com/visualize.html#code=%23 From %22Teaching with Python%22 by John Zelle%0Adef happy%28%29%3A%0A    print%28%22Happy Birthday to you!%22%29%0A%0Adef sing%28P%29%3A%0A    happy%28%29%0A    happy%28%29%0A    print%28%22Happy Birthday dear %22 %2B P %2B %22!%22%29%0A    happy%28%29%0A%0A%23 main%0Asing%28%22Fred%22%29&cumulative=false&curInstr=0&heapPrimitives=nevernest&mode=display&origin=opt-frontend.js&py=3&rawInputLstJSON=%5B%5D&textReferences=false}[happy]
+
+  Done
+
+* Exercício 2
+
+  >  Responda a estes exercícios sobre utilização e definição de funções.
+
+  @comment
+  ID: `zuxa-esel-qese-pave`
+
+  https://codecheck.io/private/resume/2110261815b2ocxayo66k8f6k1an79w48pl/zuxa-esel-qese-pave/15KMZ9PQ030ROC6VKIE354URC
+  @end
+
+** Problema 1
+
+   > Suppose you have a `balloonVolume` function that computes the volume of a
+   > balloon with a given `width` and `height`. Your task is to write a program that
+   > prints the original volume of a balloon and shows how the volume changes when
+   > you inflate the balloon, first by one inch and then by two inches in each
+   > direction. Rearrange these lines of code to provide a program segment that
+   > makes this computation. Print each value as soon as it has been computed.
+
+   @code python
+   width = 3
+   height = 4.5
+   volume1 = balloonVolume(width, height)
+   print("Original volume:", volume1)
+   volume2 = balloonVolume(width + 1, height + 1)
+   change = volume2 - volume 1
+   print("Change:", change)
+   change = balloonVolume(width + 2, height + 2) - volume2
+   print("Change:", change)
+   @end
+
+** Problema 2
+
+   > Rearrange the following lines of code to produce a function that computes the
+   > volume of a balloon with a given width and height. Not all lines are used in
+   > the solution.
+   > 
+   > Note that the volume of an ellipsoid with radii $a$, $b$, $c$ is
+   > $V = 4/3 π a b c.$
+
+   @code python
+   def balloonVolume(width, height):
+       pi = 3.1415926
+       c = width / 2
+       a = height / 2
+       volume = 4 * pi * a * c * c / 3
+       return volume
+   @end
+
+** Problema 3
+
+   > Write a function that hides the characters in a string, yielding a string of
+   > equal length where each character is replaced by a *. For example, the call
+   > hideCharacters("secret") should return the string "\*\*\*\*\*\*".
+
+   @code python
+   def hideCharacters(string):
+       return "*" * len(string)
+   @end
+
+** Problema 4
+
+   > Consider the follow program that prints a page number on the left or right
+   > side of a page. Define and use a new function, isEven, that returns a Boolean
+   > to make the condition in the if statement easier to understand.
+
+   @code python
+   def isEven(number):
+       return number % 2 == 0;
+
+   def main() :
+       page = int(input("Enter page number: "))
+       if isEven(page) :
+           print(page)
+       else :
+           print("%60d" % page)
+
+
+   main()
+   @end
+
+** Problema 5
+
+   > Consider the following program that counts the number of spaces in a
+   > user-supplied string. Modify the program to define and use a function,
+   > countSpaces, instead.
+
+   @code python
+   def countSpaces(string):
+       spaces = 0
+       for char in string :
+           if char == " " :
+               spaces = spaces + 1
+       return spaces
+
+   def main() :
+       userInput = input("Enter a string: ")
+       print(countSpaces(userInput))
+
+   main()
+   @end
+
+* Exercício 3
+
+  > O programa bmi.py serve para calcular o índice de massa corporal, mas está
+  > incompleto. O programa inclui três funções. Analise o seu funcionamento.
+
+** Parte a.
+
+   > Complete a definição da função `bodyMassIndex` para calcular o índice pela razão
+   > $bmi = \frac{weight}{height^2}$. Complete os argumentos na invocação da função,
+   > dentro da função principal. Teste o programa.
+
+   @code python
+   def bodyMassIndex(height, weight):
+       bmi = weight / height**2
+       return bmi
+
+   # ...
+
+   def main():
+       # ...
+       imc = bodyMassIndex(altura, peso)
+       # ...
+   @end
+
+** Parte b.
+
+   > Complete a função `bmiCategory` para devolver uma string com a categoria
+   > correspondente ao índice de massa corporal dado. Acrescente uma chamada a
+   > esta função na função principal, para obter o nome da categoria. Volte a
+   > testar.
+
+   @code python
+   def bmiCategory(bmi):
+       assert bmi > 0
+       if bmi < 18.5:
+           return "Underweight"
+       elif bmi < 25:
+           return "Normal weight"
+       elif bmi < 30:
+           return "Overweight"
+       else:
+           return "Obesity"
+
+   # ...
+
+   def main():
+       # ...
+       cat = bmiCategory(imc)
+       # ...
+   @end
+
+   ---
+
+  @code python
+  # coding: utf-8
+
+  # This function computes the body mass index (BMI),
+  # given the height (in meter) and weight (in kg) of a person.
+  def bodyMassIndex(height, weight):
+      # Complete the function definition...
+      bmi = weight / height**2
+      return bmi
+
+
+  # This function returns the BMI category acording to this table:
+  # BMI:        <18.5         [18.5, 25[      [25, 30[      30 or greater
+  # Category:   Underweight   Normal weight   Overweight    Obesity
+  def bmiCategory(bmi):
+      assert bmi > 0
+      if bmi < 18.5:
+          return "Underweight"
+      elif bmi < 25:
+          return "Normal weight"
+      elif bmi < 30:
+          return "Overweight"
+      else:
+          return "Obesity"
+
+
+  # This is the main function
+  def main():
+      print("Índice de Massa Corporal")
+
+      altura = float(input("Altura (m)? "))
+      if altura < 0:
+          print("ERRO: altura inválida!")
+          exit(1)
+
+      peso = float(input("Peso (kg)? "))
+      if peso < 0:
+          print("ERRO: peso inválido!")
+          exit(1)
+
+      imc = bodyMassIndex(altura, peso)
+      cat = bmiCategory(imc)
+
+      print("BMI:", imc, "kg/m2")
+      print("BMI category:", cat)
+
+
+  # Program starts executing here
+  main()
+  @end
+
+* Exercício 4
+
+  > Execute e analise o programa `poly.py`. Acrescente-lhe uma função para calcular o
+  > polinómio $p(x) = x^2 + 2x + 3$ e modifique a função main para mostrar os
+  > valores de $p(1)$, $p(2)$, $p(10)$ e $g(1 + p(3))$. Confira os resultados.
+
+  @code python
+  # Esta função implementa g(x) = 8 - x³
+  def g(x):
+      return 8 - x**3
+
+
+  # Defina uma função que implemente p(x) = x² + 2x + 3
+  def p(x):
+      return x**2 + 2 * x + 3
+
+
+  def main():
+      # Mostra alguns valores da função g:
+      print("g(1) =", g(1))
+      print("g(2) =", g(2))
+      print("g(10) =", g(10))
+
+      # Acrescente instruções para mostrar os valores de
+      # p(1), p(2), p(10) e g(1 + p(3)).
+      print("p(1) =", p(1))
+      print("p(2) =", p(2))
+      print("p(10) =", p(10))
+      print("g(1 + p(3)) =", g(1 + p(3)))
+
+
+  if __name__ == "__main__":
+      main()
+  @end
+
+  @code
+  g(1) = 7
+  g(2) = 0
+  g(10) = -992
+  p(1) = 6
+  p(2) = 11
+  p(10) = 123
+  g(1 + p(3)) = -6851
+  @end
+
+* Exercício 5
+
+  > Defina uma função que devolva o maior dos seus dois argumentos. Por exemplo,
+  > `max2(4, 3)` deve devolver $4$ e `max2(-3, -2)` deve devolver $-2$. Não pode
+  > usar a função pré-definida `max`. Use uma instrução `if` ou uma expressão
+  > condicional. Teste a função com vários conjuntos de argumentos.
+
+  @code python
+  def max2(a, b):
+      if a > b:
+        return a
+      else:
+        return b
+  @end
+
+* Exercício 6
+
+  > No mesmo programa, crie uma função `max3` que devolva o maior dos seus 3
+  > argumentos. Não pode usar a função `max`, nem instruções ou expressões
+  > condicionais. Recorra apenas à função max2 que definiu atrás. Teste a nova
+  > função.
+
+  @code python
+  def max3(a, b, c):
+      return max2(a, max2(b, c))
+  @end
+
+* Exercício 7
+
+  > Escreva uma função, `tax(r)`, que implemente a seguinte função de ramos:
+
+
+  @math
+  tax(r) = \left\{
+  \begin{array}{ccc}
+  0.1r \quad & \text{se} & \quad r\leq 1000 \\
+  0.2r - 100 \quad & \text{se} & \quad 1000 \lt r \leq 2000\\
+  0.3r - 300 \quad & \text{se} & \quad 2000 \lt r \\
+  \end{array} 
+  \right. 
+  @end
+
+  > Use uma instrução `if-elif-else` e evite condições redundantes.  Teste a
+  > função para diversos valores de `r` e confirme os resultados. Que valores deve
+  > testar?
+
+  @code python
+  def tar(r):
+      if r <= 1000:
+          return 0.1 * r
+      elif r <= 2000:
+          return 0.2 * r - 100
+      else:
+          return 0.3 * r - 300
+  @end
+
+* Exercício 8
+
+  > Escreva uma função `intersects(a1, b1, a2, b2)` que devolva `True` se os
+  > intervalos $[a1, b1[$ e $[a2, b2[$ se intersectarem e devolva `False`, caso
+  > contrário. Pode admitir que $a_1 \leq b_1 \land a_2 \leq b_2$.
+
+  @code python
+  def intersects(a1, b1, a2, b2):
+      return a1 < b2 and a2 < b1
+  @end
+
+* Exercício 9
+
+  > Analise e execute o programa dates.py. Faça as correções indicadas abaixo.
+
+** Parte a.
+
+   > A função `isLeapYear` deveria indicar quando um ano é bissexto, mas está
+   > errada. Corrija-a. Um ano é bissexto se for múltiplo de 4, com exceção dos
+   > fins de século (múltiplos de 100), que só são bissextos se forem múltiplos de
+   > 400. Por exemplo: 1980, 1984, 2004 foram bissextos; 1800 e 1900 foram anos
+   > comuns, mas 2000 foi bissexto.
+
+   @code python
+   def isLeapYear(year):
+       return (year % 100 != 0 and year % 4 == 0) or year % 400 == 0
+   @end
+
+** Parte b.
+
+   > A função `monthDays`, para determinar o número de dias de um mês, também está
+   > errada. Quando o mês é fevereiro, invoque a função anterior para determinar
+   > se o ano é bissexto e devolva 29 dias nesse caso.
+
+   @code python
+   def monthDays(year, month):
+       # This tuple contains the days in each month (on a common year).
+       # For example: MONTHDAYS[3] is the number of days in March.
+       MONTHDAYS = (0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
+       # Update February to 29 if it's a leap year
+       days = MONTHDAYS[month]
+       if isLeapYear(year) and month == 2:
+           days = 29
+       return days
+   @end
+
+** Parte c.
+
+   > Corrija a função `nextDay` para devolver o dia seguinte corretamente.
+
+   @code python
+   def nextDay(year, month, day):
+       day += 1
+
+       numDays = monthDays(year, month)
+       if day > numDays:
+           day = 1
+           month += 1
+           if month > 12:
+               month = 1
+               year += 1
+
+       return year, month, day
+   @end
+
+* Exercício 10
+
+  > Complete a função `hms2sec` de forma a devolver o número de segundos
+  > correspondente a h horas, m minutos e s segundos.
+
+  @code python
+  def hms2sec(h, m, s):
+      sec = h * 3600 + m * 60 + s
+      return sec
+  @end
+
+* Exercício 11
+
+  > Complete a função `sec2hms` de forma a converter um número de segundos em
+  > horas, minutos e segundos
+
+  @code python
+  def sec2hms(sec):
+      s = sec % 60
+      m = sec // 60 % 60
+      h = sec // 3600
+      return h, m, s      # devolve os valores das três variáveis
+  @end
+
+* Exercício 12
+
+  > Escreva uma função `countdown(N)` que imprima uma contagem decrescente a
+  > partir de um número positivo `N`. Note que pode imprimir `N` e depois chamar
+  > `countdown(N-1)`.
+
+  @code python
+  def countdown(N):
+      if N < 0:
+          return
+      print(N)
+      countdown(N - 1)
+  @end
+
+* Exercício 13
+
+  > O algoritmo de Euclides para determinar o máximo divisor comum de dois números
+  > naturais baseia-se na igualdade seguinte:
+
+  @math
+  mdc(a, b) = \left\{
+  \begin{array}{ccc}
+  b \quad & \text{se} & \quad r = 0 \\
+  mdc(b, r) \quad & \text{se} & \quad r \gt 0 \\
+  \end{array} 
+  \right. 
+  @end
+
+  > onde $r$ é o resto da divisão de $a$ por $b$. Escreva uma função para calcular
+  > o m.d.c. e teste-a com diversos pares de valores.
+
+  @code python
+  def mdc(a, b):
+      r = a % b
+      if r == 0:
+          return b
+      else:
+          return mdc(b, r)
+  @end
