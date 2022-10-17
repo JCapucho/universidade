@@ -78,4 +78,9 @@ for root in sitemap:
 env = Environment(loader=FileSystemLoader("templates"), autoescape=select_autoescape())
 template = env.get_template("template.jinja")
 
-template.stream(sitemap=sitemap).dump(str(args.build_dir / "index.html"))
+template.stream(
+    title="Resumos Universidade",
+    author="João Capucho",
+    description="Resumos para as unidades curriculares da Licenciatura de Engenharia Informática da universidade de aveiro",
+    sitemap=sitemap,
+).dump(str(args.build_dir / "index.html"))
