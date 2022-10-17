@@ -33,7 +33,8 @@ args = parser.parse_args()
 def runPage(object, state):
     child_state = state.copy()
 
-    child_state["path"] = child_state["path"] / object["name"]
+    if "category" in object:
+        child_state["path"] = child_state["path"] / object["category"]
 
     if "builder" in object:
         child_state["builder"] = object["builder"]
@@ -41,9 +42,12 @@ def runPage(object, state):
     if "args" in object:
         child_state["args"] = object["args"]
 
-    if "path" in object:
+    if "target" in object:
+        object["href"] = child_state["path"] / object["target"]
+    elif "path" in object:
         object["href"] = child_state["path"] / "index.html"
 
+    if "path" in object:
         builderArgs = [
             "python3",
             child_state["builder"],

@@ -24,6 +24,8 @@
         with python-packages; [
           jinja2
           matplotlib
+          beautifulsoup4
+          pygments
         ];
       python = pkgs.python3.withPackages python-packages;
 

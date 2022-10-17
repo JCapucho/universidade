@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <title>ITW - Aula 03 - index</title>
+    <meta name="Keywords" content="formulário;fonte externa;CSS" />
+    <meta
+      name="Description"
+      content="Formulário com utilização de fonte externa e estilos CSS"
+    />
+    <title>Formulário</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body,
+      input,
+      select,
+      textarea {
+        font-family: "Open Sans", Tahoma, Geneva, Verdana, sans-serif;
+      }
+      body {
+        margin: auto;
+      }
+      form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 16px;
+        max-width: 900px;
+      }
+      input[type="submit"],
+      input[type="reset"] {
+        padding: 0.375rem 0.75rem;
+        font-size: 1rem;
+      }
+      select,
+      input[type="text"],
+      input[type="password"] {
+        font-size: 1rem;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+      }
+      fieldset {
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        box-sizing: border-box;
+      }
+      textarea {
+        width: 100%;
+        font-size: 1rem;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+      }
+      .list {
+        display: flex;
+        flex-direction: column;
+      }
+      .side-by-side {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        width: 100%;
+      }
+      .info {
+        display: grid;
+        grid-template-columns: 160px 1fr;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Informação pessoal</h1>
+    <form name="Ex5" action="http://192.168.160.36/FormEcho.aspx" method="post">
+      <fieldset class="info">
+        <legend>Informação pessoal</legend>
+        <label for="Curso"> Curso:</label>
+        <select id="Curso" name="Curso">
+          <option value="1">Licenciatura em Engenharia Informática</option>
+          <option value="2">
+            Mestrado Integrado em Engenharia de Computadores e Telemática
+          </option>
+          <option value="3">
+            Mestrado Integrado em Engenharia Eletrónica e Telecomunicações
+          </option>
+          <option value="0">Outro</option>
+        </select>
+        <label for="FirstName"> Nome:</label>
+        <input id="FirstName" type="text" name="FirstName" placeholder="Nome" />
+        <label for="LastName"> Sobrenome:</label>
+        <input
+          id="LastName"
+          type="text"
+          name="LastName"
+          placeholder="Sobrenome"
+        />
+        <label for="Password"> Palavra-Passe:</label>
+        <input
+          type="password"
+          id="Password"
+          name="Password"
+          placeholder="Digite a palavra passe"
+        />
+      </fieldset>
+      <fieldset>
+        <legend><label for="Comments">Comentários</label></legend>
+        <textarea
+          id="Comments"
+          name="Comments"
+          rows="4"
+          cols="100"
+          placeholder="Insira os seus comentários"
+        ></textarea>
+      </fieldset>
+      <div class="side-by-side">
+        <fieldset class="list">
+          <legend>Meios de transporte</legend>
+          <label for="Bicicleta">
+            <input
+              id="Bicicleta"
+              type="checkbox"
+              name="vechile"
+              value="Bicicleta"
+            />
+            Bicicleta
+          </label>
+          <label for="Carro">
+            <input id="Carro" type="checkbox" name="vechile" value="Carro" />
+            Carro
+          </label>
+          <label for="Comboio">
+            <input
+              id="Comboio"
+              type="checkbox"
+              name="vechile"
+              value="Comboio"
+            />
+            Comboio
+          </label>
+        </fieldset>
+        <fieldset class="list">
+          <legend>Cor preferida</legend>
+          <label for="Azul">
+            <input id="Azul" type="radio" name="color" value="Azul" />
+            Azul
+          </label>
+          <label for="Verde">
+            <input id="Verde" type="radio" name="cor" value="Verde" />
+            Verde
+          </label>
+          <label for="Vermelho">
+            <input id="Vermelho" type="radio" name="color" value="Vermelho" />
+            Vermelho
+          </label>
+          <label for="Outra">
+            <input id="Outra" type="radio" name="color" value="Outra" />
+            Outra
+          </label>
+        </fieldset>
+      </div>
+      <div style="margin-top: 40px">
+        <input
+          name="submitBtn"
+          type="Submit"
+          value="Enviar"
+          title="Enviar Formulário"
+        />
+        <input
+          type="reset"
+          name="resetBtn"
+          value="Limpar"
+          title="Limpar Formulário"
+        />
+      </div>
+    </form>
+  </body>
+</html>

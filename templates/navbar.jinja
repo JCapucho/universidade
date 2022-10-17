@@ -1,0 +1,18 @@
+<style>
+body { margin: 0; }
+.navbar { 
+    padding: 16px;
+    display: flex;
+    background-color: #EEEEEE;
+    gap: 12px;
+}
+.navbar > h1 { margin: 0; }
+.navbar > a { margin: auto; }
+</style>
+<div class="navbar">
+    <a href="/">Home</a>
+    <div style="flex: 1" aria-hidden></div>
+    <h1>{{ title }}</h1>
+    <div style="flex: 1" aria-hidden></div>
+    <a href="raw/{{ filename }}">Source</a>
+</div>

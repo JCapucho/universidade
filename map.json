@@ -1,29 +1,58 @@
 [
   {
-    "name": "FP",
+    "category": "FP",
     "title": "Fundamentos da Programação",
     "builder": "FP/build.py",
     "args": ["--template", "templates/GitHub.html5"],
     "children": [
       {
-        "name": "aula00",
+        "category": "aula00",
         "title": "Aula 00",
         "path": "FP/aula00/aula00.norg"
       },
       {
-        "name": "aula01",
+        "category": "aula01",
         "title": "Aula 01",
         "path": "FP/aula01/aula01.norg"
       },
       {
-        "name": "aula02",
+        "category": "aula02",
         "title": "Aula 02",
         "path": "FP/aula02/aula02.norg"
       },
       {
-        "name": "aula03",
+        "category": "aula03",
         "title": "Aula 03",
         "path": "FP/aula03/aula03.norg"
+      }
+    ]
+  },
+  {
+    "category": "ITW",
+    "title": "Introdução as tecnologias web",
+    "builder": "ITW/build.py",
+    "args": ["--template-dir", "templates"],
+    "children": [
+      {
+        "category": "aula01",
+        "title": "Aula 01",
+        "path": "ITW/wwwroot/Aula01"
+      },
+      {
+        "category": "aula02",
+        "title": "Aula 02",
+        "path": "ITW/wwwroot/Aula02"
+      },
+      {
+        "category": "aula03",
+        "title": "Aula 03",
+        "path": "ITW/wwwroot/Aula03",
+        "children": [
+          {
+            "title": "Aula 03 - Exercício 5",
+            "target": "aula03e05.html"
+          }
+        ]
       }
     ]
   }
