@@ -53,6 +53,11 @@
             "target": "aula03e05.html"
           }
         ]
+      },
+      {
+        "category": "aula04",
+        "title": "Aula 04",
+        "path": "ITW/wwwroot/Aula04"
       }
     ]
   }

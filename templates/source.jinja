@@ -13,8 +13,9 @@
             span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
             td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
             span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+
+            .code { background: #f8f8f8;  }
             .highlight .hll { background-color: #ffffcc }
-            .highlight { background: #f8f8f8; height: 100vh; }
             .highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
             .highlight .err { border: 1px solid #FF0000 } /* Error */
             .highlight .k { color: #008000; font-weight: bold } /* Keyword */
@@ -82,9 +83,40 @@
             .highlight .vi { color: #19177C } /* Name.Variable.Instance */
             .highlight .vm { color: #19177C } /* Name.Variable.Magic */
             .highlight .il { color: #666666 } /* Literal.Number.Integer.Long */
+
+            .navbar {
+              list-style-type: none;
+              margin: 0;
+              padding: 0;
+              overflow: hidden;
+              background-color: #333;
+            }
+            .navbar li {
+              float: left;
+              border-right: 1px solid #bbb;
+            }
+            .navbar li a {
+              display: block;
+              color: white;
+              text-align: center;
+              padding: 14px 16px;
+              text-decoration: none;
+            }
+            .navbar li a:hover {
+              background-color: #444;
+            }
         </style>
     </head>
     <body>
+        <ul class="navbar">
+            {%- for link in links %}
+                <li>
+                    <a href="{{ link.href|e }}">{{link.name}}</a>
+                </li>
+            {%- endfor %}
+        </ul>
+        <div class="code">
         {{ code }}
+</div>
     </body>
 </html>

@@ -6,7 +6,8 @@ import shutil
 import argparse
 from pathlib import Path
 from pygments import highlight
-from pygments.lexers import HtmlLexer
+from urllib.parse import urlparse
+from pygments.lexers import HtmlLexer, guess_lexer_for_filename
 from pygments.formatters import HtmlFormatter
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
@@ -44,6 +45,7 @@ args = parser.parse_args()
 
 os.makedirs(args.out / "raw", exist_ok=True)
 shutil.copytree(args.source, args.out, dirs_exist_ok=True)
+shutil.copytree(args.source.parent / "lib", args.out.parent / "lib", dirs_exist_ok=True)
 
 env = Environment(
     loader=FileSystemLoader(args.template_dir), autoescape=select_autoescape()
@@ -51,15 +53,41 @@ env = Environment(
 sourceTemplate = env.get_template("source.jinja")
 navbarTemplate = env.get_template("navbar.jinja")
 
+src_path = Path(args.source).resolve()
+
 
 def addNavigationBar(filename):
-    with open(args.source / filename) as inf:
+    with open(src_path / filename) as inf:
         txt = inf.read()
         soup = bs4.BeautifulSoup(txt, features="lxml")
-        code = highlight(txt, HtmlLexer(), HtmlFormatter())
-        sourceTemplate.stream(code=code, filename=filename).dump(
-            str(args.out / "raw" / filename)
-        )
+
+    links = []
+
+    for link_node in soup.find_all("link"):
+        sheet = link_node.get("href")
+        if urlparse(sheet).scheme == "":
+            path = Path(str(sheet))
+            full_path = (src_path / path).resolve()
+            if path.is_absolute() or not (src_path in full_path.parents):
+                continue
+
+            with open(full_path) as inf:
+                linkTxt = inf.read()
+
+            code = highlight(
+                txt, guess_lexer_for_filename(path.name, linkTxt), HtmlFormatter()
+            )
+            tgt = Path(str(path) + ".html")
+            sourceTemplate.stream(code=code, filename=filename).dump(
+                str(args.out / "raw" / tgt)
+            )
+
+            links.append({"name": path.name, "href": tgt})
+
+    code = highlight(txt, HtmlLexer(), HtmlFormatter())
+    sourceTemplate.stream(code=code, filename=filename, links=links).dump(
+        str(args.out / "raw" / filename)
+    )
 
     navbar = navbarTemplate.render(title=args.title, filename=filename)
     fragment = bs4.BeautifulSoup(navbar, features="lxml")
