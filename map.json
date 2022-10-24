@@ -24,6 +24,11 @@
         "category": "aula03",
         "title": "Aula 03",
         "path": "FP/aula03/aula03.norg"
+      },
+      {
+        "category": "aula04",
+        "title": "Aula 04",
+        "path": "FP/aula04/aula04.norg"
       }
     ]
   },
