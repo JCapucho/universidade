@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Bootstrap CSS -->
+    <link href="../lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link
+      href="../lib/font-awesome/dist/css/font-awesome.min.css"
+      rel="stylesheet"
+    />
+    <!-- Custom css -->
+    <link href="styles.css" rel="stylesheet" />
+    <title>Using Bootstrap</title>
+    <style>
+      body {
+        font-family: "Open Sans", sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="index.html">
+          <img
+            src="https://www.mozilla.org/media/protocol/img/logos/mozilla/logo-word-hor.e20791bb4dd4.svg"
+          />
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul
+            class="navbar-nav ml-auto text-center w-100 ml-lg-0 d-lg-flex align-items-center"
+          >
+            <li class="nav-item">
+              <a class="nav-link" aria-current="page" href="index.html">
+                <i class="fa fa-home"></i>
+                Início
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="products.html">
+                <i class="fa fa-folder-open"></i>
+                Produtos
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="contacts.html">
+                <i class="fa fa-user"></i>
+                Contactos
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <!-- Content -->
+    <div class="container mt-5">
+      <ul class="nav nav-tabs">
+        <li class="nav-item">
+          <button
+            class="nav-link active"
+            id="san-francisco"
+            data-bs-toggle="tab"
+            data-bs-target="#san-francisco-pane"
+            type="button"
+            role="tab"
+            aria-controls="san-francisco-pane"
+            aria-selected="true"
+          >
+            San Francisco
+          </button>
+        </li>
+        <li class="nav-item">
+          <button
+            class="nav-link"
+            id="beijing"
+            data-bs-toggle="tab"
+            data-bs-target="#beijing-pane"
+            type="button"
+            role="tab"
+            aria-controls="beijing-pane"
+            aria-selected="true"
+          >
+            Beijing
+          </button>
+        </li>
+        <li class="nav-item">
+          <button
+            class="nav-link"
+            id="berlin"
+            data-bs-toggle="tab"
+            data-bs-target="#berlin-pane"
+            type="button"
+            role="tab"
+            aria-controls="berlin-pane"
+            aria-selected="true"
+          >
+            Berlin
+          </button>
+        </li>
+        <li class="nav-item">
+          <button
+            class="nav-link"
+            id="paris"
+            data-bs-toggle="tab"
+            data-bs-target="#paris-pane"
+            type="button"
+            role="tab"
+            aria-controls="paris-pane"
+            aria-selected="true"
+          >
+            Paris
+          </button>
+        </li>
+        <li class="nav-item">
+          <button
+            class="nav-link"
+            id="toronto"
+            data-bs-toggle="tab"
+            data-bs-target="#toronto-pane"
+            type="button"
+            role="tab"
+            aria-controls="toronto-pane"
+            aria-selected="true"
+          >
+            Toronto
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="ContactsTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="san-francisco-pane"
+          role="tabpanel"
+          aria-labelledby="san-francisco-tab"
+          tabindex="0"
+        >
+          <table class="table table-striped">
+            <tbody>
+              <tr>
+                <td>Localização</td>
+                <td>2 Harrison Street Suite 175 San Francisco, CA 94105 USA</td>
+              </tr>
+              <tr>
+                <td>Twitter</td>
+                <td>@MozSF</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="beijing-pane"
+          role="tabpanel"
+          aria-labelledby="beijing-tab"
+          tabindex="0"
+        >
+          <table class="table table-striped">
+            <tbody>
+              <tr>
+                <td>Localização</td>
+                <td>
+                  Mozilla Online Ltd. China Resources Building, Suite 1708 8
+                  Jianguomenbei Avenue Dongcheng District, Beijing 100005 China
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="berlin-pane"
+          role="tabpanel"
+          aria-labelledby="berlin-tab"
+          tabindex="0"
+        >
+          <table class="table table-striped">
+            <tbody>
+              <tr>
+                <td>Localização</td>
+                <td>
+                  GSG-Hof Schlesische Straße Gebäude 3, 4. Obergeschoss
+                  Schlesische Straße 27 10997 Berlin Germany
+                </td>
+              </tr>
+              <tr>
+                <td>Twitter</td>
+                <td>@MozillaBerlin</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="paris-pane"
+          role="tabpanel"
+          aria-labelledby="paris-tab"
+          tabindex="0"
+        >
+          <table class="table table-striped">
+            <tbody>
+              <tr>
+                <td>Localização</td>
+                <td>117/119 quai de Valmy Paris 75010 France</td>
+              </tr>
+              <tr>
+                <td>Twitter</td>
+                <td>@MozillaParis</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="toronto-pane"
+          role="tabpanel"
+          aria-labelledby="toronto-tab"
+          tabindex="0"
+        >
+          <table class="table table-striped">
+            <tbody>
+              <tr>
+                <td>Localização</td>
+                <td>366 Adelaide St W, Suite 500 Toronto, ON M5V 1R9 Canada</td>
+              </tr>
+              <tr>
+                <td>Twitter</td>
+                <td>@MozToronto</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- Footer -->
+    <div class="fixed-bottom bg-dark text-light p-3">
+      Trabalho feito com <i class="fa fa-frown-o" aria-hidden="true"></i> por
+      João Capucho
+    </div>
+    <!-- Bootstrap Bundle -->
+    <script src="../lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

@@ -63,6 +63,11 @@
         "category": "aula04",
         "title": "Aula 04",
         "path": "ITW/wwwroot/Aula04"
+      },
+      {
+        "category": "aula05",
+        "title": "Aula 05",
+        "path": "ITW/wwwroot/Aula05"
       }
     ]
   }

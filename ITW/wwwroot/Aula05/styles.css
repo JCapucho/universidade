@@ -1,0 +1,20 @@
+.navbar-brand {
+  padding: 0;
+}
+
+.navbar-brand > img {
+  height: 40px;
+}
+
+#carouselBanner .carousel-item {
+  max-height: 40vh;
+}
+
+.banner {
+  width: 100%;
+  height: 40vh;
+  background-image: url("firefox.png");
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
