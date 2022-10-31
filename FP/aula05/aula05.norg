@@ -1,0 +1,372 @@
+@document.meta
+    title: Aula 04
+    description: The most useless list in the world
+    author: João Capucho
+@end
+
+* Exercício 1
+
+  > Tente prever o que acontece nestes excertos no {https://pythontutor.com/}[PythonTutor.com].
+
+** Parte a)
+
+   > {https://pythontutor.com/live.html#code=%23 Tente prever o que acontece quando descomenta cada linha.%0A%23 %28Se der erro, deixe a linha comentada.%29%0A%23 Try to predict what happens when you uncomment each line.%0A%23 %28In case of error, leave the line commented.%29%0A%0Alst %3D %5B5, 3, 8, 7%5D%0A%23R1 %3D len%28lst%29%0A%23R2 %3D lst%5B1%5D%0A%23R3 %3D lst%5B4%5D%0A%23R4 %3D lst%5B-4%5D%0A%0A%23R5 %3D lst%5B1%3A3%5D%0A%23R6 %3D lst%5B%3A-1%5D%0A%23R7 %3D lst%5B2%3A2%5D%0A%0A%23lst%5B2%3A2%5D %3D %5B99%5D%0A%23print%28lst%29%0A%23lst%5B2%5D %3D %5B97, 98%5D%0A%23print%28lst%29%0A%23R8 %3D lst%5B2%5D%5B0%5D%0A%0A%23lst.append%2833%29%0A%23print%28lst%29%0A%23lst.append%28%5B34, 35%5D%29%0A%23print%28lst%29%0A%23lst.extend%28%5B36, 37%5D%29%0A%23print%28lst%29&cumulative=false&curInstr=0&heapPrimitives=nevernest&mode=display&origin=opt-live.js&py=3&rawInputLstJSON=%5B%5D&textReferences=false}[Revisão de listas]
+
+   O código pode ser todo descomentado com a exceção da linha 9, pois esta indexa
+   para além do número de elementos na lista
+
+   @code python
+   # Tente prever o que acontece quando descomenta cada linha.
+   # (Se der erro, deixe a linha comentada.)
+   # Try to predict what happens when you uncomment each line.
+   # (In case of error, leave the line commented.)
+
+   lst = [5, 3, 8, 7]
+   R1 = len(lst) # 4
+   R2 = lst[1] # 3
+   #R3 = lst[4]
+   R4 = lst[-4] # 5
+
+   R5 = lst[1:3] # [3, 8]
+   R6 = lst[:-1] # [5, 3, 8]
+   R7 = lst[2:2] # []
+
+   lst[2:2] = [99]
+   print(lst) # [5, 3, 99, 8, 7]
+   lst[2] = [97, 98]
+   print(lst) # [5, 3, [97, 98], 8, 7]
+   R8 = lst[2][0] # 97
+
+   lst.append(33)
+   print(lst) # [5, 3, [97, 98], 8, 7, 33]
+   lst.append([34, 35])
+   print(lst) # [5, 3, [97, 98], 8, 7, 33, [34, 35]]
+   lst.extend([36, 37])
+   print(lst) # [5, 3, [97, 98], 8, 7, 33, [34, 35], 36, 37]
+   @end
+
+** Parte c)
+
+   > {https://pythontutor.com/live.html#code=%23 Tente prever o que acontece quando descomenta cada linha.%0A%23 %28Se der erro, deixe a linha comentada.%29%0A%23 Try to predict what happens when you uncomment each line.%0A%23 %28In case of error, leave the line commented.%29%0A%0At %3D %28%22ana%22, %281974,4,25%29%29%0A%23R1 %3D len%28t%29%0A%23R2 %3D t%5B1%5D%0A%23R3 %3D t%5B1%5D%5B0%5D%0A%0A%23t%5B0%5D %3D %22joe%22%0A%23print%28t%29%0A%23t2 %3D t%0A%23t %2B%3D %2812, 45, 59%29%0A%23print%28t%29%0A%0A%23R4 %3D %281974,3,30%29 %3C %281974,4,1%29%0A%23R5 %3D %281974,3%29 %3C %281974,3,-1,-2%29%0A&cumulative=false&curInstr=1&heapPrimitives=nevernest&mode=display&origin=opt-live.js&py=3&rawInputLstJSON=%5B%5D&textReferences=false}[Revisão de tuplos]
+
+   O código pode ser todo descomentado com a exceção da linha 11, pois esta
+   tenta mutar um tuple
+
+   @code python
+   # Tente prever o que acontece quando descomenta cada linha.
+   # (Se der erro, deixe a linha comentada.)
+   # Try to predict what happens when you uncomment each line.
+   # (In case of error, leave the line commented.)
+
+   t = ("ana", (1974,4,25))
+   R1 = len(t) # 2
+   R2 = t[1] # (1974, 4, 25)
+   R3 = t[1][0] # 1974
+
+   # t[0] = "joe"
+   print(t) # ('ana', (1974, 4, 25))
+   t2 = t
+   t += (12, 45, 59)
+   print(t) # ('ana', (1974, 4, 25), 12, 45, 59)
+
+   R4 = (1974,3,30) < (1974,4,1) # True
+   R5 = (1974,3) < (1974,3,-1,-2) # True
+   @end
+
+** Parte b)
+
+   > {https://pythontutor.com/live.html#code=%23 Tente prever o que acontece quando descomenta cada linha.%0A%23 %28Se der erro, deixe a linha comentada.%29%0A%23 Try to predict what happens when you uncomment each line.%0A%23 %28In case of error, leave the line commented.%29%0A%0As %3D %22abcde%22%0A%23R1 %3D s%5B2%3A%5D %2B s%5B%3A2%5D%0A%23R2 %3D s%5B1%3A%3A2%5D%0A%0A%23s%5B2%5D %3D %22C%22%0A%23s2 %3D s%0A%23print%28s%29%0A%23s %3D %22%3C-%22 %2B s %2B %22-%3E%22%0A%23print%28s%29%0A%0A%23R3 %3D %22abaco%22 %3E %22abel%22%0A&cumulative=false&curInstr=1&heapPrimitives=true&mode=display&origin=opt-live.js&py=3&rawInputLstJSON=%5B%5D&textReferences=false}[Revisão de strings]
+
+   O código pode ser todo descomentado com a exceção da linha 10, pois esta
+   tenta mutar uma string
+
+   @code python
+   # Tente prever o que acontece quando descomenta cada linha.
+   # (Se der erro, deixe a linha comentada.)
+   # Try to predict what happens when you uncomment each line.
+   # (In case of error, leave the line commented.)
+
+   s = "abcde"
+   R1 = s[2:] + s[:2] # "cdeab"
+   R2 = s[1::2] # "bd"
+
+   # s[2] = "C"
+   s2 = s
+   print(s) # "abcde"
+   s = "<-" + s + "->"
+   print(s) # "<-abcde->"
+
+   R3 = "abaco" > "abel" # False
+   @end
+
+* Exercício 2
+
+  > Siga os seguintes passos, testando cada um:
+
+** Parte a)
+
+   > Crie uma função `inputFloatList()` que leia uma sequência de números introduzidos
+   > pelo utilizador e os devolva numa nova lista. O utilizador deve introduzir um
+   > número por linha e indicar o fim da lista com uma linha vazia.
+
+   @code python
+   def inputFloatList():
+       list = []
+       while True:
+           userInput = input("Insira um número ou uma linha em branco: ")
+           if userInput == "":
+               break
+           list.append(float(userInput))
+       return list
+   @end
+
+** Parte b)
+
+   > Crie uma função `countLower(lst, v)` que conte (e devolva) quantos elementos
+   > da lista `lst` são inferiores ao valor `v`.
+
+   @code python
+   def countLower(lst, v):
+       count = 0
+       for ele in lst:
+           if ele < v:
+               count += 1
+       return count
+   @end
+
+** Parte c)
+
+   > Crie uma função `minmax(lst)` que devolva o mínimo e o máximo de uma lista de
+   > valores. Consegue fazê-la sem usar as funções `min`, `max`, `sort`, nem
+   > `sorted`?
+
+   @code python
+   def minmax(lst):
+       min = lst[0]
+       max = lst[0]
+       for ele in lst[1:]:
+           if ele < min:
+               min = ele
+           elif ele > max:
+               max = ele
+       return (min, max)
+   @end
+
+** Parte d)
+
+   > Recorra às funções anteriores para fazer um programa que leia uma lista de
+   > números, determine o valor médio entre o mínimo e o máximo e conte quantos
+   > números são inferiores a esse valor.
+
+   @code python
+   def inputFloatList():
+       list = []
+       while True:
+           userInput = input("Insira um número ou uma linha em branco: ")
+           if userInput == "":
+               break
+           list.append(float(userInput))
+       return list
+
+
+   def countLower(lst, v):
+       count = 0
+       for ele in lst:
+           if ele < v:
+               count += 1
+       return count
+
+
+   def minmax(lst):
+       min = lst[0]
+       max = lst[0]
+       for ele in lst[1:]:
+           if ele < min:
+               min = ele
+           elif ele > max:
+               max = ele
+       return (min, max)
+
+
+   def main():
+       list = inputFloatList()
+       (min, max) = minmax(list)
+       print(f"O minímo é {min}, o máximo é {max}")
+       avg = (max + min) / 2
+       print(f"A média é {avg}")
+       count = countLower(list, avg)
+       print(f"{count} elementos são menores que {avg}")
+
+
+   main()
+   @end
+
+* Exercício 3
+
+  > O programa `telephones.py` define duas listas, uma com números de telefone e
+  > outra com os nomes correspondentes.
+
+** Parte a)
+
+   > Complete a função `telToName` que, dado um número de telefone (e as duas
+   > listas), devolve o nome respetivo (ou o próprio número, se não estiver na
+   > lista). Isto é o que os telemóveis fazem quando recebem uma chamada.
+
+   @code python
+   # Convert a telephone number into corresponding name, if on list.
+   # (If not on list, just return the number itself.)
+   def telToName(tel, telList, nameList):
+       name = tel
+       for (cTel, cName) in zip(telList, nameList):
+           if cTel == tel:
+               name = cName
+               break
+       return name
+   @end
+
+** Parte b)
+
+   > Complete a função `nameToTels` que, dada parte de um nome, devolve a lista
+   > dos números correspondentes a nomes que incluem essa parte. (Como quando
+   > pesquisa na lista de contactos do telemóvel.)
+
+   @code python
+   # Return list of telephone numbers corresponding to names containing partName.
+   def nameToTels(partName, telList, nameList):
+       tels = []
+       for (cTel, cName) in zip(telList, nameList):
+           if partName in cName:
+               tels.append(cTel)
+       return tels
+   @end
+
+** Parte c)
+
+   > Corra o programa para testar essas funções.
+
+   @code
+   $ python3 telephones.py
+   Tel number? 777888333
+   Claudia
+   True
+   True
+   Name? a
+   ['975318642', '234000111', '777888333', '911911911']
+   True
+   True
+   @end
+
+* Exercício 4
+
+  > Escreva uma função que, dada uma lista de equipas de futebol, crie e devolva
+  > uma lista de todos os jogos que se podem fazer entre elas.
+
+  @code python
+  def allMatches(teams):
+      assert len(teams) >= 2, "Requires two or more teams!"
+      games = []
+      for i, team in enumerate(teams):
+          for j, enemy in enumerate(teams):
+              if i != j:
+                  games.append((team, enemy))
+      return games
+  @end
+
+* Exercício 5
+
+  > Crie uma função que conte quantos dígitos há numa dada string. Por exemplo:
+  > `countDigits("23 mil 456")` deve devolver 5.
+
+  @code python
+  def countDigits(str):
+      count = 0
+      for c in str:
+          if c.isdigit():
+              count += 1
+      return count
+  @end
+
+* Exercício 6
+
+  > Crie uma função que, dado um nome, crie uma versão abreviada, formada apenas
+  > pelas letras maiúsculas.
+
+  @code python
+  def shorten(str):
+      abrv = ""
+      for c in str:
+          if c.isupper():
+              abrv += c
+      return abrv
+  @end
+
+* Exercício 7
+
+  > Crie uma função `ispalindrome(s)` que devolva um valor booleano indicando se a
+  > string s é um palíndromo ou não.
+
+  @code python
+  def ispalindrome(s):
+    return s == s[::-1]
+  @end
+
+* Exercício 8
+
+  > Resolva os exercícios abaixo usando o sistema CodeCheck para as testar.
+
+** Parte a)
+
+   > Crie uma função que, dada uma string, devolve outra composta pelos caracteres
+   > das posições pares seguidos pelos caracteres das posições ímpares da
+   > primeira. Por exemplo, `evenThenOdd("abcd")` deve devolver `"acbd"`.
+
+   @code python
+   def evenThenOdd(s):
+       return s[::2] + s[1::2]
+   @end
+
+** Parte b)
+
+   > Crie uma função que, dada uma string `s`, devolve uma string semelhante mas sem
+   > caracteres adjacentes duplicados. Por exemplo, para o argumento `"Mississippi"`
+   > deve devolver `"Misisipi"`.
+
+   @code python
+   def removeAdjacentDuplicates(s):
+       str = ""
+       last = ""
+       for c in s:
+           if c != last:
+               str += c
+           last = c
+       return str
+   @end
+
+** Parte c)
+
+   > Crie uma função que, dado um inteiro não negativo `n`, devolve uma lista contendo
+   > 1, 2, 2, 3, 3, 3, 4, 4, 4, 4, ... e finalmente n repetido n vezes.
+
+   @code python
+   def reapeatNumTimes(n):
+       lst = []
+       for num in range(1, n + 1):
+           for _ in range(0, num):
+               lst.append(num)
+       return lst
+   @end
+
+** Parte d)
+
+   > Crie uma função que, dada uma lista de valores, devolve o índice da primeira
+   > ocorrência do maior valor. Pode admitir que a lista não está vazia. Não pode
+   > usar as funções `max`, find nem `index`.
+
+   @code python
+   def positionOfFirstLargest(arr):
+       ret = (0, arr[0])
+       for i, num in enumerate(arr):
+           if num > ret[1]:
+               ret = (i, num)
+       return ret[0]
+   @end
