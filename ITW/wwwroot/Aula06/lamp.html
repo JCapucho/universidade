@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Bootstrap CSS -->
+    <link href="../lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link
+      href="../lib/font-awesome/dist/css/font-awesome.min.css"
+      rel="stylesheet"
+    />
+    <!-- Custom css -->
+    <link href="styles.css" rel="stylesheet" />
+    <title>Lâmpada</title>
+    <style>
+      body {
+        font-family: "Open Sans", sans-serif;
+      }
+      #kaboom {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container text-center">
+      <h1 id="kaboom">Obrigado mestre kaboom</h1>
+      <img src="https://i.stack.imgur.com/b983w.jpg" id="lamp" width="169" />
+      <div>
+        <button class="btn btn-primary" type="button" onclick="ligar()">
+          Ligar
+        </button>
+        <button class="btn btn-secondary" type="button" onclick="desligar()">
+          Desligar
+        </button>
+      </div>
+    </div>
+
+    <script src="lampScript.js"></script>
+    <!-- Bootstrap Bundle -->
+    <script src="../lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

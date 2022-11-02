@@ -73,6 +73,24 @@
         "category": "aula05",
         "title": "Aula 05",
         "path": "ITW/wwwroot/Aula05"
+      },
+      {
+        "category": "aula06",
+        "title": "Aula 06",
+        "children": [
+          {
+            "title": "Aula 06 - Calculadora",
+            "target": "index.html"
+          },
+          {
+            "title": "Aula 06 - Lâmpada",
+            "target": "lamp.html"
+          },
+          {
+            "title": "Aula 06 - Jogo",
+            "target": "jogo.html"
+          }
+        ]
       }
     ]
   }

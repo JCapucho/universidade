@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Bootstrap CSS -->
+    <link href="../lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link
+      href="../lib/font-awesome/dist/css/font-awesome.min.css"
+      rel="stylesheet"
+    />
+    <!-- Custom css -->
+    <link href="styles.css" rel="stylesheet" />
+    <title>Javascript</title>
+    <style>
+      body {
+        font-family: "Open Sans", sans-serif;
+      }
+      .quadrado {
+        position: absolute;
+        width: 50px;
+        height: 50px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="quadrado bg-success" id="Green"></div>
+    <div class="quadrado bg-danger" id="Red"></div>
+    <div class="quadrado bg-warning" id="Yellow"></div>
+    <div class="quadrado bg-primary" id="Blue"></div>
+
+    <div class="m-5 col-4" id="controls">
+      <button class="btn btn-primary" type="button" onclick="baralhar()">
+        Baralhar
+      </button>
+      <h2>Nome: <span id="nome"></span></h2>
+      <h2>X: <span id="x"></span></h2>
+      <h2>Y: <span id="y"></span></h2>
+    </div>
+
+    <script src="jogo.js"></script>
+    <!-- Bootstrap Bundle -->
+    <script src="../lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
