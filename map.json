@@ -76,12 +76,9 @@
       },
       {
         "category": "aula06",
-        "title": "Aula 06",
+        "title": "Aula 06 - Calculadora",
+        "path": "ITW/wwwroot/Aula06",
         "children": [
-          {
-            "title": "Aula 06 - Calculadora",
-            "target": "index.html"
-          },
           {
             "title": "Aula 06 - Lâmpada",
             "target": "lamp.html"

@@ -56,36 +56,45 @@ navbarTemplate = env.get_template("navbar.jinja")
 src_path = Path(args.source).resolve()
 
 
+def processSource(src, rootName, sources):
+    path = Path(str(src))
+    full_path = (src_path / path).resolve()
+    if path.is_absolute() or not (src_path in full_path.parents):
+        return
+
+    with open(full_path) as inf:
+        linkTxt = inf.read()
+
+    code = highlight(
+        linkTxt, guess_lexer_for_filename(path.name, linkTxt), HtmlFormatter()
+    )
+    tgt = Path(str(path) + ".html")
+    sourceTemplate.stream(code=code, filename=rootName).dump(
+        str(args.out / "raw" / tgt)
+    )
+
+    sources.append({"name": path.name, "href": tgt})
+
+
 def addNavigationBar(filename):
     with open(src_path / filename) as inf:
         txt = inf.read()
         soup = bs4.BeautifulSoup(txt, features="lxml")
 
-    links = []
+    sources = []
 
     for link_node in soup.find_all("link"):
         sheet = link_node.get("href")
         if urlparse(sheet).scheme == "":
-            path = Path(str(sheet))
-            full_path = (src_path / path).resolve()
-            if path.is_absolute() or not (src_path in full_path.parents):
-                continue
+            processSource(sheet, filename, sources)
 
-            with open(full_path) as inf:
-                linkTxt = inf.read()
-
-            code = highlight(
-                txt, guess_lexer_for_filename(path.name, linkTxt), HtmlFormatter()
-            )
-            tgt = Path(str(path) + ".html")
-            sourceTemplate.stream(code=code, filename=filename).dump(
-                str(args.out / "raw" / tgt)
-            )
-
-            links.append({"name": path.name, "href": tgt})
+    for link_node in soup.find_all("script"):
+        script = link_node.get("src")
+        if urlparse(script).scheme == "":
+            processSource(script, filename, sources)
 
     code = highlight(txt, HtmlLexer(), HtmlFormatter())
-    sourceTemplate.stream(code=code, filename=filename, links=links).dump(
+    sourceTemplate.stream(code=code, filename=filename, links=sources).dump(
         str(args.out / "raw" / filename)
     )
 
