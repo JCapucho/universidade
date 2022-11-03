@@ -6,7 +6,12 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
 
         <style>
-            body { margin: 0;  }
+            html, body { margin: 0; height: 100%; }
+
+            body {
+                display: flex;
+                flex-direction: column;
+            }
 
             pre { line-height: 125%; padding: 16px; margin: 0; }
             td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
@@ -14,7 +19,7 @@
             td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
             span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
 
-            .code { background: #f8f8f8;  }
+            .code { background: #f8f8f8; overflow-x: auto; flex: 1 }
             .highlight .hll { background-color: #ffffcc }
             .highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
             .highlight .err { border: 1px solid #FF0000 } /* Error */
@@ -90,10 +95,15 @@
               padding: 0;
               overflow: hidden;
               background-color: #333;
+              display: flex;
             }
             .navbar li {
               float: left;
               border-right: 1px solid #bbb;
+            }
+            .navbar li:last-of-type {
+              border-right: 0;
+              border-left: 1px solid #bbb;
             }
             .navbar li a {
               display: block;
@@ -105,18 +115,30 @@
             .navbar li a:hover {
               background-color: #444;
             }
+            .navbar li a.active {
+              background-color: #887;
+            }
         </style>
     </head>
     <body>
         <ul class="navbar">
             {%- for link in links %}
                 <li>
-                    <a href="{{ link.href|e }}">{{link.name}}</a>
+                    <a
+                        class="{{ 'active' if link.rel_path == filename }}"
+                        href="{{ link.href|e }}"
+                    >
+                        {{ link.rel_path }}
+                    </a>
                 </li>
             {%- endfor %}
+            <div aria-hidden style="flex: 1"></div>
+            <li>
+                <a href="{{ root|e }}">Back to the page</a>
+            </li>
         </ul>
         <div class="code">
-        {{ code }}
-</div>
+            {{ code }}
+        </div>
     </body>
 </html>

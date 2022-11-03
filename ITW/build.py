@@ -4,12 +4,18 @@ import bs4
 import glob
 import shutil
 import argparse
+
 from pathlib import Path
-from pygments import highlight
+from dataclasses import dataclass
 from urllib.parse import urlparse
+
+from pygments import highlight
+from jinja2 import Environment, FileSystemLoader, select_autoescape
+
+from pygments.lexer import Lexer
 from pygments.lexers import HtmlLexer, guess_lexer_for_filename
 from pygments.formatters import HtmlFormatter
-from jinja2 import Environment, FileSystemLoader, select_autoescape
+
 
 # Find the directory of the script and normalize it
 # (set strict=True because we want to verify the file exists)
@@ -56,32 +62,55 @@ navbarTemplate = env.get_template("navbar.jinja")
 src_path = Path(args.source).resolve()
 
 
+@dataclass
+class Source:
+    rel_path: Path
+    path: Path
+    lexer: Lexer | None = None
+
+    @property
+    def href(self) -> Path:
+        if self.rel_path.suffix == ".html":
+            return self.rel_path
+        else:
+            return Path(str(self.rel_path) + ".html")
+
+    def getLexer(self, srcCode) -> Lexer:
+        if self.lexer is not None:
+            return self.lexer
+        else:
+            return guess_lexer_for_filename(self.rel_path, srcCode)
+
+    def build(self, sources, rootName):
+        with open(self.path) as inf:
+            srcCode = inf.read()
+
+        walkUp = len(self.rel_path.parents)
+        root = "../" * walkUp + rootName
+
+        code = highlight(srcCode, self.getLexer(srcCode), HtmlFormatter())
+        sourceTemplate.stream(
+            code=code, filename=self.rel_path, links=sources, root=root
+        ).dump(str(args.out / "raw" / self.href))
+
+
 def processSource(src, rootName, sources):
     path = Path(str(src))
     full_path = (src_path / path).resolve()
     if path.is_absolute() or not (src_path in full_path.parents):
         return
 
-    with open(full_path) as inf:
-        linkTxt = inf.read()
+    name = full_path.relative_to(src_path)
 
-    code = highlight(
-        linkTxt, guess_lexer_for_filename(path.name, linkTxt), HtmlFormatter()
-    )
-    tgt = Path(str(path) + ".html")
-    sourceTemplate.stream(code=code, filename=rootName).dump(
-        str(args.out / "raw" / tgt)
-    )
-
-    sources.append({"name": path.name, "href": tgt})
+    sources.append(Source(name, full_path))
 
 
-def addNavigationBar(filename):
+def processPage(filename):
     with open(src_path / filename) as inf:
         txt = inf.read()
         soup = bs4.BeautifulSoup(txt, features="lxml")
 
-    sources = []
+    sources = [Source(Path(filename), src_path / filename, HtmlLexer())]
 
     for link_node in soup.find_all("link"):
         sheet = link_node.get("href")
@@ -93,11 +122,6 @@ def addNavigationBar(filename):
         if urlparse(script).scheme == "":
             processSource(script, filename, sources)
 
-    code = highlight(txt, HtmlLexer(), HtmlFormatter())
-    sourceTemplate.stream(code=code, filename=filename, links=sources).dump(
-        str(args.out / "raw" / filename)
-    )
-
     navbar = navbarTemplate.render(title=args.title, filename=filename)
     fragment = bs4.BeautifulSoup(navbar, features="lxml")
     soup.body.insert(0, fragment)
@@ -105,6 +129,9 @@ def addNavigationBar(filename):
     with open(args.out / filename, "w") as outf:
         outf.write(str(soup))
 
+    for src in sources:
+        src.build(sources, filename)
+
 
 for file in glob.glob("*.html", root_dir=args.source):
-    addNavigationBar(file)
+    processPage(file)
