@@ -1,18 +1,31 @@
 <style>
 body { margin: 0; }
-.navbar { 
+.build-generated-navbar {
     padding: 16px;
     display: flex;
+    flex-wrap: wrap;
     background-color: #EEEEEE;
     gap: 12px;
 }
-.navbar > h1 { margin: 0; }
-.navbar > a { margin: auto; }
+.build-generated-navbar > h1 { margin: 0; }
+.build-generated-navbar > a { margin: auto; }
+.build-generated-spacer { flex: 1; }
+@media screen and (max-width: 640px) {
+    .build-generated-navbar {
+        justify-content: space-evenly;
+        text-align: center;
+    }
+    .build-generated-navbar > h1 {
+        order: -1;
+        flex-basis: 100%;
+    }
+    .build-generated-spacer { flex: 0; }
+}
 </style>
-<div class="navbar">
+<div class="build-generated-navbar">
     <a href="/">Home</a>
-    <div style="flex: 1" aria-hidden></div>
+    <div class="build-generated-spacer" aria-hidden></div>
     <h1>{{ title }}</h1>
-    <div style="flex: 1" aria-hidden></div>
+    <div class="build-generated-spacer" aria-hidden></div>
     <a href="raw/{{ filename }}">Source</a>
 </div>
