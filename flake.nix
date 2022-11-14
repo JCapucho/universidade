@@ -62,8 +62,10 @@
             black
             python3Packages.python-lsp-server
             dotnet-sdk
-            nodePackages.prettier
             jdk
+            nodePackages.prettier
+            nodePackages.vscode-langservers-extracted
+            nodePackages.typescript-language-server
           ]
           ++ sharedPackages;
       };

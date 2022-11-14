@@ -1,0 +1,327 @@
+@document.meta
+    title: Aula 06
+    description: Delicious files
+    author: João Capucho
+@end
+
+* Exercício 1
+
+  > O programa `filesum.py` pede um nome de um ficheiro e passa-o como argumento à
+  > função `fileSum`. Complete essa função para calcular e devolver a soma dos
+  > valores do ficheiro. Considere que o ficheiro contém um valor por linha.
+
+  @code python
+  from tkinter import filedialog
+
+
+  def main():
+      # 1) Pedir nome do ficheiro (experimente cada alternativa):
+      # Lê o nome no terminal
+      # name = input("File? ")
+      # Abre uma janela para escolher o ficheiro graficamente
+      name = filedialog.askopenfilename(title="Choose File")
+
+      # 2) Calcular soma dos números no ficheiro:
+      total = fileSum(name)
+
+      # 3) Mostrar a soma:
+      print("Sum:", total)
+
+
+  def fileSum(filename):
+      accum = 0
+
+      with open(filename) as txt:
+          for line in txt:
+              accum += float(line)
+
+      return accum
+
+
+  if __name__ == "__main__":
+      main()
+  @end
+
+* Exercício 2
+
+  > O ficheiro `drawing.txt` contém linhas com as palavras `UP`, `DOWN` ou com um
+  > par de números. `UP` e `DOWN` são instruções para a tartaruga levantar ou
+  > pousar o pincel. Cada par representa um ponto (x, y) para onde a tartaruga
+  > deve deslocar-se (com `.goto`). Complete o programa `turtledraw.py` para ler
+  > as instruções do ficheiro e usar uma tartaruga para traçar o desenho.
+
+  @code python
+  import turtle
+  from tkinter import filedialog
+
+  # 1) Pedir nome do ficheiro
+  # Abre uma janela para escolher o ficheiro graficamente
+  name = filedialog.askopenfilename(title="Choose File")
+
+
+  t = turtle.Turtle()
+
+  # 2) Ler as instruções e executá-las
+  with open(name) as txt:
+      # 2.1) Ler as instruções linha a linha
+      for line in txt:
+          # Remover o carater de linha nova no final da linha
+          line = line.rstrip("\n")
+          # 2.2) Processa a instrução
+          if line == "UP":
+              t.up()
+          elif line == "DOWN":
+              t.down()
+          else:
+              # Separa as coordenadas por espaços
+              comps = line.split(" ")
+              x = float(comps[0])
+              y = float(comps[1])
+              t.goto(x, y)
+
+  # 3) Esperar que o utilizador feche a janela
+  turtle.Screen().exitonclick()
+  @end
+
+* Exercício 3
+
+  > O ficheiro `school1.csv` contém as notas dos alunos de uma turma. Cada linha
+  > tem o registo de um aluno e cada coluna tem um campo de informação. As colunas
+  > são separadas por caracteres `TAB`. A primeira linha contém um cabeçalho com
+  > os títulos dos campos. Os ficheiros `school2.csv` e `school3.csv` têm as notas
+  > dos alunos de outras turmas, com o mesmo formato. Complete o programa
+  > `school.py` para ler e processar esses ficheiros.
+
+** Parte a)
+
+   > Complete a função `loadFile(fname1, lst)` para que, dado o nome de um
+   > ficheiro com este formato, leia o seu conteúdo e acrescente um tuplo por cada
+   > aluno à lista lst. Cada tuplo deve ter os campos (`número`, `nome`, `nota1`,
+   > `nota2`, `nota3`). Use o método `.split('\t')` para dividir cada linha e
+   > converta as notas e os números para os tipos adequados.
+
+   @code python
+   def loadFile(fname, lst):
+       numIndex = 0
+       nomeIndex = 0
+       nota1Index = 0
+       nota2Index = 0
+       nota3Index = 0
+
+       alunos = []
+
+       with open(fname) as txt:
+           line = next(txt)
+           for i, fieldName in enumerate(line.rstrip("\n").split("\t")):
+               if fieldName == "Numero":
+                   numIndex = i
+               elif fieldName == "Nome":
+                   nomeIndex = i
+               elif fieldName == "nota1":
+                   nota1Index = i
+               elif fieldName == "nota2":
+                   nota2Index = i
+               elif fieldName == "nota3":
+                   nota3Index = i
+
+           for line in txt:
+               comps = line.rstrip("\n").split("\t")
+               num = comps[numIndex]
+               nome = comps[nomeIndex]
+               nota1 = float(comps[nota1Index])
+               nota2 = float(comps[nota2Index])
+               nota3 = float(comps[nota3Index])
+               alunos.append((num, nome, nota1, nota2, nota3))
+
+       return alunos
+   @end
+
+** Parte b)
+
+   > Crie uma função `notaFinal(reg)` que, dado um tuplo com o registo de um
+   > aluno, devolva a nota final calculada pela média das três notas no registo.
+
+   @code python
+   def notaFinal(reg):
+       return (reg[2] + reg[3] + reg[4]) / 3
+   @end
+
+** Parte c)
+
+   > Crie uma função `printPauta(lst)` que, dada uma lista com registos de alunos,
+   > mostre uma tabela com os números, nomes e notas finais, formatados e
+   > alinhados como no exemplo abaixo. O nome deve aparecer centrado, enquanto o
+   > número e a nota devem aparecer ajustados à direita.
+
+   @code python
+   def printPauta(lst):
+       print(f"{'Numero':<6} {'Nome':^50} {'Nota':>4}")
+       for line in lst:
+           nota = notaFinal(line)
+           print(f"{line[0]:<6} {line[1]:^50} {nota:2.1f}")
+   @end
+
+** Parte d)
+
+   > Usando estas funções, complete a função `main()` para ler os ficheiros,
+   > ordenar a lista com o método `.sort()` e mostrar a pauta.
+
+   @code python
+   def main():
+       lst = []
+       # ler os ficheiros
+       pauta = loadFile("school1.csv", lst)
+       pauta.extend(loadFile("school2.csv", lst))
+       pauta.extend(loadFile("school3.csv", lst))
+
+       # ordenar a lista
+       pauta.sort()
+
+       # mostrar a pauta
+       printPauta(pauta)
+   @end
+
+* Exercício 4
+
+  > Altere o programa anterior para gravar a pauta formatada num ficheiro de texto.
+  > Pode usar o método `write` ou a função `print` com o argumento `file=`.
+
+  @code python
+  def printPauta(lst, extra=sys.stdout):
+      print(f"{'Numero':<6} {'Nome':^50} {'Nota':>4}", file=extra)
+      for line in lst:
+          nota = notaFinal(line)
+          print(f"{line[0]:<6} {line[1]:^50} {nota:2.1f}", file=extra)
+
+  def main():
+      # SNIP
+      with open("out", "w") as fd:
+          printPauta(pauta, fd)
+  @end
+
+* Exercício 5
+
+  > Execute o programa `floatinput.py` e experimente introduzir uma resposta não
+  > numérica. O programa terminará com uma excepção `ValueError` gerada pela
+  > chamada à função `float` dentro da função `floatInput`.
+
+** parte a)
+
+   > Altere a função `floatInput` para validar o valor: pede um valor, tenta
+   > convertê-lo em `float` e, se falhar, avisa o utilizador e repete.
+
+   @code python
+   def floatInput(prompt):
+       while True:
+           try:
+               res = float(input(prompt))
+               break
+           except ValueError:
+               print("ERROR: Not a float!")
+       return res
+   @end
+
+** parte b)
+
+   > Acrescente dois argumentos min e max e valide também se o valor está no
+   > intervalo `[min, max]`. Se não estiver, a função deve avisar e repetir.
+
+   @code python
+   def floatInput(prompt, min, max):
+       while True:
+           try:
+               res = float(input(prompt))
+           except ValueError:
+               print("ERROR: Not a float!", file=sys.stderr)
+               continue
+
+           if res < min or res > max:
+               print(f"Value should be in [{min}, {max}]")
+               continue
+
+           break
+       return res
+   @end
+
+** parte c)
+
+   > Torne os argumentos min e max opcionais. Quando omitidos, min deve assumir o
+   > valor $-\inf$ (`-math.inf`) e max deve assumir $+\inf$ (`+math.inf`).
+
+   @code python
+   def floatInput(prompt, min=-math.inf, max=math.inf):
+       while True:
+           try:
+               res = float(input(prompt))
+           except ValueError:
+               print("ERROR: Not a float!", file=sys.stderr)
+               continue
+
+           if res < min or res > max:
+               print(f"Value should be in [{min}, {max}]")
+               continue
+
+           break
+       return res
+   @end
+
+** parte d)
+
+   > Acrescente à função uma instrução `assert` para exigir que o argumento `min`
+   > não exceda `max`.
+
+   @code python
+   def floatInput(prompt, min=-math.inf, max=math.inf):
+       assert min <= max, f"min (f{min}) can't be larger than max (f{max})"
+
+       while True:
+           try:
+               res = float(input(prompt))
+           except ValueError:
+               print("ERROR: Not a float!", file=sys.stderr)
+               continue
+
+           if res < min or res > max:
+               print(f"Value should be in [{min}, {max}]")
+               continue
+
+           break
+       return res
+   @end
+
+* Exercício 6
+
+  > Escreva uma função `compareFiles` que verifica se dois ficheiros são iguais.
+  > Para poupar tempo e memória, leia e compare blocos de 1 KiB de cada vez, e
+  > termine logo que descubra diferenças. Abra os ficheiros em _modo binário_ e
+  > use a função `read`.
+
+  @code python
+  def compareFiles(aFile, bFile):
+      while True:
+          aChunk = aFile.read(CHUNK_SIZE)
+          bChunk = bFile.read(CHUNK_SIZE)
+
+          if len(aChunk) != len(bChunk):
+              return False
+
+          if len(aChunk) == 0:
+              break
+
+          if aChunk != bChunk:
+              return False
+      return True
+  @end
+
+* Exercício 7
+
+  > Para saber o tamanho em bytes de um ficheiro, pode usar a função
+  > `os.stat("ficheiro").st_size`. Crie uma função que percorra um diretório (com
+  > `os.listdir`) e mostre o tamanho de cada ficheiro.
+
+  @code python
+  def dirSizes(dir):
+      for file in os.listdir(dir):
+          size = os.stat(f"{dir}/{file}").st_size
+          print(f"{file}: {size}")
+  @end
