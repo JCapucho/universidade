@@ -5,6 +5,7 @@ import argparse
 import subprocess
 import json
 from pathlib import Path
+from dataclasses import field, dataclass
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 # Find the directory of the script and normalize it
@@ -27,57 +28,98 @@ parser.add_argument(
     default=script_dir / "build",
 )
 
-args = parser.parse_args()
+program_args = parser.parse_args()
 
 
-def runPage(object, state):
+@dataclass
+class SiteLink:
+    href: str
+    download: bool = False
+
+
+@dataclass
+class SiteNode:
+    name: str
+    link: SiteLink | None = None
+    children: ["SiteNode"] = field(default_factory=list)
+
+
+def processNodeBuilder(_name, raw_node, state):
+    state["workdir"] = state.get("workdir", Path(".")) / raw_node["workdir"]
+    state["builder"] = raw_node["builder"]
+    state["args"] = state.get("args", []) + raw_node.get("args", [])
+    state["type"] = "invocation"
+
+
+def processNodeInvocation(name, raw_node, state):
+    args = state.get("args", []) + raw_node.get("args", [])
+    state["args"] = args
+    workdir = state.get("workdir", Path(".")) / raw_node["workdir"]
+    state["workdir"] = workdir
+
+    if "builder" in raw_node:
+        state["builder"] = raw_node["builder"]
+
+    os.makedirs(program_args.build_dir / workdir, exist_ok=True)
+
+    builderArgs = [
+        "python3",
+        state["builder"],
+        program_args.build_dir / workdir,
+        name,
+    ]
+
+    builderArgs.extend(args)
+
+    process = subprocess.run(builderArgs)
+
+    if process.returncode > 0:
+        print(f"Failed to build page {name}", file=sys.stderr)
+        sys.exit(1)
+
+    return SiteLink(workdir / "index.html")
+
+
+def processNodeLink(_name, raw_node, _state):
+    return SiteLink(raw_node["target"])
+
+
+def processNodeBuildLink(_name, raw_node, state):
+    workdir = state.get("workdir", Path("."))
+    return SiteLink(workdir / raw_node["target"])
+
+
+runners = {
+    "builder": processNodeBuilder,
+    "invocation": processNodeInvocation,
+    "link": processNodeLink,
+    "build_link": processNodeBuildLink,
+}
+
+
+def processNodeGeneric(raw_node, state):
     child_state = state.copy()
 
-    if "category" in object:
-        child_state["path"] = child_state["path"] / object["category"]
+    name = raw_node["name"]
+    type = raw_node["type"] if raw_node.get("type") is not None else state["type"]
 
-    if "builder" in object:
-        child_state["builder"] = object["builder"]
+    link = runners[type](name, raw_node, child_state)
 
-    if "args" in object:
-        child_state["args"] = object["args"]
+    children = []
 
-    if "target" in object:
-        object["href"] = child_state["path"] / object["target"]
-    elif "path" in object:
-        object["href"] = child_state["path"] / "index.html"
+    for child in raw_node.get("children", []):
+        children.append(processNodeGeneric(child, child_state))
 
-    if "path" in object:
-        builderArgs = [
-            "python3",
-            child_state["builder"],
-            object["path"],
-            args.build_dir / child_state["path"],
-        ]
-
-        if "args" in child_state:
-            builderArgs.extend(child_state["args"])
-
-        if "title" in object:
-            builderArgs.append(object["title"])
-
-        process = subprocess.run(builderArgs)
-
-        if process.returncode > 0:
-            print(f"Failed to build page {object['name']}", file=sys.stderr)
-            sys.exit(1)
-
-    if "children" in object:
-        os.makedirs(args.build_dir / child_state["path"], exist_ok=True)
-
-        for child in object["children"]:
-            runPage(child, child_state)
+    return SiteNode(name, link, children)
 
 
-sitemap = json.load(args.map)
+site_data = json.load(program_args.map)
+sitemap = []
 
-for root in sitemap:
-    runPage(root, {"path": Path()})
+initial_state = {}
+
+for raw_node in site_data:
+    sitemap.append(processNodeGeneric(raw_node, initial_state))
 
 env = Environment(loader=FileSystemLoader("templates"), autoescape=select_autoescape())
 template = env.get_template("template.jinja")
@@ -87,4 +129,4 @@ template.stream(
     author="João Capucho",
     description="Resumos para as unidades curriculares da Licenciatura de Engenharia Informática da universidade de aveiro",
     sitemap=sitemap,
-).dump(str(args.build_dir / "index.html"))
+).dump(str(program_args.build_dir / "index.html"))

@@ -66,6 +66,7 @@
             nodePackages.prettier
             nodePackages.vscode-langservers-extracted
             nodePackages.typescript-language-server
+            jdt-language-server
           ]
           ++ sharedPackages;
       };

@@ -54,16 +54,16 @@
     <body>
         <h1>Resumos Universidade</h1>
         <ul>
-            {%- for item in sitemap recursive %}
+            {%- for node in sitemap recursive %}
                 <li>
-                    {%- if item.href -%}
-                        <a href="{{ item.href|e }}">{{item.title}}</a>
+                    {%- if node.link is not none -%}
+                        <a href="{{ node.link.href|e }}">{{node.name}}</a>
                     {%- else %}
-                        {{item.title}}
+                        {{node.name}}
                     {%- endif %}
-                    {%- if item.children -%}
+                    {%- if node.children -%}
                         <ul>
-                            {{ loop(item.children) }}
+                            {{ loop(node.children) }}
                         </ul>
                     {%- endif %}
                 </li>

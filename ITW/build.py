@@ -23,10 +23,10 @@ script_dir = Path(__file__).resolve(True).parent
 
 parser = argparse.ArgumentParser(description="Build ITW")
 parser.add_argument(
-    "source",
-    metavar="FILE",
+    "--template-dir",
+    metavar="PATH",
     type=Path,
-    help="The source neorg file",
+    help="The template directory to use",
 )
 parser.add_argument(
     "out",
@@ -35,16 +35,16 @@ parser.add_argument(
     help="The partial path (without extension) to the output file",
 )
 parser.add_argument(
-    "--template-dir",
-    metavar="PATH",
-    type=Path,
-    help="The template directory to use",
-)
-parser.add_argument(
     "title",
     metavar="TITLE",
     type=str,
     help="The title of the page",
+)
+parser.add_argument(
+    "source",
+    metavar="FILE",
+    type=Path,
+    help="The source neorg file",
 )
 
 args = parser.parse_args()

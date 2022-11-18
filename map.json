@@ -1,95 +1,100 @@
 [
   {
-    "category": "FP",
-    "title": "Fundamentos da Programação",
+    "name": "Fundamentos da Programação",
+    "type": "builder",
     "builder": "FP/build.py",
+    "workdir": "FP",
     "args": ["--template", "templates/GitHub.html5"],
     "children": [
       {
-        "category": "aula00",
-        "title": "Aula 00",
-        "path": "FP/aula00/aula00.norg"
+        "name": "Aula 00",
+        "workdir": "aula00",
+        "args": ["FP/aula00/aula00.norg"]
       },
       {
-        "category": "aula01",
-        "title": "Aula 01",
-        "path": "FP/aula01/aula01.norg"
+        "name": "Aula 01",
+        "workdir": "aula01",
+        "args": ["FP/aula01/aula01.norg"]
       },
       {
-        "category": "aula02",
-        "title": "Aula 02",
-        "path": "FP/aula02/aula02.norg"
+        "name": "Aula 02",
+        "workdir": "aula02",
+        "args": ["FP/aula02/aula02.norg"]
       },
       {
-        "category": "aula03",
-        "title": "Aula 03",
-        "path": "FP/aula03/aula03.norg"
+        "name": "Aula 03",
+        "workdir": "aula03",
+        "args": ["FP/aula03/aula03.norg"]
       },
       {
-        "category": "aula04",
-        "title": "Aula 04",
-        "path": "FP/aula04/aula04.norg"
+        "name": "Aula 04",
+        "workdir": "aula04",
+        "args": ["FP/aula04/aula04.norg"]
       },
       {
-        "category": "aula05",
-        "title": "Aula 05",
-        "path": "FP/aula05/aula05.norg"
+        "name": "Aula 05",
+        "workdir": "aula05",
+        "args": ["FP/aula05/aula05.norg"]
       },
       {
-        "category": "aula06",
-        "title": "Aula 06",
-        "path": "FP/aula06/aula06.norg"
+        "name": "Aula 06",
+        "workdir": "aula06",
+        "args": ["FP/aula06/aula06.norg"]
       }
     ]
   },
   {
-    "category": "ITW",
-    "title": "Introdução as tecnologias web",
+    "name": "Introdução as tecnologias web",
+    "type": "builder",
     "builder": "ITW/build.py",
+    "workdir": "ITW",
     "args": ["--template-dir", "templates"],
     "children": [
       {
-        "category": "aula01",
-        "title": "Aula 01",
-        "path": "ITW/wwwroot/Aula01"
+        "name": "Aula 01",
+        "workdir": "aula01",
+        "args": ["ITW/wwwroot/Aula01"]
       },
       {
-        "category": "aula02",
-        "title": "Aula 02",
-        "path": "ITW/wwwroot/Aula02"
+        "name": "Aula 02",
+        "workdir": "aula02",
+        "args": ["ITW/wwwroot/Aula02"]
       },
       {
-        "category": "aula03",
-        "title": "Aula 03",
-        "path": "ITW/wwwroot/Aula03",
+        "name": "Aula 03",
+        "workdir": "aula03",
+        "args": ["ITW/wwwroot/Aula03"],
         "children": [
           {
-            "title": "Aula 03 - Exercício 5",
+            "name": "Aula 03 - Exercício 5",
+            "type": "build_link",
             "target": "aula03e05.html"
           }
         ]
       },
       {
-        "category": "aula04",
-        "title": "Aula 04",
-        "path": "ITW/wwwroot/Aula04"
+        "name": "Aula 04",
+        "workdir": "aula04",
+        "args": ["ITW/wwwroot/Aula04"]
       },
       {
-        "category": "aula05",
-        "title": "Aula 05",
-        "path": "ITW/wwwroot/Aula05"
+        "name": "Aula 05",
+        "workdir": "aula05",
+        "args": ["ITW/wwwroot/Aula05"]
       },
       {
-        "category": "aula06",
-        "title": "Aula 06 - Calculadora",
-        "path": "ITW/wwwroot/Aula06",
+        "name": "Aula 06 - Calculadora",
+        "workdir": "aula06",
+        "args": ["ITW/wwwroot/Aula06"],
         "children": [
           {
-            "title": "Aula 06 - Lâmpada",
+            "name": "Aula 06 - Lâmpada",
+            "type": "build_link",
             "target": "lamp.html"
           },
           {
-            "title": "Aula 06 - Jogo",
+            "name": "Aula 06 - Jogo",
+            "type": "build_link",
             "target": "jogo.html"
           }
         ]
