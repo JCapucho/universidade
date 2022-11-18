@@ -57,7 +57,9 @@
             {%- for node in sitemap recursive %}
                 <li>
                     {%- if node.link is not none -%}
-                        <a href="{{ node.link.href|e }}">{{node.name}}</a>
+                        <a href="{{ node.link.href|e }}" {{ "download" if node.link.download }}>
+                            {{node.name}}
+                        </a>
                     {%- else %}
                         {{node.name}}
                     {%- endif %}

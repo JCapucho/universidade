@@ -4,6 +4,7 @@ import sys
 import argparse
 import subprocess
 import json
+import shutil
 from pathlib import Path
 from dataclasses import field, dataclass
 from jinja2 import Environment, FileSystemLoader, select_autoescape
@@ -45,7 +46,7 @@ class SiteNode:
 
 
 def processNodeBuilder(_name, raw_node, state):
-    state["workdir"] = state.get("workdir", Path(".")) / raw_node["workdir"]
+    processNodeGroup(_name, raw_node, state)
     state["builder"] = raw_node["builder"]
     state["args"] = state.get("args", []) + raw_node.get("args", [])
     state["type"] = "invocation"
@@ -80,20 +81,37 @@ def processNodeInvocation(name, raw_node, state):
     return SiteLink(workdir / "index.html")
 
 
-def processNodeLink(_name, raw_node, _state):
-    return SiteLink(raw_node["target"])
-
-
-def processNodeBuildLink(_name, raw_node, state):
+def processNodeLink(_name, raw_node, state):
     workdir = state.get("workdir", Path("."))
     return SiteLink(workdir / raw_node["target"])
+
+
+def processNodeGroup(_name, raw_node, state):
+    state["workdir"] = state.get("workdir", Path(".")) / raw_node["workdir"]
+
+
+def processNodeDownload(_name, raw_node, state):
+    workdir = state.get("workdir", Path("."))
+
+    source = Path(raw_node["target"])
+    filename = source.name
+
+    link = workdir / filename
+    target = program_args.build_dir / link
+
+    os.makedirs(target.parent, exist_ok=True)
+
+    shutil.copyfile(source, target)
+
+    return SiteLink(link, True)
 
 
 runners = {
     "builder": processNodeBuilder,
     "invocation": processNodeInvocation,
     "link": processNodeLink,
-    "build_link": processNodeBuildLink,
+    "group": processNodeGroup,
+    "download": processNodeDownload,
 }
 
 

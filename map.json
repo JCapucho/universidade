@@ -67,7 +67,7 @@
         "children": [
           {
             "name": "Aula 03 - Exercício 5",
-            "type": "build_link",
+            "type": "link",
             "target": "aula03e05.html"
           }
         ]
@@ -89,13 +89,42 @@
         "children": [
           {
             "name": "Aula 06 - Lâmpada",
-            "type": "build_link",
+            "type": "link",
             "target": "lamp.html"
           },
           {
             "name": "Aula 06 - Jogo",
-            "type": "build_link",
+            "type": "link",
             "target": "jogo.html"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Modelação e análise de sistemas",
+    "type": "group",
+    "workdir": "MAS",
+    "children": [
+      {
+        "name": "Laboratório 4",
+        "type": "group",
+        "workdir": "Lab04",
+        "children": [
+          {
+            "name": "Relatório (Word/ODT)",
+            "type": "download",
+            "target": "MAS/Lab04/MAS Lab 04 - Report.odt"
+          },
+          {
+            "name": "Relatório (PDF)",
+            "type": "download",
+            "target": "MAS/Lab04/MAS Lab 04 - Report.pdf"
+          },
+          {
+            "name": "Projeto do visual paradigm",
+            "type": "download",
+            "target": "MAS/Lab04/diagramas/Lab 04.vpp"
           }
         ]
       }
