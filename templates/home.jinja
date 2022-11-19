@@ -21,6 +21,8 @@
         <meta name="twitter:title" content="{{ title }}" />
         <meta name="twitter:description" content="{{ description }}" />
 
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,300" rel="stylesheet" type="text/css">
+
         <style>
             body {
                 margin: 40px auto;
@@ -30,6 +32,7 @@
                 color: #444;
                 padding: 0 10px;
                 background-color: #EEEEEE;
+                font-family: "Open Sans", sans-serif;
             }
 
             h1,
@@ -38,16 +41,24 @@
                 line-height: 1.2;
             }
 
+            a {
+                font-weight: 500;
+                color: #3b82f6;
+                text-decoration:none;
+            }
+            a:visited { color: #3b82f6; }
+            a:hover { text-decoration-line: underline; }
+            a:active {
+                color: #ff4040;
+                text-decoration: none;
+                font-weight: normal;
+            }
+
             @media (prefers-color-scheme: dark) {
                 body {
                     background: #333;
                     color: #EEE;
                 }
-
-                a:link { color: lightskyblue; }
-                a:visited { color: #6d4b8d; }
-                a:hover { color: #EEE; }
-                a:active { color: #ff4040; text-decoration:none; font-weight:normal; }
             }
         </style>
     </head>
@@ -73,3 +84,6 @@
         </ul>
     </body>
 </html>
+<!--
+    vi: ft=html
+-->
