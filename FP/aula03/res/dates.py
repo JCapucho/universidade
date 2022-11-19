@@ -29,6 +29,24 @@ def nextDay(year, month, day):
     return year, month, day
 
 
+def dateIsValid(year, month, day):
+    if month < 1 or month > 12:
+        return False
+    maxDays = monthDays(year, month)
+    return day > 0 and day <= maxDays
+
+
+def previousDay(year, month, day):
+    day -= 1
+    if day < 1:
+        month -= 1
+        if month < 1:
+            month = 12
+            year -= 1
+        day = monthDays(year, month)
+    return year, month, day
+
+
 # This is the main function
 def main():
     print("Was", 2017, "a leap year?", isLeapYear(2017))  # False?
