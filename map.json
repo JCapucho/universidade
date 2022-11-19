@@ -107,23 +107,101 @@
     "workdir": "MAS",
     "children": [
       {
+        "name": "Laboratório 1",
+        "type": "group",
+        "workdir": "Lab01",
+        "children": [
+          {
+            "name": "Relatório (Word/ODT)",
+            "type": "file",
+            "download": true,
+            "target": "MAS/Lab01/Lab 01.odt"
+          },
+          {
+            "name": "Relatório (PDF)",
+            "type": "file",
+            "download": false,
+            "target": "MAS/Lab01/Lab 01.pdf"
+          },
+          {
+            "name": "Projeto do visual paradigm",
+            "type": "file",
+            "download": true,
+            "target": "MAS/Lab01/diagramas/Lab 01.vpp"
+          }
+        ]
+      },
+      {
+        "name": "Laboratório 2",
+        "type": "group",
+        "workdir": "Lab02",
+        "children": [
+          {
+            "name": "Relatório (Word/ODT)",
+            "type": "file",
+            "download": true,
+            "target": "MAS/Lab02/Lab 02.odt"
+          },
+          {
+            "name": "Relatório (PDF)",
+            "type": "file",
+            "download": false,
+            "target": "MAS/Lab02/Lab 02.pdf"
+          },
+          {
+            "name": "Projeto do visual paradigm",
+            "type": "file",
+            "download": true,
+            "target": "MAS/Lab02/diagramas/Lab 02.vpp"
+          }
+        ]
+      },
+      {
+        "name": "Laboratório 3",
+        "type": "group",
+        "workdir": "Lab03",
+        "children": [
+          {
+            "name": "Relatório (Word/ODT)",
+            "type": "file",
+            "download": true,
+            "target": "MAS/Lab03/Lab 03.odt"
+          },
+          {
+            "name": "Relatório (PDF)",
+            "type": "file",
+            "download": false,
+            "target": "MAS/Lab03/Lab 03.pdf"
+          },
+          {
+            "name": "Projeto do visual paradigm",
+            "type": "file",
+            "download": true,
+            "target": "MAS/Lab03/diagramas/Lab 03.vpp"
+          }
+        ]
+      },
+      {
         "name": "Laboratório 4",
         "type": "group",
         "workdir": "Lab04",
         "children": [
           {
             "name": "Relatório (Word/ODT)",
-            "type": "download",
-            "target": "MAS/Lab04/MAS Lab 04 - Report.odt"
+            "type": "file",
+            "download": true,
+            "target": "MAS/Lab04/Lab 04.odt"
           },
           {
             "name": "Relatório (PDF)",
-            "type": "download",
-            "target": "MAS/Lab04/MAS Lab 04 - Report.pdf"
+            "type": "file",
+            "download": false,
+            "target": "MAS/Lab04/Lab 04.pdf"
           },
           {
             "name": "Projeto do visual paradigm",
-            "type": "download",
+            "type": "file",
+            "download": true,
             "target": "MAS/Lab04/diagramas/Lab 04.vpp"
           }
         ]

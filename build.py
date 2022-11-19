@@ -90,11 +90,13 @@ def processNodeGroup(_name, raw_node, state):
     state["workdir"] = state.get("workdir", Path(".")) / raw_node["workdir"]
 
 
-def processNodeDownload(_name, raw_node, state):
+def processNodeFile(_name, raw_node, state):
     workdir = state.get("workdir", Path("."))
 
     source = Path(raw_node["target"])
     filename = source.name
+
+    download = raw_node.get("download", False)
 
     link = workdir / filename
     target = program_args.build_dir / link
@@ -103,7 +105,7 @@ def processNodeDownload(_name, raw_node, state):
 
     shutil.copyfile(source, target)
 
-    return SiteLink(link, True)
+    return SiteLink(link, download)
 
 
 runners = {
@@ -111,7 +113,7 @@ runners = {
     "invocation": processNodeInvocation,
     "link": processNodeLink,
     "group": processNodeGroup,
-    "download": processNodeDownload,
+    "file": processNodeFile,
 }
 
 
