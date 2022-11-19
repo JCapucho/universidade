@@ -28,9 +28,11 @@
           pygments
         ];
       python = pkgs.python3.withPackages python-packages;
+      python-dev =
+        pkgs.python3.withPackages
+        (pyPkgs: (python-packages pyPkgs) ++ [pyPkgs.snakeviz]);
 
       sharedPackages = with pkgs; [
-        python
         ghostscript
         imagemagick
         pandoc
@@ -49,7 +51,15 @@
           runHook preBuild
 
           mkdir -p $out
-          python3 ./build.py --build-dir $out
+
+          shopt -s globstar
+
+          for i in **/*.py; do
+            substituteInPlace "$i" \
+              --replace "/usr/bin/env python3" "${python}/bin/python3"
+          done
+
+          ./build.py --build-dir $out
 
           runHook postBuild
         '';
@@ -59,14 +69,15 @@
       devShells.default = pkgs.mkShell {
         buildInputs = with pkgs;
           [
-            black
-            python3Packages.python-lsp-server
-            dotnet-sdk
             jdk
-            nodePackages.prettier
-            nodePackages.vscode-langservers-extracted
-            nodePackages.typescript-language-server
+            black
+            dotnet-sdk
+            python-dev
             jdt-language-server
+            nodePackages.prettier
+            python3Packages.python-lsp-server
+            nodePackages.typescript-language-server
+            nodePackages.vscode-langservers-extracted
           ]
           ++ sharedPackages;
       };

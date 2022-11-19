@@ -56,7 +56,7 @@ shutil.copytree(args.source.parent / "lib", args.out.parent / "lib", dirs_exist_
 env = Environment(
     loader=FileSystemLoader(args.template_dir), autoescape=select_autoescape()
 )
-sourceTemplate = env.get_template("source.jinja")
+sourceTemplate = env.get_template("source-code.jinja")
 navbarTemplate = env.get_template("navbar.jinja")
 
 src_path = Path(args.source).resolve()

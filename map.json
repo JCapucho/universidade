@@ -1,211 +1,216 @@
-[
-  {
-    "name": "Fundamentos da Programação",
-    "type": "builder",
-    "builder": "FP/build.py",
-    "workdir": "FP",
-    "args": ["--template", "templates/GitHub.html5"],
-    "children": [
-      {
-        "name": "Aula 00",
-        "workdir": "aula00",
-        "args": ["FP/aula00/aula00.norg"]
-      },
-      {
-        "name": "Aula 01",
-        "workdir": "aula01",
-        "args": ["FP/aula01/aula01.norg"]
-      },
-      {
-        "name": "Aula 02",
-        "workdir": "aula02",
-        "args": ["FP/aula02/aula02.norg"]
-      },
-      {
-        "name": "Aula 03",
-        "workdir": "aula03",
-        "args": ["FP/aula03/aula03.norg"]
-      },
-      {
-        "name": "Aula 04",
-        "workdir": "aula04",
-        "args": ["FP/aula04/aula04.norg"]
-      },
-      {
-        "name": "Aula 05",
-        "workdir": "aula05",
-        "args": ["FP/aula05/aula05.norg"]
-      },
-      {
-        "name": "Aula 06",
-        "workdir": "aula06",
-        "args": ["FP/aula06/aula06.norg"]
-      }
-    ]
-  },
-  {
-    "name": "Introdução as tecnologias web",
-    "type": "builder",
-    "builder": "ITW/build.py",
-    "workdir": "ITW",
-    "args": ["--template-dir", "templates"],
-    "children": [
-      {
-        "name": "Aula 01",
-        "workdir": "aula01",
-        "args": ["ITW/wwwroot/Aula01"]
-      },
-      {
-        "name": "Aula 02",
-        "workdir": "aula02",
-        "args": ["ITW/wwwroot/Aula02"]
-      },
-      {
-        "name": "Aula 03",
-        "workdir": "aula03",
-        "args": ["ITW/wwwroot/Aula03"],
-        "children": [
-          {
-            "name": "Aula 03 - Exercício 5",
-            "type": "link",
-            "target": "aula03e05.html"
-          }
-        ]
-      },
-      {
-        "name": "Aula 04",
-        "workdir": "aula04",
-        "args": ["ITW/wwwroot/Aula04"]
-      },
-      {
-        "name": "Aula 05",
-        "workdir": "aula05",
-        "args": ["ITW/wwwroot/Aula05"]
-      },
-      {
-        "name": "Aula 06 - Calculadora",
-        "workdir": "aula06",
-        "args": ["ITW/wwwroot/Aula06"],
-        "children": [
-          {
-            "name": "Aula 06 - Lâmpada",
-            "type": "link",
-            "target": "lamp.html"
-          },
-          {
-            "name": "Aula 06 - Jogo",
-            "type": "link",
-            "target": "jogo.html"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "name": "Modelação e análise de sistemas",
-    "type": "group",
-    "workdir": "MAS",
-    "children": [
-      {
-        "name": "Laboratório 1",
-        "type": "group",
-        "workdir": "Lab01",
-        "children": [
-          {
-            "name": "Relatório (Word/ODT)",
-            "type": "file",
-            "download": true,
-            "target": "MAS/Lab01/Lab 01.odt"
-          },
-          {
-            "name": "Relatório (PDF)",
-            "type": "file",
-            "download": false,
-            "target": "MAS/Lab01/Lab 01.pdf"
-          },
-          {
-            "name": "Projeto do visual paradigm",
-            "type": "file",
-            "download": true,
-            "target": "MAS/Lab01/diagramas/Lab 01.vpp"
-          }
-        ]
-      },
-      {
-        "name": "Laboratório 2",
-        "type": "group",
-        "workdir": "Lab02",
-        "children": [
-          {
-            "name": "Relatório (Word/ODT)",
-            "type": "file",
-            "download": true,
-            "target": "MAS/Lab02/Lab 02.odt"
-          },
-          {
-            "name": "Relatório (PDF)",
-            "type": "file",
-            "download": false,
-            "target": "MAS/Lab02/Lab 02.pdf"
-          },
-          {
-            "name": "Projeto do visual paradigm",
-            "type": "file",
-            "download": true,
-            "target": "MAS/Lab02/diagramas/Lab 02.vpp"
-          }
-        ]
-      },
-      {
-        "name": "Laboratório 3",
-        "type": "group",
-        "workdir": "Lab03",
-        "children": [
-          {
-            "name": "Relatório (Word/ODT)",
-            "type": "file",
-            "download": true,
-            "target": "MAS/Lab03/Lab 03.odt"
-          },
-          {
-            "name": "Relatório (PDF)",
-            "type": "file",
-            "download": false,
-            "target": "MAS/Lab03/Lab 03.pdf"
-          },
-          {
-            "name": "Projeto do visual paradigm",
-            "type": "file",
-            "download": true,
-            "target": "MAS/Lab03/diagramas/Lab 03.vpp"
-          }
-        ]
-      },
-      {
-        "name": "Laboratório 4",
-        "type": "group",
-        "workdir": "Lab04",
-        "children": [
-          {
-            "name": "Relatório (Word/ODT)",
-            "type": "file",
-            "download": true,
-            "target": "MAS/Lab04/Lab 04.odt"
-          },
-          {
-            "name": "Relatório (PDF)",
-            "type": "file",
-            "download": false,
-            "target": "MAS/Lab04/Lab 04.pdf"
-          },
-          {
-            "name": "Projeto do visual paradigm",
-            "type": "file",
-            "download": true,
-            "target": "MAS/Lab04/diagramas/Lab 04.vpp"
-          }
-        ]
-      }
-    ]
-  }
-]
+{
+  "title": "Resumos Universidade",
+  "author": "João Capucho",
+  "description": "Resumos para as unidades curriculares da Licenciatura de Engenharia Informática da universidade de aveiro",
+  "content": [
+    {
+      "name": "Fundamentos da Programação",
+      "type": "builder",
+      "builder": "FP/build.py",
+      "workdir": "FP",
+      "args": ["--template", "templates/GitHub.html5"],
+      "children": [
+        {
+          "name": "Aula 00",
+          "workdir": "aula00",
+          "args": ["FP/aula00/aula00.norg"]
+        },
+        {
+          "name": "Aula 01",
+          "workdir": "aula01",
+          "args": ["FP/aula01/aula01.norg"]
+        },
+        {
+          "name": "Aula 02",
+          "workdir": "aula02",
+          "args": ["FP/aula02/aula02.norg"]
+        },
+        {
+          "name": "Aula 03",
+          "workdir": "aula03",
+          "args": ["FP/aula03/aula03.norg"]
+        },
+        {
+          "name": "Aula 04",
+          "workdir": "aula04",
+          "args": ["FP/aula04/aula04.norg"]
+        },
+        {
+          "name": "Aula 05",
+          "workdir": "aula05",
+          "args": ["FP/aula05/aula05.norg"]
+        },
+        {
+          "name": "Aula 06",
+          "workdir": "aula06",
+          "args": ["FP/aula06/aula06.norg"]
+        }
+      ]
+    },
+    {
+      "name": "Introdução as tecnologias web",
+      "type": "builder",
+      "builder": "ITW/build.py",
+      "workdir": "ITW",
+      "args": ["--template-dir", "templates"],
+      "children": [
+        {
+          "name": "Aula 01",
+          "workdir": "aula01",
+          "args": ["ITW/wwwroot/Aula01"]
+        },
+        {
+          "name": "Aula 02",
+          "workdir": "aula02",
+          "args": ["ITW/wwwroot/Aula02"]
+        },
+        {
+          "name": "Aula 03",
+          "workdir": "aula03",
+          "args": ["ITW/wwwroot/Aula03"],
+          "children": [
+            {
+              "name": "Aula 03 - Exercício 5",
+              "type": "link",
+              "target": "aula03e05.html"
+            }
+          ]
+        },
+        {
+          "name": "Aula 04",
+          "workdir": "aula04",
+          "args": ["ITW/wwwroot/Aula04"]
+        },
+        {
+          "name": "Aula 05",
+          "workdir": "aula05",
+          "args": ["ITW/wwwroot/Aula05"]
+        },
+        {
+          "name": "Aula 06 - Calculadora",
+          "workdir": "aula06",
+          "args": ["ITW/wwwroot/Aula06"],
+          "children": [
+            {
+              "name": "Aula 06 - Lâmpada",
+              "type": "link",
+              "target": "lamp.html"
+            },
+            {
+              "name": "Aula 06 - Jogo",
+              "type": "link",
+              "target": "jogo.html"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Modelação e análise de sistemas",
+      "type": "group",
+      "workdir": "MAS",
+      "children": [
+        {
+          "name": "Laboratório 1",
+          "type": "group",
+          "workdir": "Lab01",
+          "children": [
+            {
+              "name": "Relatório (Word/ODT)",
+              "type": "file",
+              "download": true,
+              "target": "MAS/Lab01/Lab 01.odt"
+            },
+            {
+              "name": "Relatório (PDF)",
+              "type": "file",
+              "download": false,
+              "target": "MAS/Lab01/Lab 01.pdf"
+            },
+            {
+              "name": "Projeto do visual paradigm",
+              "type": "file",
+              "download": true,
+              "target": "MAS/Lab01/diagramas/Lab 01.vpp"
+            }
+          ]
+        },
+        {
+          "name": "Laboratório 2",
+          "type": "group",
+          "workdir": "Lab02",
+          "children": [
+            {
+              "name": "Relatório (Word/ODT)",
+              "type": "file",
+              "download": true,
+              "target": "MAS/Lab02/Lab 02.odt"
+            },
+            {
+              "name": "Relatório (PDF)",
+              "type": "file",
+              "download": false,
+              "target": "MAS/Lab02/Lab 02.pdf"
+            },
+            {
+              "name": "Projeto do visual paradigm",
+              "type": "file",
+              "download": true,
+              "target": "MAS/Lab02/diagramas/Lab 02.vpp"
+            }
+          ]
+        },
+        {
+          "name": "Laboratório 3",
+          "type": "group",
+          "workdir": "Lab03",
+          "children": [
+            {
+              "name": "Relatório (Word/ODT)",
+              "type": "file",
+              "download": true,
+              "target": "MAS/Lab03/Lab 03.odt"
+            },
+            {
+              "name": "Relatório (PDF)",
+              "type": "file",
+              "download": false,
+              "target": "MAS/Lab03/Lab 03.pdf"
+            },
+            {
+              "name": "Projeto do visual paradigm",
+              "type": "file",
+              "download": true,
+              "target": "MAS/Lab03/diagramas/Lab 03.vpp"
+            }
+          ]
+        },
+        {
+          "name": "Laboratório 4",
+          "type": "group",
+          "workdir": "Lab04",
+          "children": [
+            {
+              "name": "Relatório (Word/ODT)",
+              "type": "file",
+              "download": true,
+              "target": "MAS/Lab04/Lab 04.odt"
+            },
+            {
+              "name": "Relatório (PDF)",
+              "type": "file",
+              "download": false,
+              "target": "MAS/Lab04/Lab 04.pdf"
+            },
+            {
+              "name": "Projeto do visual paradigm",
+              "type": "file",
+              "download": true,
+              "target": "MAS/Lab04/diagramas/Lab 04.vpp"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

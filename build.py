@@ -1,17 +1,15 @@
 #!/usr/bin/env python3
 import os
 import sys
-import argparse
-import subprocess
+import time
 import json
 import shutil
+import logging
+import argparse
+import subprocess
 from pathlib import Path
 from dataclasses import field, dataclass
 from jinja2 import Environment, FileSystemLoader, select_autoescape
-
-# Find the directory of the script and normalize it
-# (set strict=True because we want to verify the file exists)
-script_dir = Path(__file__).resolve(True).parent
 
 parser = argparse.ArgumentParser(description="Build the site")
 parser.add_argument(
@@ -26,7 +24,7 @@ parser.add_argument(
     metavar="PATH",
     type=Path,
     help="The directory to output to",
-    default=script_dir / "build",
+    default="build",
 )
 
 program_args = parser.parse_args()
@@ -64,13 +62,14 @@ def processNodeInvocation(name, raw_node, state):
     os.makedirs(program_args.build_dir / workdir, exist_ok=True)
 
     builderArgs = [
-        "python3",
         state["builder"],
         program_args.build_dir / workdir,
         name,
     ]
 
     builderArgs.extend(args)
+
+    logging.debug(f"Invocation: {builderArgs}")
 
     process = subprocess.run(builderArgs)
 
@@ -123,7 +122,15 @@ def processNodeGeneric(raw_node, state):
     name = raw_node["name"]
     type = raw_node["type"] if raw_node.get("type") is not None else state["type"]
 
+    logging.info(f"Building node '{name}' of type: '{type}'")
+
+    start = time.perf_counter_ns()
     link = runners[type](name, raw_node, child_state)
+    end = time.perf_counter_ns()
+
+    ms = (end - start) / 1_000_000
+
+    logging.debug(f"Took {ms:.3f}ms")
 
     children = []
 
@@ -133,20 +140,22 @@ def processNodeGeneric(raw_node, state):
     return SiteNode(name, link, children)
 
 
+logging.basicConfig(level=logging.DEBUG)
+
 site_data = json.load(program_args.map)
 sitemap = []
 
 initial_state = {}
 
-for raw_node in site_data:
+for raw_node in site_data["content"]:
     sitemap.append(processNodeGeneric(raw_node, initial_state))
 
 env = Environment(loader=FileSystemLoader("templates"), autoescape=select_autoescape())
-template = env.get_template("template.jinja")
+template = env.get_template("home.jinja")
 
 template.stream(
-    title="Resumos Universidade",
-    author="João Capucho",
-    description="Resumos para as unidades curriculares da Licenciatura de Engenharia Informática da universidade de aveiro",
+    title=site_data["title"],
+    author=site_data["author"],
+    description=site_data["description"],
     sitemap=sitemap,
 ).dump(str(program_args.build_dir / "index.html"))
