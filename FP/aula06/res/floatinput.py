@@ -3,7 +3,7 @@ import sys
 
 
 def floatInput(prompt, min=-math.inf, max=math.inf):
-    assert min <= max, f"min (f{min}) can't be larger than max (f{max})"
+    assert min <= max, f"min ({min}) can't be larger than max ({max})"
 
     while True:
         try:
