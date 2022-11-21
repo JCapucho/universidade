@@ -297,6 +297,8 @@
   > use a função `read`.
 
   @code python
+  CHUNK_SIZE = 1024
+
   def compareFiles(aFile, bFile):
       while True:
           aChunk = aFile.read(CHUNK_SIZE)
