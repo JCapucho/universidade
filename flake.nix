@@ -71,10 +71,11 @@
           [
             jdk
             black
+            nodejs
             dotnet-sdk
             python-dev
             jdt-language-server
-            nodePackages.prettier
+            nodePackages.live-server
             python3Packages.python-lsp-server
             nodePackages.typescript-language-server
             nodePackages.vscode-langservers-extracted
