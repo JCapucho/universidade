@@ -46,7 +46,7 @@
           "args": ["FP/aula06/aula06.norg"]
         },
         {
-          "name": "Aula 07 (Por acabar)",
+          "name": "Aula 07",
           "workdir": "aula07",
           "args": ["FP/aula07/aula07.norg"]
         }

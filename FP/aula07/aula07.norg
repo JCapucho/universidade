@@ -482,3 +482,163 @@
        champion = getChampion(teamsScore)
        print(f"'{champion}' é a equipa campeã")
    @end
+
+* Exercício 5
+
+  > O ficheiro `nasdaq.csv` tem um registo das transações das ações de algumas
+  > empresas ao longo de um mês na bolsa de valores NASDAQ. Cada linha do ficheiro
+  > tem os campos seguintes, separados por TABs
+  @code
+  Empresa Data ValorAbertura ValorMaximo ValorMinimo ValorFecho Volume
+  @end
+  > O programa `stocks.py` tem uma função que lê esse ficheiro e devolve essa
+  > informação numa lista de tuplos. Complete as funções que faltam para colocar o
+  > programa a funcionar corretamente, *respeitando as invocações feitas na função*
+  > `main()`.
+
+** Parte a)
+
+   > Complete a função `totalVolume(lst)` para devolver um dicionário com a
+   > estrutura `{empresa: volumeTotal}`, que indique para cada empresa, qual o
+   > volume total transacionado no período completo.
+
+   @code python
+   def totalVolume(lst):
+       totVol = {}
+
+       for transaction in lst:
+           name = transaction[NAME]
+           totVol[name] = totVol.get(name, 0) + transaction[VOLUME]
+
+       return totVol
+   @end
+
+** Parte b)
+
+   > Complete `maxValorization(lst)` para devolver um dicionário com a estrutura
+   > `{data: (empresa, valorização)}` que, para cada data, indica qual a empresa
+   > com maior valorização diária relativa (ValorFecho/ValorAbertura - 100%) e
+   > qual essa valorização.
+
+   @code python
+   def maxValorization(lst):
+       vMax = {}
+
+       for transaction in lst:
+           date = transaction[DATE]
+           relVal = transaction[OPEN] / transaction[CLOSE] - 1
+
+           lastMax = vMax.get(date, ("", -math.inf))[1]
+
+           if relVal > lastMax:
+               vMax[date] = (transaction[NAME], relVal)
+
+       return vMax
+   @end
+
+** Parte c)
+
+   > Complete `stocksByDateByName(lst)` para devolver a informação num dicionário
+   > indexado por data e por nome da empresa.
+
+   @code python
+   def stocksByDateByName(lst):
+       dic = {}
+
+       for transaction in lst:
+           date = transaction[DATE]
+           name = transaction[NAME]
+
+           dateDic = dic.setdefault(date, {})
+           dateDic[name] = transaction
+
+       return dic
+   @end
+
+** Parte d)
+
+   > Complete a função que calcula o valor de uma dada carteira de ações (um
+   > /portfólio/) de um investidor no fecho de uma dada data. A carteira de ações
+   > deve ser um dicionário com o número de ações de cada título, e.g.:
+   > `{'NFLX':100, 'CSCO':80}`.
+
+   @code python
+   def portfolioValue(stocks, portfolio, date):
+       assert date in stocks
+       val = 0.0
+
+       stocksInDate = stocks[date]
+
+       for company, transaction in stocksInDate.items():
+           actions = portfolio.get(company, 0)
+           val += actions * transaction[CLOSE]
+
+       return val
+   @end
+
+* Exercício 6
+
+  > O programa `coins.py` contém um conjunto de funções para gerir carteiras de
+  > moedas. Cada carteira (bag) é representada por um dicionário que a cada tipo
+  > de moeda associa o número dessas moedas na carteira. A lista `COINS` contém os
+  > tipos de moedas válidas, por ordem decrescente de valor (em cêntimos).
+
+** Parte a)
+
+   > Complete a função `value(b)` para devolver o montante total na carteira `b`.
+
+   @code python
+   def value(bag):
+       """Return total amount in a bag."""
+       accum = 0
+       for coin, amount in bag.items():
+           accum += coin * amount
+       return accum
+   @end
+
+** Parte b)
+
+   > Complete a função `transfer1coin(b1, c, b2)` para tentar transferir uma moeda
+   > de tipo `c` da carteira `b1` para a `b2`. Se `b1` não tiver moedas do tipo
+   > `c`, a função deve devolver `False` e deixar as carteiras inalteradas. Se
+   > tiver, deve devolver `True` e atualizar o número de moedas nas duas
+   > carteiras.
+
+   @code python
+   def transfer1coin(bag1, c, bag2):
+       """Try to transfer one coin of value c from bag1 to bag2.
+       If possible, transfer coin and return True, otherwise return False."""
+       if c in bag1 and bag1[c] > 0:
+           bag1[c] -= 1
+           bag2[c] = bag2.get(c, 0) + 1
+           return True
+
+       return False
+   @end
+
+** Parte c)
+
+   > Complete a função `transfer(b1, a, b2)` para tentar transferir um montante `a`
+   > de `b1` para `b2`. Deve fazê-lo à custa de várias transferências de uma moeda
+   > de cada vez. Se conseguir, a função deve devolver `True` e alterar as
+   > carteiras. Se não, deve devolver `False` e manter as carteiras intactas.
+
+   @code python
+   def strbag(bag):
+       """Return a string representing the contents of a bag."""
+       first = True
+       res = ""
+       for c in COINS:
+           amount = bag.get(c, 0)
+           if amount > 0:
+               if not first:
+                   res += "+"
+               else:
+                   first = False
+
+               res += f"{amount}x{c}"
+
+       res += f"={value(bag)}"
+
+       return res
+   @end
