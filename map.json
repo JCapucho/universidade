@@ -49,6 +49,11 @@
           "name": "Aula 07",
           "workdir": "aula07",
           "args": ["FP/aula07/aula07.norg"]
+        },
+        {
+          "name": "Aula 08",
+          "workdir": "aula08",
+          "args": ["FP/aula08/aula08.norg"]
         }
       ]
     },
