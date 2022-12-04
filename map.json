@@ -219,6 +219,49 @@
               "target": "MAS/Lab04/diagramas/Lab 04.vpp"
             }
           ]
+        },
+        {
+          "name": "Projeto",
+          "type": "group",
+          "workdir": "projeto",
+          "children": [
+            {
+              "name": "Iteração 1",
+              "type": "group",
+              "workdir": "Iteração 1",
+              "children": [
+                {
+                  "name": "Relatório Visão (PDF)",
+                  "type": "file",
+                  "target": "MAS/projeto/Iteração 1/E2-Relatorio-Visao.pdf"
+                },
+                {
+                  "name": "Relatório Visão (Word/ODT)",
+                  "type": "file",
+                  "download": true,
+                  "target": "MAS/projeto/Iteração 1/E2-Relatorio-Visao.odt"
+                },
+                {
+                  "name": "Backlog (PDF)",
+                  "type": "file",
+                  "download": true,
+                  "target": "MAS/projeto/Iteração 1/E1-Backlog.pdf"
+                },
+                {
+                  "name": "Apresentação 1 (PDF)",
+                  "type": "file",
+                  "download": true,
+                  "target": "MAS/projeto/Iteração 1/Apresentação-1.pdf"
+                },
+                {
+                  "name": "Projeto do visual paradigm",
+                  "type": "file",
+                  "download": true,
+                  "target": "MAS/projeto/Iteração 1/diagramas/CaU.vpp"
+                }
+              ]
+            }
+          ]
         }
       ]
     }
