@@ -54,6 +54,11 @@
           "name": "Aula 08",
           "workdir": "aula08",
           "args": ["FP/aula08/aula08.norg"]
+        },
+        {
+          "name": "Aula 09 (Por acabar)",
+          "workdir": "aula09",
+          "args": ["FP/aula09/aula09.norg"]
         }
       ]
     },

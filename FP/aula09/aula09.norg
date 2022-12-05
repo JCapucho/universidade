@@ -1,0 +1,296 @@
+@document.meta
+    title: Aula 09
+    description: Lets sort this out
+    author: João Capucho
+@end
+
+* Exercício 1
+
+  > Na aula07 fez um programa que conta ocorrências de letras num ficheiro de texto.
+  > Faça uma nova versão desse programa que liste o resultado por ordem
+  > decrescente do número de ocorrências. Use o método `sorted` com os argumentos
+  > `key=` e `reverse=` para ordenar a sequência de pares chave-valor (`items`) do
+  > dicionário.
+
+  @code python
+  import sys
+
+
+  # Calculate the frequency of letters in a file
+  def countLetters(file):
+      dict = {}
+      # Loop trough each char in the file
+      for line in file:
+          for c in line:
+              # Check if it's a letter
+              if c.isalpha():
+                  # Convert to lowercase and increase count
+                  key = c.lower()
+                  # Use `get` to get a default value in case the key isn't present
+                  # in the dictionary
+                  dict[key] = dict.get(key, 0) + 1
+      return dict
+
+
+  def main():
+      # Check that exactly two arguments were passed:
+      # program and filename
+      if len(sys.argv) != 2:
+          print("Use: program [file]")
+          exit(1)
+
+      with open(sys.argv[1], "r") as file:
+          # Get a dictionary with the frequency of each letter
+          lettersFreq = countLetters(file)
+          # Iterate over the dictionary keys sorted
+          for c in sorted(lettersFreq, key=lambda c: lettersFreq[c], reverse=True):
+              # print the letter and their respective frequency
+              print(f"{c} {lettersFreq[c]}")
+
+
+  if __name__ == "__main__":
+      main()
+  @end
+
+* Exercício 2
+
+  > O programa `tabelaFutebol.py` tem uma lista com a tabela classificativa de um
+  > campeonato de futebol. Cada elemento da lista é um tuplo com o nome da equipa
+  > e números de vitórias, de empates, de derrotas, de golos marcados e sofridos.
+  > O programa já tem uma função para mostrar a tabela devidamente formatada e uma
+  > função, definida por uma expressão lambda, para determinar o número de jogos
+  > realizados por uma equipa. Complete o programa nos locais indicados para
+  > resolver cada uma das alíneas.
+
+** Parte a)
+
+   > Complete a _expressão lambda_ para definir a função `pontos` que, dado um
+   > registo de uma equipa, deve devolver o número de pontos da equipa. (Cada
+   > vitória vale 3 pontos, cada empate vale 1 ponto.)
+
+   @code python
+   pontos = lambda reg: 3 * reg[V] + reg[E]
+   @end
+
+** Parte b)
+
+   > Acrescente os argumentos adequados à função sorted para obter uma tabela
+   > ordenada por ordem decrescente de pontos.
+
+   @code python
+   tab = sorted(tabela, key=pontos, reverse=True)
+   @end
+
+** Parte c)
+
+   > Acrescente os argumentos adequados à função sorted para obter uma tabela
+   > ordenada por ordem decrescente da diferença de golos marcados e sofridos.
+
+   @code python
+   tab = sorted(tabela, key=lambda reg: reg[GM] - reg[GS], reverse=True)
+   @end
+
+** Parte d)
+
+   > Acrescente os argumentos adequados à função `sorted` para ordenar a tabela por
+   > ordem decrescente de pontos e, se iguais, pela diferença de golos.
+
+   @code python
+   tab = sorted(tabela, key=lambda reg: (pontos(reg), reg[GM] - reg[GS]), reverse=True)
+   @end
+
+* Exercício 3
+
+  > Faça uma função que calcule a mediana de uma lista de valores, sem modificar a
+  > lista. Se a lista tiver um número ímpar de valores, a mediana é o valor no
+  > meio da lista ordenada. Se a lista tiver um número par de valores, a mediana é
+  > a média dos dois valores no meio da lista ordenada. 
+
+  @code python
+  def median(lst):
+      assert len(lst) > 0
+      listSorted = sorted(lst)
+      if len(lst) % 2 == 0:
+          midPoint = len(lst) // 2
+          return (listSorted[midPoint - 1] + listSorted[midPoint]) / 2
+      else:
+          midPoint = len(lst) // 2
+          return listSorted[midPoint]
+  @end
+
+* Exercício 4
+
+  > O ficheiro `wordlist.txt` contém uma lista de palavras de língua inglesa, por
+  > ordem. Leia essas palavras para uma lista e, usando uma função de pesquisa
+  > binária (do módulo bisect), descubra quantas palavras começam por “ea”, sem
+  > ter de percorrer tudo.
+
+  @code python
+  import bisect
+
+
+  def main():
+      words = []
+      with open("wordlist.txt") as file:
+          for word in file:
+              words.append(word.strip())
+
+      startIdx = bisect.bisect(words, "ea")
+      endIdx = bisect.bisect(words, "eb")
+
+      len = endIdx - startIdx
+
+      print(len)
+
+
+  if __name__ == "__main__":
+      main()
+  @end
+
+* Exercício 5
+
+  > Usando o mesmo princípio, faça uma função que indique todas as letras que podem
+  > suceder a um certo prefixo. Pode usar esta função num sistema de escrita
+  > inteligente que vai apresentando as letras possíveis para completar um certo
+  > prefixo já introduzido. Quando o utilizador introduz mais uma letra, é
+  > acrescentada ao prefixo anterior e apresenta-se nova lista de possibilidades e
+  > assim sucessivamente.
+
+  @code python
+  import bisect
+  import sys
+
+
+  def main(args):
+      if len(args) != 2:
+          print("Usage: [program] <words> <prefix>")
+          exit(1)
+
+      wordsFile = args[0]
+      prefix = args[1]
+
+      words = []
+      with open(wordsFile) as file:
+          for word in file:
+              words.append(word.strip())
+
+      startIdx = bisect.bisect(words, prefix)
+
+      next = set()
+
+      for word in words[startIdx:]:
+          if not word.startswith(prefix):
+              break
+          elif len(word) <= len(prefix):
+              continue
+
+          next.add(word[len(prefix)])
+
+      print(next)
+
+
+  if __name__ == "__main__":
+      main(sys.argv[1:])
+  @end
+
+** Program interativo
+
+   Programa que pede interativamente ao utilizador um prefixo e apresenta-lhe as opções
+   para completar até uma palavra inteira ser formada
+
+   @code python
+   import bisect
+   import sys
+
+
+   def nextMatch(words, prefix):
+       startIdx = bisect.bisect(words, prefix)
+
+       next = set()
+
+       for word in words[startIdx:]:
+           if not word.startswith(prefix):
+               break
+           elif len(word) <= len(prefix):
+               continue
+
+           next.add(word[len(prefix)])
+
+       return next
+
+
+   def main(args):
+       if len(args) < 1 or len(args) > 2:
+           print("Usage: [program] <words> <prefix>?")
+           exit(1)
+
+       wordsFile = args[0]
+
+       words = []
+       with open(wordsFile) as file:
+           for word in file:
+               words.append(word.strip())
+
+       if len(args) == 2:
+           print(nextMatch(words, args[1]))
+           return
+
+       print("Entering interactive mode")
+
+       prefix = input("Insert a prefix> ")
+
+       while True:
+           next = list(nextMatch(words, prefix))
+
+           if len(next) == 0:
+               break
+
+           for i, c in enumerate(next):
+               print(f"{i}) {c}")
+
+           print("q) exit the program")
+           selection = input("Select an option> ")
+
+           if selection == "q":
+               break
+
+           try:
+               num = int(selection)
+               assert num < len(next)
+           except:
+               print("Invalid selection")
+               continue
+
+           prefix += next[num]
+
+           print(prefix)
+
+       print("goodbye")
+
+
+   if __name__ == "__main__":
+       main(sys.argv[1:])
+   @end
+
+* Exercício 6
+
+  O programa `insertionSort.py` tem uma implementação do algoritmo de ordenação por
+  inserção. Modifique a função para aceitar um argumento opcional `key=` que
+  funcione tal como na função pré-definida `sorted`.
+
+  @code python
+  def insertionSort(lst, key=lambda x: x):
+      # Traverse elements starting at position 1
+      for i in range(1, len(lst)):
+          # We know that lst[:i] is sorted
+          x = lst[i]  # x is the element to insert next
+          # Elements in lst[:i] that are > x must move one position ahead
+          j = i - 1
+          while j >= 0 and key(lst[j]) > key(x):
+              lst[j + 1] = lst[j]
+              j -= 1
+          # Then put x in the last emptied slot
+          lst[j + 1] = x
+          # Now we know that lst[:i+1] is sorted
+      return
+  @end
