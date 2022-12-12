@@ -274,9 +274,9 @@
 
 * Exercício 6
 
-  O programa `insertionSort.py` tem uma implementação do algoritmo de ordenação por
-  inserção. Modifique a função para aceitar um argumento opcional `key=` que
-  funcione tal como na função pré-definida `sorted`.
+  > O programa `insertionSort.py` tem uma implementação do algoritmo de ordenação por
+  > inserção. Modifique a função para aceitar um argumento opcional `key=` que
+  > funcione tal como na função pré-definida `sorted`.
 
   @code python
   def insertionSort(lst, key=lambda x: x):
@@ -293,4 +293,102 @@
           lst[j + 1] = x
           # Now we know that lst[:i+1] is sorted
       return
+  @end
+
+* Exercício 7
+
+  > Integração numérica de uma função pela regra dos trapézios.
+
+  @code python
+  def integrate(f, a, b, n):
+      """The integral of f(x) for x between a and b.
+       Aproximated using the trapezoidal rule with n uniform subintervals."""
+      assert n >= 1
+      h = (b - a) / (2*n)
+      accum = f(a);
+      for i in range(1, n):
+          i = a + (b - a) * (i / n)
+          accum += 2* f(i)
+      accum += f(b)
+      return h * accum
+
+
+  def example(n):
+      a = integrate(lambda x: (x-2)/(x+3), 0, 1, n)
+      return a
+  @end
+
+* Exercício 8
+
+  > No programa `polynomial.py` pretendemos definir uma função que crie um polinómio
+  > de segundo grau arbitrário. Ou seja, `p = polynomial2(2,-1,3)` deve 2 colocar em
+  > `p` uma _função_ tal que `p(x)` calcule o valor `p(x) = 2x − x + 3` para qualquer
+  > valor `x` que lhe seja passado. Note que sempre que `polynomial2` é executada,
+  > terá de definir uma nova função para devolver. Essa definição poderá ser feita
+  > com uma instrução def ou com uma expressão lambda.
+
+  @code python
+  # polynomial2(a,b,c) deve devolver uma função f tal que
+  # f(x) seja o polinómio de segundo grau ax²+bx+c.
+  def polynomial2(a, b, c):
+      return lambda x: a * x**2 + b * x + c
+
+
+  # DESAFIO EXTRA:
+  # Crie uma versão generalizada que cria polinómios de qualquer grau.
+  # (Não é tão fácil com expressões lambda.)
+
+  # polynomial(a), onde a=[a0, a1, ..., an], deve devolver uma função f tal que
+  # f(x) seja o polinómio a0*x**n + a1*x**(n-1) + ... + an.
+  def polynomial(coefs):
+      def polyGen(x):
+          maxPower = len(coefs) - 1
+          accum = 0
+          for i, a in enumerate(coefs):
+              n = maxPower - i
+              accum += a * x**n
+          return accum
+
+      return polyGen
+  @end
+
+* Exercício 9
+
+  > No programa `polynomial.py` pretendemos definir uma função que crie um polinómio
+  > de segundo grau arbitrário. Ou seja, `p = polynomial2(2,-1,3)` deve 2 colocar em
+  > `p` uma _função_ tal que `p(x)` calcule o valor `p(x) = 2x − x + 3` para qualquer
+  > valor `x` que lhe seja passado. Note que sempre que `polynomial2` é executada,
+  > terá de definir uma nova função para devolver. Essa definição poderá ser feita
+  > com uma instrução def ou com uma expressão lambda.
+
+  @code python
+  import math
+
+
+  def findZero(f, a, b, tol):
+      assert b > a
+      assert f(a) * f(b) < 0
+
+      while True:
+          c = (a + b) / 2
+
+          if (b - a) / 2 < tol:
+              return [a, b]
+
+          if f(a) * f(c) > 0:
+              a = c
+          else:
+              b = c
+
+
+  def main():
+      func = lambda x: x + math.sin(10 * x)
+
+      print(findZero(func, 0.2, 0.4, 0.01))
+      print(findZero(func, -0.1, 0.1, 0.01))
+      print(findZero(func, 0.5, 0.6, 0.01))
+
+
+  if __name__ == "__main__":
+      main()
   @end
