@@ -59,6 +59,11 @@
           "name": "Aula 09",
           "workdir": "aula09",
           "args": ["FP/aula09/aula09.norg"]
+        },
+        {
+          "name": "Aula 10",
+          "workdir": "aula10",
+          "args": ["FP/aula10/aula10.norg"]
         }
       ]
     },

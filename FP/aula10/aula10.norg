@@ -1,0 +1,160 @@
+@document.meta
+    title: Aula 10
+    description: To understand recursion you must first understand recursion
+    author: João Capucho
+@end
+
+* Exercício 1
+
+  > O programa `recErrors.py` define duas funções recursivas, mas ambas estão erradas:
+  > não terminam. Em cada caso, procure detetar a causa e corrija o erro.
+
+  @code python
+  # Calcula o factorial de n, baseado na recorrencia n! = n*(n-1)!.
+  def fact(n):
+      if n == 0:
+          return 1
+
+      return n * fact(n - 1)
+
+
+  # Calcula o maximo divisor comum entre a e b.
+  # Baseia-se no algoritmo de Euclides.
+  def gcd(a, b):
+      if a == 0:
+          return b
+      elif b == 0:
+          return a
+      return gcd(b, a % b)
+  @end
+
+* Exercício 2
+
+  > No programa `genWords.py`, a função `genWords3(symbols)` permite gerar uma lista com
+  > todas as palavras de comprimento 3 que se podem formar com carateres
+  > escolhidos de um alfabeto de símbolos dado. Escreva uma versão generalizada,
+  > `genWords(symbols, n)`, que permita gerar todas as palavras de comprimento `n`. Um
+  > algoritmo recursivo para obter cada uma das palavras de tamanho `n` consiste em
+  > obter a lista de todas as palavras de tamanho `n−1` e a cada uma delas
+  > acrescentar cada um dos símbolos do alfabeto. Qual será o caso base? E que
+  > resultado lhe corresponde?
+
+  @code python
+  # Generates all length-n words with symbols taken from the given alphabet.
+  def genWords(symbols, n):
+      if n == 1:
+          return [x for x in symbols]
+
+      return [word + x for x in symbols for word in genWords(symbols, n - 1)]
+  @end
+
+* Exercício 3
+
+  > O programa `findFiles.py` define uma função `printDirFiles(d)` que mostra o
+  > conteúdo de um diretório. Analise-a para recordar as funções que permitem
+  > listar diretórios e manipular nomes de ficheiros (paths). Complete a função
+  > `findFiles` para devolver uma lista com os nomes de todos ficheiros que têm
+  > uma certa extensão num dado diretório. A procura deve percorrer o diretório e
+  > todos os seus subdiretórios recursivamente.
+
+  @code python
+  def findFiles(root, ext):
+      results = []
+      lst = os.listdir(root)
+      for fname in lst:
+          path = os.path.join(root, fname)
+          if os.path.isdir(path):
+              results.extend(findFiles(path, ext))
+          if os.path.isfile(path) and path.endswith(ext):
+              results.append(fname)
+      return results
+  @end
+
+
+* Exercício 4
+
+  > Mover letras `x` para o fim de uma string.
+
+  @code python
+  def endX(s):
+      if len(s) == 0:
+          return ""
+      elif s[0] == "x":
+          return endX(s[1:]) + "x"
+      else:
+          return s[0] + endX(s[1:])
+  @end
+
+* Exercício 5
+
+  > Inverter os dígitos de um inteiro usando uma função auxiliar recursiva.
+
+  @code python
+  def reverseAux(partValue, partReversed):
+      if partValue == 0:
+          return partReversed
+
+      return reverseAux(partValue // 10, partReversed * 10 + partValue % 10)
+  @end
+
+* Exercício 6
+
+  > Extrair strings de objetos compostos.
+
+  @code python
+  from collections.abc import Iterable
+
+
+  def getAllStrings(obj):
+      """Get a list with all the strings contained in the given object."""
+
+      lst = []
+      if isinstance(obj, str):
+          lst.append(obj)
+      elif isinstance(obj, dict):
+          for key, value in obj.items():
+              lst.extend(getAllStrings(key))
+              lst.extend(getAllStrings(value))
+      elif isinstance(obj, Iterable):
+          for item in obj:
+              lst.extend(getAllStrings(item))
+
+      return lst
+  @end
+
+* Exercício 7
+
+  > Mostrar representação explodida de objetos compostos.
+
+  @code python
+  def explodeObject(name, obj):
+      """Print the name and representation (repr) of an object,
+       followed by the name and representation of each of its elements,
+       if the object is a list, tuple or dict.
+       """
+      print(f"{name} = {obj!r}")
+
+      if isinstance(obj, list):
+          for i, item in enumerate(obj):
+              explodeObject(name + f"[{i}]", item)
+      elif isinstance(obj, tuple):
+          for i, item in enumerate(obj):
+              explodeObject(name + f"[{i}]", item)
+      elif isinstance(obj, dict):
+          for key, value in obj.items():
+              explodeObject(name + f"[{key!r}]", value)
+  @end
+
+* Exercício 8
+
+  > Escreva uma função recursiva para criar figuras como esta.
+
+  @code python
+  def mickeyFractal(canvas, x, y, r, n):
+      if n == 0:
+          return
+
+      circle(canvas, x, y, r)
+      mickeyFractal(canvas, x - r, y - r, r/2, n - 1)
+      mickeyFractal(canvas, x + r, y - r, r/2, n - 1)
+  @end
