@@ -87,7 +87,8 @@ def processNodeInvocation(name, raw_node, state):
         print(f"Failed to build page {name}", file=sys.stderr)
         sys.exit(1)
 
-    return SiteLink(workdir / "index.html")
+    if raw_node.get("has_index", True):
+        return SiteLink(workdir / "index.html")
 
 
 def processNodeLink(_name, raw_node, state):
