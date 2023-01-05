@@ -13,6 +13,14 @@
     {
       "destination": "wwwroot/lib/jquery/dist/",
       "library": "jquery@3.6.1"
+    },
+    {
+      "destination": "wwwroot/lib/jquery-ui/dist/",
+      "library": "jqueryui@1.13.2"
+    },
+    {
+      "destination": "wwwroot/lib/knockout/dist/",
+      "library": "knockout@3.5.1"
     }
   ]
 }
