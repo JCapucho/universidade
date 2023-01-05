@@ -79,6 +79,8 @@
             python3Packages.python-lsp-server
             nodePackages.typescript-language-server
             nodePackages.vscode-langservers-extracted
+            nodePackages.firebase-tools
+            nodePackages.prettier
           ]
           ++ sharedPackages;
       };
