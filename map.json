@@ -105,9 +105,30 @@
           "name": "Aula 03",
           "workdir": "aula03",
           "args": ["ITW/wwwroot/Aula03"],
+          "has_index": false,
           "children": [
             {
-              "name": "Aula 03 - Exercício 5",
+              "name": "Exercício 1",
+              "type": "link",
+              "target": "aula03e01.html"
+            },
+            {
+              "name": "Exercício 2",
+              "type": "link",
+              "target": "aula03e02.html"
+            },
+            {
+              "name": "Exercício 3",
+              "type": "link",
+              "target": "aula03e03.html"
+            },
+            {
+              "name": "Exercício 4",
+              "type": "link",
+              "target": "aula03e04.html"
+            },
+            {
+              "name": "Exercício 5",
               "type": "link",
               "target": "aula03e05.html"
             }
