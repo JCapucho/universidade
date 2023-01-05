@@ -1,15 +1,20 @@
 #!/usr/bin/env python3
+import argparse
+import json
+import logging
 import os
+import shutil
+import subprocess
 import sys
 import time
-import json
-import shutil
-import logging
-import argparse
-import subprocess
+from dataclasses import dataclass, field
 from pathlib import Path
-from dataclasses import field, dataclass
+
 from jinja2 import Environment, FileSystemLoader, select_autoescape
+from pygments import highlight
+from pygments.formatters import HtmlFormatter
+from pygments.lexer import Lexer
+from pygments.lexers import guess_lexer_for_filename
 
 parser = argparse.ArgumentParser(description="Build the site")
 parser.add_argument(
@@ -29,11 +34,16 @@ parser.add_argument(
 
 program_args = parser.parse_args()
 
+env = Environment(loader=FileSystemLoader("templates"), autoescape=select_autoescape())
+template = env.get_template("home.jinja")
+source_template = env.get_template("source-code.jinja")
+
 
 @dataclass
 class SiteLink:
     href: str
     download: bool = False
+    external: bool = False
 
 
 @dataclass
@@ -107,12 +117,43 @@ def processNodeFile(_name, raw_node, state):
     return SiteLink(link, download)
 
 
+def processNodeExternalLink(_name, raw_node, state):
+    return SiteLink(raw_node["target"], external=True)
+
+
+def processNodeCode(_name, raw_node, state):
+    source = Path(raw_node["target"])
+    filename = source.name
+
+    workdir = state.get("workdir", Path("."))
+    link = workdir / (filename + ".html")
+    target = program_args.build_dir / link
+    os.makedirs(target.parent, exist_ok=True)
+
+    walkUp = len(workdir.parents)
+    root = "../" * walkUp + "index.html"
+
+    with open(source) as inf:
+        srcCode = inf.read()
+
+    lexer = guess_lexer_for_filename(filename, srcCode)
+
+    code = highlight(srcCode, lexer, HtmlFormatter())
+    source_template.stream(code=code, filename=filename, links=[], root=root).dump(
+        str(target)
+    )
+
+    return SiteLink(link)
+
+
 runners = {
     "builder": processNodeBuilder,
     "invocation": processNodeInvocation,
-    "link": processNodeLink,
     "group": processNodeGroup,
     "file": processNodeFile,
+    "link": processNodeLink,
+    "external": processNodeExternalLink,
+    "code": processNodeCode,
 }
 
 
@@ -149,9 +190,6 @@ initial_state = {}
 
 for raw_node in site_data["content"]:
     sitemap.append(processNodeGeneric(raw_node, initial_state))
-
-env = Environment(loader=FileSystemLoader("templates"), autoescape=select_autoescape())
-template = env.get_template("home.jinja")
 
 template.stream(
     title=site_data["title"],

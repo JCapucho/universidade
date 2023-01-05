@@ -64,6 +64,23 @@
           "name": "Aula 10",
           "workdir": "aula10",
           "args": ["FP/aula10/aula10.norg"]
+        },
+        {
+          "name": "APx2",
+          "type": "group",
+          "workdir": "apx2",
+          "children": [
+            {
+              "name": "APx2 (PDF)",
+              "type": "file",
+              "target": "FP/apx2/apx2.pdf"
+            },
+            {
+              "name": "Solution",
+              "type": "code",
+              "target": "FP/apx2/shop.py"
+            }
+          ]
         }
       ]
     },
@@ -268,6 +285,77 @@
                   "type": "file",
                   "download": true,
                   "target": "MAS/projeto/Iteração 1/diagramas/CaU.vpp"
+                }
+              ]
+            },
+            {
+              "name": "Iteração 2",
+              "type": "group",
+              "workdir": "Iteração 2",
+              "children": [
+                {
+                  "name": "Relatório incremento 1 (PDF)",
+                  "type": "file",
+                  "target": "MAS/projeto/Iteração 2/E3-1-Incremento-1.pdf"
+                },
+                {
+                  "name": "Relatório incremento 1 (Word/ODT)",
+                  "type": "file",
+                  "download": true,
+                  "target": "MAS/projeto/Iteração 2/E3-1-Incremento-1.odt"
+                },
+                {
+                  "name": "Backlog (PDF)",
+                  "type": "file",
+                  "download": true,
+                  "target": "MAS/projeto/Iteração 2/E1-Backlog.pdf"
+                },
+                {
+                  "name": "Apresentação 2 (PDF)",
+                  "type": "file",
+                  "download": true,
+                  "target": "MAS/projeto/Iteração 2/Apresentação-2.pdf"
+                },
+                {
+                  "name": "Projeto do visual paradigm",
+                  "type": "file",
+                  "download": true,
+                  "target": "MAS/projeto/Iteração 2/diagramas/E3.vpp"
+                }
+              ]
+            },
+            {
+              "name": "Iteração 3",
+              "type": "group",
+              "workdir": "Iteração 3",
+              "children": [
+                {
+                  "name": "Relatório incremento 2 (PDF)",
+                  "type": "file",
+                  "target": "MAS/projeto/Iteração 3/E3-2-Incremento-2.pdf"
+                },
+                {
+                  "name": "Relatório incremento 2 (Word/ODT)",
+                  "type": "file",
+                  "download": true,
+                  "target": "MAS/projeto/Iteração 3/E3-2-Incremento-2.odt"
+                },
+                {
+                  "name": "Backlog (PDF)",
+                  "type": "file",
+                  "download": true,
+                  "target": "MAS/projeto/Iteração 3/E1-Backlog.pdf"
+                },
+                {
+                  "name": "Apresentação 3 (PDF)",
+                  "type": "file",
+                  "download": true,
+                  "target": "MAS/projeto/Iteração 3/Apresentação-3.pdf"
+                },
+                {
+                  "name": "Site final",
+                  "type": "external",
+                  "target": "https://github.com/JCapucho/mas-projeto-final"
                 }
               ]
             }
