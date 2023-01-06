@@ -7,13 +7,14 @@
     # neorg-pandoc-src.url = "path:///home/capucho/programming/neorg-haskell-parser";
     neorg-pandoc-src.flake = false;
   };
-  outputs = {
-    nixpkgs,
-    flake-utils,
-    neorg-pandoc-src,
-    ...
-  }:
-    flake-utils.lib.eachDefaultSystem (system: let
+  outputs =
+    { nixpkgs
+    , flake-utils
+    , neorg-pandoc-src
+    , ...
+    }:
+    flake-utils.lib.eachDefaultSystem (system:
+    let
       pkgs = nixpkgs.legacyPackages.${system};
       hCallPackage = pkgs.haskellPackages.callPackage;
       neorg-pandoc = hCallPackage ./nix/neorg-pandoc.nix {
@@ -30,7 +31,7 @@
       python = pkgs.python3.withPackages python-packages;
       python-dev =
         pkgs.python3.withPackages
-        (pyPkgs: (python-packages pyPkgs) ++ [pyPkgs.snakeviz]);
+          (pyPkgs: (python-packages pyPkgs) ++ [ pyPkgs.snakeviz ]);
 
       sharedPackages = with pkgs; [
         ghostscript
@@ -38,7 +39,8 @@
         pandoc
         neorg-pandoc
       ];
-    in {
+    in
+    {
       packages.default = pkgs.stdenv.mkDerivation {
         pname = "export";
         version = "0.1";
@@ -60,6 +62,8 @@
           done
 
           ./build.py --build-dir $out
+
+          cp robots.txt $out
 
           runHook postBuild
         '';
