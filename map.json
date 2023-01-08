@@ -1,417 +1,463 @@
 {
-  "title": "Resumos Universidade",
-  "author": "João Capucho",
-  "description": "Resumos para as unidades curriculares da Licenciatura de Engenharia Informática da universidade de aveiro",
-  "content": [
-    {
-      "name": "Fundamentos da Programação",
-      "type": "builder",
-      "builder": "FP/build.py",
-      "workdir": "FP",
-      "args": ["--template", "templates/GitHub.html5"],
-      "children": [
-        {
-          "name": "Aula 00",
-          "workdir": "aula00",
-          "args": ["FP/aula00/aula00.norg"]
-        },
-        {
-          "name": "Aula 01",
-          "workdir": "aula01",
-          "args": ["FP/aula01/aula01.norg"]
-        },
-        {
-          "name": "Aula 02",
-          "workdir": "aula02",
-          "args": ["FP/aula02/aula02.norg"]
-        },
-        {
-          "name": "Aula 03",
-          "workdir": "aula03",
-          "args": ["FP/aula03/aula03.norg"]
-        },
-        {
-          "name": "Aula 04",
-          "workdir": "aula04",
-          "args": ["FP/aula04/aula04.norg"]
-        },
-        {
-          "name": "Aula 05",
-          "workdir": "aula05",
-          "args": ["FP/aula05/aula05.norg"]
-        },
-        {
-          "name": "Aula 06",
-          "workdir": "aula06",
-          "args": ["FP/aula06/aula06.norg"]
-        },
-        {
-          "name": "Aula 07",
-          "workdir": "aula07",
-          "args": ["FP/aula07/aula07.norg"]
-        },
-        {
-          "name": "Aula 08",
-          "workdir": "aula08",
-          "args": ["FP/aula08/aula08.norg"]
-        },
-        {
-          "name": "Aula 09",
-          "workdir": "aula09",
-          "args": ["FP/aula09/aula09.norg"]
-        },
-        {
-          "name": "Aula 10",
-          "workdir": "aula10",
-          "args": ["FP/aula10/aula10.norg"]
-        },
-        {
-          "name": "APx2",
-          "type": "group",
-          "workdir": "apx2",
-          "children": [
-            {
-              "name": "APx2 (PDF)",
-              "type": "file",
-              "target": "FP/apx2/apx2.pdf"
-            },
-            {
-              "name": "Solution",
-              "type": "code",
-              "target": "FP/apx2/shop.py"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "Introdução as tecnologias web",
-      "type": "builder",
-      "builder": "ITW/build.py",
-      "workdir": "ITW",
-      "args": ["--template-dir", "templates"],
-      "children": [
-        {
-          "name": "Aula 01",
-          "workdir": "aula01",
-          "args": ["ITW/wwwroot/Aula01"]
-        },
-        {
-          "name": "Aula 02",
-          "workdir": "aula02",
-          "args": ["ITW/wwwroot/Aula02"]
-        },
-        {
-          "name": "Aula 03",
-          "workdir": "aula03",
-          "args": ["ITW/wwwroot/Aula03"],
-          "has_index": false,
-          "children": [
-            {
-              "name": "Exercício 1",
-              "type": "link",
-              "target": "aula03e01.html"
-            },
-            {
-              "name": "Exercício 2",
-              "type": "link",
-              "target": "aula03e02.html"
-            },
-            {
-              "name": "Exercício 3",
-              "type": "link",
-              "target": "aula03e03.html"
-            },
-            {
-              "name": "Exercício 4",
-              "type": "link",
-              "target": "aula03e04.html"
-            },
-            {
-              "name": "Exercício 5",
-              "type": "link",
-              "target": "aula03e05.html"
-            }
-          ]
-        },
-        {
-          "name": "Aula 04",
-          "workdir": "aula04",
-          "args": ["ITW/wwwroot/Aula04"]
-        },
-        {
-          "name": "Aula 05",
-          "workdir": "aula05",
-          "args": ["ITW/wwwroot/Aula05"]
-        },
-        {
-          "name": "Aula 06",
-          "workdir": "aula06",
-          "args": ["ITW/wwwroot/Aula06"],
-          "has_index": false,
-          "children": [
-            {
-              "name": "Calculadora",
-              "type": "link",
-              "target": "index.html"
-            },
-            {
-              "name": "Lâmpada",
-              "type": "link",
-              "target": "lamp.html"
-            },
-            {
-              "name": "Jogo",
-              "type": "link",
-              "target": "jogo.html"
-            }
-          ]
-        },
-        {
-          "name": "Aula 09",
-          "workdir": "aula09",
-          "args": ["ITW/wwwroot/Aula09"],
-          "has_index": false,
-          "children": [
-            {
-              "name": "Exercício 1",
-              "type": "link",
-              "target": "ex1-temperaturas.html"
-            },
-            {
-              "name": "Exercício 2",
-              "type": "link",
-              "target": "ex2-concerto.html"
-            },
-            {
-              "name": "Exercício 3",
-              "type": "link",
-              "target": "ex3-concerto.html"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "Modelação e análise de sistemas",
-      "type": "group",
-      "workdir": "MAS",
-      "children": [
-        {
-          "name": "Laboratório 1",
-          "type": "group",
-          "workdir": "Lab01",
-          "children": [
-            {
-              "name": "Relatório (PDF)",
-              "type": "file",
-              "target": "MAS/Lab01/Lab 01.pdf"
-            },
-            {
-              "name": "Relatório (Word/ODT)",
-              "type": "file",
-              "download": true,
-              "target": "MAS/Lab01/Lab 01.odt"
-            },
-            {
-              "name": "Projeto do visual paradigm",
-              "type": "file",
-              "download": true,
-              "target": "MAS/Lab01/diagramas/Lab 01.vpp"
-            }
-          ]
-        },
-        {
-          "name": "Laboratório 2",
-          "type": "group",
-          "workdir": "Lab02",
-          "children": [
-            {
-              "name": "Relatório (PDF)",
-              "type": "file",
-              "download": false,
-              "target": "MAS/Lab02/Lab 02.pdf"
-            },
-            {
-              "name": "Relatório (Word/ODT)",
-              "type": "file",
-              "download": true,
-              "target": "MAS/Lab02/Lab 02.odt"
-            },
-            {
-              "name": "Projeto do visual paradigm",
-              "type": "file",
-              "download": true,
-              "target": "MAS/Lab02/diagramas/Lab 02.vpp"
-            }
-          ]
-        },
-        {
-          "name": "Laboratório 3",
-          "type": "group",
-          "workdir": "Lab03",
-          "children": [
-            {
-              "name": "Relatório (PDF)",
-              "type": "file",
-              "download": false,
-              "target": "MAS/Lab03/Lab 03.pdf"
-            },
-
-            {
-              "name": "Relatório (Word/ODT)",
-              "type": "file",
-              "download": true,
-              "target": "MAS/Lab03/Lab 03.odt"
-            },
-            {
-              "name": "Projeto do visual paradigm",
-              "type": "file",
-              "download": true,
-              "target": "MAS/Lab03/diagramas/Lab 03.vpp"
-            }
-          ]
-        },
-        {
-          "name": "Laboratório 4",
-          "type": "group",
-          "workdir": "Lab04",
-          "children": [
-            {
-              "name": "Relatório (PDF)",
-              "type": "file",
-              "download": false,
-              "target": "MAS/Lab04/Lab 04.pdf"
-            },
-            {
-              "name": "Relatório (Word/ODT)",
-              "type": "file",
-              "download": true,
-              "target": "MAS/Lab04/Lab 04.odt"
-            },
-            {
-              "name": "Projeto do visual paradigm",
-              "type": "file",
-              "download": true,
-              "target": "MAS/Lab04/diagramas/Lab 04.vpp"
-            }
-          ]
-        },
-        {
-          "name": "Projeto",
-          "type": "group",
-          "workdir": "projeto",
-          "children": [
-            {
-              "name": "Iteração 1",
-              "type": "group",
-              "workdir": "Iteração 1",
-              "children": [
-                {
-                  "name": "Relatório Visão (PDF)",
-                  "type": "file",
-                  "target": "MAS/projeto/Iteração 1/E2-Relatorio-Visao.pdf"
-                },
-                {
-                  "name": "Relatório Visão (Word/ODT)",
-                  "type": "file",
-                  "download": true,
-                  "target": "MAS/projeto/Iteração 1/E2-Relatorio-Visao.odt"
-                },
-                {
-                  "name": "Backlog (PDF)",
-                  "type": "file",
-                  "download": true,
-                  "target": "MAS/projeto/Iteração 1/E1-Backlog.pdf"
-                },
-                {
-                  "name": "Apresentação 1 (PDF)",
-                  "type": "file",
-                  "download": true,
-                  "target": "MAS/projeto/Iteração 1/Apresentação-1.pdf"
-                },
-                {
-                  "name": "Projeto do visual paradigm",
-                  "type": "file",
-                  "download": true,
-                  "target": "MAS/projeto/Iteração 1/diagramas/CaU.vpp"
-                }
-              ]
-            },
-            {
-              "name": "Iteração 2",
-              "type": "group",
-              "workdir": "Iteração 2",
-              "children": [
-                {
-                  "name": "Relatório incremento 1 (PDF)",
-                  "type": "file",
-                  "target": "MAS/projeto/Iteração 2/E3-1-Incremento-1.pdf"
-                },
-                {
-                  "name": "Relatório incremento 1 (Word/ODT)",
-                  "type": "file",
-                  "download": true,
-                  "target": "MAS/projeto/Iteração 2/E3-1-Incremento-1.odt"
-                },
-                {
-                  "name": "Backlog (PDF)",
-                  "type": "file",
-                  "download": true,
-                  "target": "MAS/projeto/Iteração 2/E1-Backlog.pdf"
-                },
-                {
-                  "name": "Apresentação 2 (PDF)",
-                  "type": "file",
-                  "download": true,
-                  "target": "MAS/projeto/Iteração 2/Apresentação-2.pdf"
-                },
-                {
-                  "name": "Projeto do visual paradigm",
-                  "type": "file",
-                  "download": true,
-                  "target": "MAS/projeto/Iteração 2/diagramas/E3.vpp"
-                }
-              ]
-            },
-            {
-              "name": "Iteração 3",
-              "type": "group",
-              "workdir": "Iteração 3",
-              "children": [
-                {
-                  "name": "Relatório incremento 2 (PDF)",
-                  "type": "file",
-                  "target": "MAS/projeto/Iteração 3/E3-2-Incremento-2.pdf"
-                },
-                {
-                  "name": "Relatório incremento 2 (Word/ODT)",
-                  "type": "file",
-                  "download": true,
-                  "target": "MAS/projeto/Iteração 3/E3-2-Incremento-2.odt"
-                },
-                {
-                  "name": "Backlog (PDF)",
-                  "type": "file",
-                  "download": true,
-                  "target": "MAS/projeto/Iteração 3/E1-Backlog.pdf"
-                },
-                {
-                  "name": "Apresentação 3 (PDF)",
-                  "type": "file",
-                  "download": true,
-                  "target": "MAS/projeto/Iteração 3/Apresentação-3.pdf"
-                },
-                {
-                  "name": "Site final",
-                  "type": "external",
-                  "target": "https://github.com/JCapucho/mas-projeto-final"
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    }
-  ]
+	"title": "Resumos Universidade",
+	"author": "João Capucho",
+	"description": "Resumos para as unidades curriculares da Licenciatura de Engenharia Informática da universidade de aveiro",
+	"content": [
+		{
+			"name": "Fundamentos da Programação",
+			"type": "builder",
+			"builder": "FP/build.py",
+			"workdir": "FP",
+			"args": [
+				"--template",
+				"templates/GitHub.html5"
+			],
+			"children": [
+				{
+					"name": "Aula 00",
+					"workdir": "aula00",
+					"args": [
+						"FP/aula00/aula00.norg"
+					]
+				},
+				{
+					"name": "Aula 01",
+					"workdir": "aula01",
+					"args": [
+						"FP/aula01/aula01.norg"
+					]
+				},
+				{
+					"name": "Aula 02",
+					"workdir": "aula02",
+					"args": [
+						"FP/aula02/aula02.norg"
+					]
+				},
+				{
+					"name": "Aula 03",
+					"workdir": "aula03",
+					"args": [
+						"FP/aula03/aula03.norg"
+					]
+				},
+				{
+					"name": "Aula 04",
+					"workdir": "aula04",
+					"args": [
+						"FP/aula04/aula04.norg"
+					]
+				},
+				{
+					"name": "Aula 05",
+					"workdir": "aula05",
+					"args": [
+						"FP/aula05/aula05.norg"
+					]
+				},
+				{
+					"name": "Aula 06",
+					"workdir": "aula06",
+					"args": [
+						"FP/aula06/aula06.norg"
+					]
+				},
+				{
+					"name": "Aula 07",
+					"workdir": "aula07",
+					"args": [
+						"FP/aula07/aula07.norg"
+					]
+				},
+				{
+					"name": "Aula 08",
+					"workdir": "aula08",
+					"args": [
+						"FP/aula08/aula08.norg"
+					]
+				},
+				{
+					"name": "Aula 09",
+					"workdir": "aula09",
+					"args": [
+						"FP/aula09/aula09.norg"
+					]
+				},
+				{
+					"name": "Aula 10",
+					"workdir": "aula10",
+					"args": [
+						"FP/aula10/aula10.norg"
+					]
+				},
+				{
+					"name": "APx2",
+					"type": "group",
+					"workdir": "apx2",
+					"children": [
+						{
+							"name": "APx2 (PDF)",
+							"type": "file",
+							"target": "FP/apx2/apx2.pdf"
+						},
+						{
+							"name": "Solution",
+							"type": "code",
+							"target": "FP/apx2/shop.py"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Introdução as tecnologias web",
+			"type": "builder",
+			"builder": "ITW/build.py",
+			"workdir": "ITW",
+			"args": [
+				"--template-dir",
+				"templates"
+			],
+			"children": [
+				{
+					"name": "Aula 01",
+					"workdir": "aula01",
+					"args": [
+						"ITW/wwwroot/Aula01"
+					]
+				},
+				{
+					"name": "Aula 02",
+					"workdir": "aula02",
+					"args": [
+						"ITW/wwwroot/Aula02"
+					]
+				},
+				{
+					"name": "Aula 03",
+					"workdir": "aula03",
+					"args": [
+						"ITW/wwwroot/Aula03"
+					],
+					"has_index": false,
+					"children": [
+						{
+							"name": "Exercício 1",
+							"type": "link",
+							"target": "aula03e01.html"
+						},
+						{
+							"name": "Exercício 2",
+							"type": "link",
+							"target": "aula03e02.html"
+						},
+						{
+							"name": "Exercício 3",
+							"type": "link",
+							"target": "aula03e03.html"
+						},
+						{
+							"name": "Exercício 4",
+							"type": "link",
+							"target": "aula03e04.html"
+						},
+						{
+							"name": "Exercício 5",
+							"type": "link",
+							"target": "aula03e05.html"
+						}
+					]
+				},
+				{
+					"name": "Aula 04",
+					"workdir": "aula04",
+					"args": [
+						"ITW/wwwroot/Aula04"
+					]
+				},
+				{
+					"name": "Aula 05",
+					"workdir": "aula05",
+					"args": [
+						"ITW/wwwroot/Aula05"
+					]
+				},
+				{
+					"name": "Aula 06",
+					"workdir": "aula06",
+					"args": [
+						"ITW/wwwroot/Aula06"
+					],
+					"has_index": false,
+					"children": [
+						{
+							"name": "Calculadora",
+							"type": "link",
+							"target": "index.html"
+						},
+						{
+							"name": "Lâmpada",
+							"type": "link",
+							"target": "lamp.html"
+						},
+						{
+							"name": "Jogo",
+							"type": "link",
+							"target": "jogo.html"
+						}
+					]
+				},
+				{
+					"name": "Aula 09",
+					"workdir": "aula09",
+					"args": [
+						"ITW/wwwroot/Aula09"
+					],
+					"has_index": false,
+					"children": [
+						{
+							"name": "Exercício 1",
+							"type": "link",
+							"target": "ex1-temperaturas.html"
+						},
+						{
+							"name": "Exercício 2",
+							"type": "link",
+							"target": "ex2-concerto.html"
+						},
+						{
+							"name": "Exercício 3",
+							"type": "link",
+							"target": "ex3-concerto.html"
+						}
+					]
+				},
+				{
+					"name": "Projeto final",
+					"type": "external",
+					"target": "https://github.com/JCapucho/itw-projeto-final"
+				}
+			]
+		},
+		{
+			"name": "Modelação e análise de sistemas",
+			"type": "group",
+			"workdir": "MAS",
+			"children": [
+				{
+					"name": "Laboratório 1",
+					"type": "group",
+					"workdir": "Lab01",
+					"children": [
+						{
+							"name": "Relatório (PDF)",
+							"type": "file",
+							"target": "MAS/Lab01/Lab 01.pdf"
+						},
+						{
+							"name": "Relatório (Word/ODT)",
+							"type": "file",
+							"download": true,
+							"target": "MAS/Lab01/Lab 01.odt"
+						},
+						{
+							"name": "Projeto do visual paradigm",
+							"type": "file",
+							"download": true,
+							"target": "MAS/Lab01/diagramas/Lab 01.vpp"
+						}
+					]
+				},
+				{
+					"name": "Laboratório 2",
+					"type": "group",
+					"workdir": "Lab02",
+					"children": [
+						{
+							"name": "Relatório (PDF)",
+							"type": "file",
+							"download": false,
+							"target": "MAS/Lab02/Lab 02.pdf"
+						},
+						{
+							"name": "Relatório (Word/ODT)",
+							"type": "file",
+							"download": true,
+							"target": "MAS/Lab02/Lab 02.odt"
+						},
+						{
+							"name": "Projeto do visual paradigm",
+							"type": "file",
+							"download": true,
+							"target": "MAS/Lab02/diagramas/Lab 02.vpp"
+						}
+					]
+				},
+				{
+					"name": "Laboratório 3",
+					"type": "group",
+					"workdir": "Lab03",
+					"children": [
+						{
+							"name": "Relatório (PDF)",
+							"type": "file",
+							"download": false,
+							"target": "MAS/Lab03/Lab 03.pdf"
+						},
+						{
+							"name": "Relatório (Word/ODT)",
+							"type": "file",
+							"download": true,
+							"target": "MAS/Lab03/Lab 03.odt"
+						},
+						{
+							"name": "Projeto do visual paradigm",
+							"type": "file",
+							"download": true,
+							"target": "MAS/Lab03/diagramas/Lab 03.vpp"
+						}
+					]
+				},
+				{
+					"name": "Laboratório 4",
+					"type": "group",
+					"workdir": "Lab04",
+					"children": [
+						{
+							"name": "Relatório (PDF)",
+							"type": "file",
+							"download": false,
+							"target": "MAS/Lab04/Lab 04.pdf"
+						},
+						{
+							"name": "Relatório (Word/ODT)",
+							"type": "file",
+							"download": true,
+							"target": "MAS/Lab04/Lab 04.odt"
+						},
+						{
+							"name": "Projeto do visual paradigm",
+							"type": "file",
+							"download": true,
+							"target": "MAS/Lab04/diagramas/Lab 04.vpp"
+						}
+					]
+				},
+				{
+					"name": "Projeto",
+					"type": "group",
+					"workdir": "projeto",
+					"children": [
+						{
+							"name": "Iteração 1",
+							"type": "group",
+							"workdir": "Iteração 1",
+							"children": [
+								{
+									"name": "Relatório Visão (PDF)",
+									"type": "file",
+									"target": "MAS/projeto/Iteração 1/E2-Relatorio-Visao.pdf"
+								},
+								{
+									"name": "Relatório Visão (Word/ODT)",
+									"type": "file",
+									"download": true,
+									"target": "MAS/projeto/Iteração 1/E2-Relatorio-Visao.odt"
+								},
+								{
+									"name": "Backlog (PDF)",
+									"type": "file",
+									"download": true,
+									"target": "MAS/projeto/Iteração 1/E1-Backlog.pdf"
+								},
+								{
+									"name": "Apresentação 1 (PDF)",
+									"type": "file",
+									"download": true,
+									"target": "MAS/projeto/Iteração 1/Apresentação-1.pdf"
+								},
+								{
+									"name": "Projeto do visual paradigm",
+									"type": "file",
+									"download": true,
+									"target": "MAS/projeto/Iteração 1/diagramas/CaU.vpp"
+								}
+							]
+						},
+						{
+							"name": "Iteração 2",
+							"type": "group",
+							"workdir": "Iteração 2",
+							"children": [
+								{
+									"name": "Relatório incremento 1 (PDF)",
+									"type": "file",
+									"target": "MAS/projeto/Iteração 2/E3-1-Incremento-1.pdf"
+								},
+								{
+									"name": "Relatório incremento 1 (Word/ODT)",
+									"type": "file",
+									"download": true,
+									"target": "MAS/projeto/Iteração 2/E3-1-Incremento-1.odt"
+								},
+								{
+									"name": "Backlog (PDF)",
+									"type": "file",
+									"download": true,
+									"target": "MAS/projeto/Iteração 2/E1-Backlog.pdf"
+								},
+								{
+									"name": "Apresentação 2 (PDF)",
+									"type": "file",
+									"download": true,
+									"target": "MAS/projeto/Iteração 2/Apresentação-2.pdf"
+								},
+								{
+									"name": "Projeto do visual paradigm",
+									"type": "file",
+									"download": true,
+									"target": "MAS/projeto/Iteração 2/diagramas/E3.vpp"
+								}
+							]
+						},
+						{
+							"name": "Iteração 3",
+							"type": "group",
+							"workdir": "Iteração 3",
+							"children": [
+								{
+									"name": "Relatório incremento 2 (PDF)",
+									"type": "file",
+									"target": "MAS/projeto/Iteração 3/E3-2-Incremento-2.pdf"
+								},
+								{
+									"name": "Relatório incremento 2 (Word/ODT)",
+									"type": "file",
+									"download": true,
+									"target": "MAS/projeto/Iteração 3/E3-2-Incremento-2.odt"
+								},
+								{
+									"name": "Backlog (PDF)",
+									"type": "file",
+									"download": true,
+									"target": "MAS/projeto/Iteração 3/E1-Backlog.pdf"
+								},
+								{
+									"name": "Apresentação 3 (PDF)",
+									"type": "file",
+									"download": true,
+									"target": "MAS/projeto/Iteração 3/Apresentação-3.pdf"
+								},
+								{
+									"name": "Site final",
+									"type": "external",
+									"target": "https://github.com/JCapucho/mas-projeto-final"
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	]
 }
