@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <title>jQuery Weather Test</title>
+  <!-- Required meta tags -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300" rel="stylesheet" type="text/css" />
+  <!-- Bootstrap CSS -->
+  <link href="../lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Font Awesome -->
+  <link href="../lib/font-awesome/dist/css/font-awesome.min.css" rel="stylesheet" />
+</head>
+
+<body>
+  <div class="container">
+    <select class="form-select" data-bind="event: { change: cityChanged }">
+      <option value="">Select a city name</option>
+      <option value="Aveiro, PT">Aveiro</option>
+      <option value="Porto, PT">Porto</option>
+      <option value="Paris, FR">Paris</option>
+      <option value="London, UK">Londres</option>
+      <option value="New York, USA">Nova Iorque</option>
+    </select>
+    <table class="table table-striped">
+      <tr>
+        <td class="col-xs-2">City Name:</td>
+        <td class="col-xs-10" data-bind="text: city"></td>
+      </tr>
+      <tr>
+        <td class="col-xs-2">Coordinates:</td>
+        <td class="col-xs-10" data-bind="text: coordinates"></td>
+      </tr>
+      <tr>
+        <td class="col-xs-2">weather:</td>
+        <td class="col-xs-10" data-bind="html: weather"></td>
+      </tr>
+      <tr>
+        <td class="col-xs-2">temp:</td>
+        <td class="col-xs-10" data-bind="html: temp"></td>
+      </tr>
+      <tr>
+        <td class="col-xs-2">pressure:</td>
+        <td class="col-xs-10" data-bind="text: pressure"></td>
+      </tr>
+      <tr>
+        <td class="col-xs-2">humidity:</td>
+        <td class="col-xs-10" data-bind="text: humidity"></td>
+      </tr>
+      <tr>
+        <td class="col-xs-2">Dados recolhidos</td>
+        <td class="col-xs-10">
+          <pre data-bind="html: allData"></pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <script src="../lib/knockout/dist/js/knockout.min.js"></script>
+  <script>
+    function WeatherViewModel() {
+      this.city = ko.observable("");
+      this.coordinates = ko.observable("");
+      this.weather = ko.observable("");
+      this.temp = ko.observable("");
+      this.pressure = ko.observable("");
+      this.humidity = ko.observable("");
+      this.allData = ko.observable("");
+
+      this.cityChanged = function (obj, event) {
+        fetch(`http://api.openweathermap.org/data/2.5/weather?` + new URLSearchParams({
+          q: event.target.value,
+          APPID: "b2b1df463182c3cca5276e9d3267cc95",
+        }))
+          .then((response) => response.json())
+          .then(function (data) {
+            if (data.name) {
+              obj.city(data.name + " / " + data.sys.country);
+              obj.coordinates("Lon (º): " + data.coord.lon + " | Lat (º):" + data.coord.lat);
+              const weatherData = data.weather[0];
+              const iconurl =
+                "http://openweathermap.org/img/w/" +
+                weatherData.icon +
+                ".png";
+              obj.weather(`<img src="${iconurl}" />` + weatherData.description);
+              obj.temp(
+                '<i class="fa fa-thermometer-empty"></i> ' +
+                data.main.temp.toLocaleString("en-US", {
+                  maximumFractionDigits: 2,
+                  minimumFractionDigits: 2,
+                }) +
+                "ºK" +
+                ' <i class="fa fa-long-arrow-right"></i> ' +
+                (data.main.temp - 273.15).toLocaleString("en-US", {
+                  maximumFractionDigits: 2,
+                  minimumFractionDigits: 2,
+                }) +
+                "ºC [Feels like: " +
+                (data.main.feels_like - 273.15).toLocaleString("en-US", {
+                  maximumFractionDigits: 2,
+                  minimumFractionDigits: 2,
+                }) +
+                "ºC]");
+              obj.pressure(data.main.pressure);
+              obj.humidity(data.main.humidity + "%");
+              obj.allData(
+                JSON.stringify(data, null, 4).replace(/\n/g, "<br>")
+              );
+            } else {
+              alert(data.message);
+            }
+          })
+          .catch(() => alert("Erro"));
+      }
+    }
+
+    ko.applyBindings(new WeatherViewModel())
+  </script>
+</body>
+
+</html>

@@ -263,6 +263,26 @@
 					]
 				},
 				{
+					"name": "Aula 10",
+					"workdir": "aula10",
+					"args": [
+						"ITW/wwwroot/Aula10"
+					],
+					"has_index": false,
+					"children": [
+						{
+							"name": "Meteorologia",
+							"type": "link",
+							"target": "index.html"
+						},
+						{
+							"name": "Conferência",
+							"type": "link",
+							"target": "conference.html"
+						}
+					]
+				},
+				{
 					"name": "Projeto final",
 					"type": "external",
 					"target": "https://github.com/JCapucho/itw-projeto-final"
