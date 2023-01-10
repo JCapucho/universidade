@@ -208,6 +208,36 @@
 					]
 				},
 				{
+					"name": "Aula 07",
+					"workdir": "aula07",
+					"args": [
+						"ITW/wwwroot/Aula07"
+					],
+					"has_index": false,
+					"children": [
+						{
+							"name": "Calculadora",
+							"type": "link",
+							"target": "ex1.html"
+						},
+						{
+							"name": "Formulário",
+							"type": "link",
+							"target": "ex2.html"
+						},
+						{
+							"name": "TODO",
+							"type": "link",
+							"target": "ex3.html"
+						},
+						{
+							"name": "Totobola",
+							"type": "link",
+							"target": "ex4.html"
+						}
+					]
+				},
+				{
 					"name": "Aula 09",
 					"workdir": "aula09",
 					"args": [
