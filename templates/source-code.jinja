@@ -5,6 +5,7 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
 
+  		<link href="/resources/simple.min.css" rel="stylesheet" type="text/css">
         <style>
             html, body { margin: 0; height: 100%; }
 
@@ -13,13 +14,18 @@
                 flex-direction: column;
             }
 
-            pre { line-height: 125%; padding: 16px; margin: 0; }
+			nav a.active {
+			    color: var(--accent) !important;
+			    border-color: var(--accent) !important;
+			}
+
+            pre { line-height: 125%; padding: 16px; margin: 0; border: 0; border-radius: 0; tab-size: 4; overflow-x: visible; }
             td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
             span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
             td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
             span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
 
-            .code { background: #f8f8f8; overflow-x: auto; flex: 1 }
+            .code { background: #f8f8f8; flex: 1 }
             .highlight .hll { background-color: #ffffcc }
             .highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
             .highlight .err { border: 1px solid #FF0000 } /* Error */
@@ -88,61 +94,23 @@
             .highlight .vi { color: #19177C } /* Name.Variable.Instance */
             .highlight .vm { color: #19177C } /* Name.Variable.Magic */
             .highlight .il { color: #666666 } /* Literal.Number.Integer.Long */
-
-            .navbar {
-              list-style-type: none;
-              margin: 0;
-              padding: 0;
-              overflow: hidden;
-              background-color: #333;
-              display: flex;
-            }
-            .navbar li {
-              float: left;
-              border-right: 1px solid #bbb;
-            }
-            .navbar li:last-of-type {
-              border-right: 0;
-              border-left: 1px solid #bbb;
-            }
-            .navbar li a {
-              display: block;
-              color: white;
-              text-align: center;
-              padding: 14px 16px;
-              text-decoration: none;
-            }
-            .navbar li a:hover {
-              background-color: #444;
-            }
-            .navbar li a.active {
-              background-color: #887;
-            }
-
-            @media screen and (max-width: 640px) {
-                .navbar {
-                    flex-direction: column;
-                }
-            }
         </style>
     </head>
     <body>
-        <ul class="navbar">
-            {%- for link in links %}
-                <li>
-                    <a
-                        class="{{ 'active' if link.rel_path == filename }}"
-                        href="{{ link.href|e }}"
-                    >
-                        {{ link.rel_path }}
-                    </a>
-                </li>
-            {%- endfor %}
-            <div aria-hidden style="flex: 1"></div>
-            <li>
+		<header>
+			<nav>
+				<a href="/">Home</a>
+				{%- for link in links %}
+				<a
+					class="{{ 'active' if link.rel_path == filename }}"
+					href="{{ link.href|e }}"
+				>
+					{{ link.rel_path }}
+				</a>
+				{%- endfor %}
                 <a href="{{ root|e }}">Back to the page</a>
-            </li>
-        </ul>
+			</nav>
+		</header>
         <div class="code">
             {{ code }}
         </div>

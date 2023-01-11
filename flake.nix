@@ -77,7 +77,7 @@
             dotnet-sdk
             python-dev
             jdt-language-server
-            nodePackages.live-server
+            nodePackages.serve
             python3Packages.python-lsp-server
             nodePackages.typescript-language-server
             nodePackages.vscode-langservers-extracted

@@ -10,7 +10,7 @@
 			"workdir": "FP",
 			"args": [
 				"--template",
-				"templates/GitHub.html5"
+				"templates/Simple.html"
 			],
 			"children": [
 				{
