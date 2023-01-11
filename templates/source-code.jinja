@@ -18,8 +18,9 @@
 			    color: var(--accent) !important;
 			    border-color: var(--accent) !important;
 			}
+			header { padding: 0 !important; }
 
-            pre { line-height: 125%; padding: 16px; margin: 0; border: 0; border-radius: 0; tab-size: 4; overflow-x: visible; }
+            pre { line-height: 125%; padding: 16px; margin: 0; border: 0; border-radius: 0; tab-size: 4; }
             td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
             span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
             td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
@@ -108,7 +109,10 @@
 					{{ link.rel_path }}
 				</a>
 				{%- endfor %}
+
+				{%- if root -%}
                 <a href="{{ root|e }}">Back to the page</a>
+				{%- endif -%}
 			</nav>
 		</header>
         <div class="code">

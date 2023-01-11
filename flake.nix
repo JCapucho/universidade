@@ -78,11 +78,11 @@
             python-dev
             jdt-language-server
             nodePackages.serve
-            python3Packages.python-lsp-server
+            nodePackages.prettier
+            nodePackages.firebase-tools
+            nodePackages.pyright
             nodePackages.typescript-language-server
             nodePackages.vscode-langservers-extracted
-            nodePackages.firebase-tools
-            nodePackages.prettier
           ]
           ++ sharedPackages;
       };
