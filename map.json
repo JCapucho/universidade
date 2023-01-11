@@ -283,6 +283,14 @@
 					]
 				},
 				{
+					"name": "Teste prático",
+					"workdir": "teste-prático",
+					"args": [
+						"ITW/wwwroot/teste-prático"
+					],
+					"target": "teste7.html"
+				},
+				{
 					"name": "Projeto final",
 					"type": "external",
 					"target": "https://github.com/JCapucho/itw-projeto-final"

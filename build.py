@@ -88,7 +88,8 @@ def processNodeInvocation(name, raw_node, state):
         sys.exit(1)
 
     if raw_node.get("has_index", True):
-        return SiteLink(workdir / "index.html")
+        document = raw_node.get("target", "index.html")
+        return SiteLink(workdir / document)
 
 
 def processNodeLink(_name, raw_node, state):
