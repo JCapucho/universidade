@@ -7,6 +7,7 @@ import shutil
 import subprocess
 import sys
 import time
+import asyncio
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -53,14 +54,14 @@ class SiteNode:
     children: ["SiteNode"] = field(default_factory=list)
 
 
-def processNodeBuilder(_name, raw_node, state):
-    processNodeGroup(_name, raw_node, state)
+async def processNodeBuilder(_name, raw_node, state):
+    await processNodeGroup(_name, raw_node, state)
     state["builder"] = raw_node["builder"]
     state["args"] = state.get("args", []) + raw_node.get("args", [])
     state["type"] = "invocation"
 
 
-def processNodeInvocation(name, raw_node, state):
+async def processNodeInvocation(name, raw_node, state):
     args = state.get("args", []) + raw_node.get("args", [])
     state["args"] = args
     workdir = state.get("workdir", Path(".")) / raw_node["workdir"]
@@ -81,7 +82,8 @@ def processNodeInvocation(name, raw_node, state):
 
     logging.debug(f"Invocation: {builderArgs}")
 
-    process = subprocess.run(builderArgs)
+    process = await asyncio.create_subprocess_exec(*builderArgs)
+    await process.wait()
 
     if process.returncode > 0:
         print(f"Failed to build page {name}", file=sys.stderr)
@@ -92,16 +94,16 @@ def processNodeInvocation(name, raw_node, state):
         return SiteLink(workdir / document)
 
 
-def processNodeLink(_name, raw_node, state):
+async def processNodeLink(_name, raw_node, state):
     workdir = state.get("workdir", Path("."))
     return SiteLink(workdir / raw_node["target"])
 
 
-def processNodeGroup(_name, raw_node, state):
+async def processNodeGroup(_name, raw_node, state):
     state["workdir"] = state.get("workdir", Path(".")) / raw_node["workdir"]
 
 
-def processNodeFile(_name, raw_node, state):
+async def processNodeFile(_name, raw_node, state):
     workdir = state.get("workdir", Path("."))
 
     source = Path(raw_node["target"])
@@ -119,11 +121,11 @@ def processNodeFile(_name, raw_node, state):
     return SiteLink(link, download)
 
 
-def processNodeExternalLink(_name, raw_node, state):
+async def processNodeExternalLink(_name, raw_node, state):
     return SiteLink(raw_node["target"], external=True)
 
 
-def processNodeCode(_name, raw_node, state):
+async def processNodeCode(_name, raw_node, state):
     source = Path(raw_node["target"])
     filename = source.name
 
@@ -159,7 +161,7 @@ runners = {
 }
 
 
-def processNodeGeneric(raw_node, state):
+async def processNodeGeneric(raw_node, state):
     child_state = state.copy()
 
     name = raw_node["name"]
@@ -168,34 +170,47 @@ def processNodeGeneric(raw_node, state):
     logging.info(f"Building node '{name}' of type: '{type}'")
 
     start = time.perf_counter_ns()
-    link = runners[type](name, raw_node, child_state)
+    link = await runners[type](name, raw_node, child_state)
     end = time.perf_counter_ns()
 
     ms = (end - start) / 1_000_000
 
-    logging.debug(f"Took {ms:.3f}ms")
+    logging.debug(f"Finished building node '{name}' took {ms:.3f}ms")
 
-    children = []
-
-    for child in raw_node.get("children", []):
-        children.append(processNodeGeneric(child, child_state))
+    tasks = []
+    children = await processChildren(raw_node.get("children", []), child_state)
 
     return SiteNode(name, link, children)
 
+async def processChildren(children, state):
+    tasks = []
+    results = [None] * len(children)
+
+    for i, raw_node in enumerate(children):
+        async def process(i, raw_node):
+            node = await processNodeGeneric(raw_node, state)
+            results[i] = node
+        task = asyncio.create_task(process(i, raw_node))
+        tasks.append(task)
+
+    await asyncio.gather(*tasks)
+
+    return results
+
+async def main():
+    site_data = json.load(program_args.map)
+
+    sitemap = await processChildren(site_data["content"], {})
+
+    template.stream(
+        title=site_data["title"],
+        author=site_data["author"],
+        description=site_data["description"],
+        sitemap=sitemap,
+    ).dump(str(program_args.build_dir / "index.html"))
+
+    shutil.copytree("resources", program_args.build_dir / "resources", dirs_exist_ok=True)
 
 logging.basicConfig(level=logging.DEBUG)
 
-site_data = json.load(program_args.map)
-sitemap = []
-
-initial_state = {}
-
-for raw_node in site_data["content"]:
-    sitemap.append(processNodeGeneric(raw_node, initial_state))
-
-template.stream(
-    title=site_data["title"],
-    author=site_data["author"],
-    description=site_data["description"],
-    sitemap=sitemap,
-).dump(str(program_args.build_dir / "index.html"))
+asyncio.run(main())

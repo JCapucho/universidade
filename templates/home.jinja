@@ -1,101 +1,64 @@
 <!DOCTYPE html>
 <html lang="pt-PT">
-    <head>
-        <title>{{ title }}</title>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
 
-        <meta name="referrer" content="no-referrer" />
-        <meta name="theme-color" content="#EEEEEE" />
-        <meta name="color-scheme" content="dark light" />
+<head>
+	<title>{{ title }}</title>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
 
-        <meta name="author" content="{{ author }}" />
-        <meta name="description" content="{{ description }}">
+	<meta name="referrer" content="no-referrer" />
+	<meta name="theme-color" content="#EEEEEE" />
+	<meta name="color-scheme" content="dark light" />
 
-        <meta property="og:title" content="{{ title }}" />
-        <meta property="og:type" content="website" />
-        <meta property="og:description" content="{{ description }}" />
-        <meta property="og:locale" content="pt-PT" />
+	<meta name="author" content="{{ author }}" />
+	<meta name="description" content="{{ description }}">
 
-        <meta name="twitter:card" content="summary" />
-        <meta name="twitter:title" content="{{ title }}" />
-        <meta name="twitter:description" content="{{ description }}" />
+	<meta property="og:title" content="{{ title }}" />
+	<meta property="og:type" content="website" />
+	<meta property="og:description" content="{{ description }}" />
+	<meta property="og:locale" content="pt-PT" />
 
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,300" rel="stylesheet" type="text/css">
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:title" content="{{ title }}" />
+	<meta name="twitter:description" content="{{ description }}" />
 
-        <style>
-            body {
-                margin: 40px auto;
-                max-width: 650px;
-                line-height: 1.6;
-                font-size: 18px;
-                color: #444;
-                padding: 0 10px;
-                background-color: #EEEEEE;
-                font-family: "Open Sans", sans-serif;
-            }
+	<link href="https://fonts.googleapis.com/css?family=open+sans:400,600,300" rel="stylesheet" type="text/css">
+	<link href="resources/global.css" rel="stylesheet" type="text/css">
+</head>
 
-            h1,
-            h2,
-            h3 {
-                line-height: 1.2;
-            }
+<body>
+	<h1>Resumos Universidade</h1>
+	<ul class="root-content">
+		{% set ns = namespace(path=[]) %}
+		{%- for node in sitemap recursive %}
+		{% set ns.path = ns.path[:loop.depth0] + [loop.index|string] %}
+		<li>
+			{%- if node.link is not none -%}
+			<a href="{{ node.link.href|e }}" {{ "download" if node.link.download }}>
+				{{node.name}}
 
-            a {
-                font-weight: 500;
-                color: #3b82f6;
-                text-decoration:none;
-            }
-            a:visited { color: #3b82f6; }
-            a:hover { text-decoration-line: underline; }
-            a:active {
-                color: #ff4040;
-                text-decoration: none;
-                font-weight: normal;
-            }
+				{%- if node.link.external -%}
+				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+					stroke="currentColor" class="external-link">
+					<path stroke-linecap="round" stroke-linejoin="round"
+						d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+				</svg>
+				{%- endif -%}
+			</a>
+			{%- else %}
+			<input type="checkbox" id="collapse-{{ '-'.join(ns.path) }}" class="collapse-checkbox">
+			<label for="collapse-{{ '-'.join(ns.path) }}" class="collapse-label">{{node.name}}</label>
+			{%- endif %}
+			{%- if node.children -%}
+			<ul>
+				{{ loop(node.children) }}
+			</ul>
+			{%- endif %}
+		</li>
+		{%- endfor %}
+	</ul>
+</body>
 
-            .external-link {
-                width: 20px;
-                height: 20px;
-                margin-left: 5px;
-                vertical-align: text-top;
-            }
-
-            @media (prefers-color-scheme: dark) {
-                body {
-                    background: #333;
-                    color: #EEE;
-                }
-            }
-        </style>
-    </head>
-    <body>
-        <h1>Resumos Universidade</h1>
-        <ul>
-            {%- for node in sitemap recursive %}
-                <li>
-                    {%- if node.link is not none -%}
-                        <a href="{{ node.link.href|e }}" {{ "download" if node.link.download }}>
-                            {{node.name}}
-
-                            {%- if node.link.external -%}
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="external-link">
-                              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
-                            </svg>
-                            {%- endif -%}
-                        </a>
-                    {%- else %}
-                        {{node.name}}
-                    {%- endif %}
-                    {%- if node.children -%}
-                        <ul>
-                            {{ loop(node.children) }}
-                        </ul>
-                    {%- endif %}
-                </li>
-            {%- endfor %}
-        </ul>
-    </body>
 </html>
 <!--
     vi: ft=html
