@@ -2,23 +2,16 @@
   description = "Site para os resumos da universidade";
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
-
-    neorg-pandoc-src.url = "github:JCapucho/neorg-haskell-parser";
-    # neorg-pandoc-src.url = "path:///home/capucho/programming/neorg-haskell-parser";
-    neorg-pandoc-src.flake = false;
+    pandoc-norg-rs.url = "github:JCapucho/pandoc-norg-rs";
   };
   outputs = {
     nixpkgs,
     flake-utils,
-    neorg-pandoc-src,
+    pandoc-norg-rs,
     ...
   }:
     flake-utils.lib.eachDefaultSystem (system: let
       pkgs = nixpkgs.legacyPackages.${system};
-      hCallPackage = pkgs.haskellPackages.callPackage;
-      neorg-pandoc = hCallPackage ./nix/neorg-pandoc.nix {
-        inherit neorg-pandoc-src;
-      };
 
       python-packages = python-packages:
         with python-packages; [
@@ -36,7 +29,7 @@
         ghostscript
         imagemagick
         pandoc
-        neorg-pandoc
+        pandoc-norg-rs.packages.${system}.default
       ];
     in {
       packages.default = pkgs.stdenv.mkDerivation {

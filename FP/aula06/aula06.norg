@@ -6,9 +6,9 @@
 
 * Exercício 1
 
-  > O programa `filesum.py` pede um nome de um ficheiro e passa-o como argumento à
-  > função `fileSum`. Complete essa função para calcular e devolver a soma dos
-  > valores do ficheiro. Considere que o ficheiro contém um valor por linha.
+  > O programa `filesum.py` pede um nome de um ficheiro e passa-o como argumento à~
+  função `fileSum`. Complete essa função para calcular e devolver a soma dos~
+  valores do ficheiro. Considere que o ficheiro contém um valor por linha.
 
   @code python
   from tkinter import filedialog
@@ -44,11 +44,12 @@
 
 * Exercício 2
 
-  > O ficheiro `drawing.txt` contém linhas com as palavras `UP`, `DOWN` ou com um
-  > par de números. `UP` e `DOWN` são instruções para a tartaruga levantar ou
-  > pousar o pincel. Cada par representa um ponto (x, y) para onde a tartaruga
-  > deve deslocar-se (com `.goto`). Complete o programa `turtledraw.py` para ler
-  > as instruções do ficheiro e usar uma tartaruga para traçar o desenho.
+  > O ficheiro `drawing.txt` contém linhas com as palavras `UP`, `DOWN` ou com um~
+  par de números. `UP` e `DOWN` são instruções para a tartaruga levantar ou~
+  pousar o pincel. Cada par representa um ponto (x, y) para onde a tartaruga~
+  deve deslocar-se (com `.goto`).
+  > Complete o programa `turtledraw.py` para ler~
+  as instruções do ficheiro e usar uma tartaruga para traçar o desenho.
 
   @code python
   import turtle
@@ -85,20 +86,21 @@
 
 * Exercício 3
 
-  > O ficheiro `school1.csv` contém as notas dos alunos de uma turma. Cada linha
-  > tem o registo de um aluno e cada coluna tem um campo de informação. As colunas
-  > são separadas por caracteres `TAB`. A primeira linha contém um cabeçalho com
-  > os títulos dos campos. Os ficheiros `school2.csv` e `school3.csv` têm as notas
-  > dos alunos de outras turmas, com o mesmo formato. Complete o programa
-  > `school.py` para ler e processar esses ficheiros.
+  > O ficheiro `school1.csv` contém as notas dos alunos de uma turma. Cada linha~
+  tem o registo de um aluno e cada coluna tem um campo de informação. As colunas~
+  são separadas por caracteres `TAB`. A primeira linha contém um cabeçalho com~
+  os títulos dos campos. Os ficheiros `school2.csv` e `school3.csv` têm as notas~
+  dos alunos de outras turmas, com o mesmo formato.
+  > Complete o programa `school.py` para ler e processar esses ficheiros.
 
 ** Parte a)
 
-   > Complete a função `loadFile(fname1, lst)` para que, dado o nome de um
-   > ficheiro com este formato, leia o seu conteúdo e acrescente um tuplo por cada
-   > aluno à lista lst. Cada tuplo deve ter os campos (`número`, `nome`, `nota1`,
-   > `nota2`, `nota3`). Use o método `.split('\t')` para dividir cada linha e
-   > converta as notas e os números para os tipos adequados.
+   > Complete a função `loadFile(fname1, lst)` para que, dado o nome de um~
+   ficheiro com este formato, leia o seu conteúdo e acrescente um tuplo por cada~
+   aluno à lista lst. Cada tuplo deve ter os campos (`número`, `nome`, `nota1`, ~
+   `nota2`, `nota3`).
+   > Use o método `.split('\t')` para dividir cada linha e converta as~
+   notas e os números para os tipos adequados.
 
    @code python
    def loadFile(fname, lst):
@@ -138,8 +140,8 @@
 
 ** Parte b)
 
-   > Crie uma função `notaFinal(reg)` que, dado um tuplo com o registo de um
-   > aluno, devolva a nota final calculada pela média das três notas no registo.
+   > Crie uma função `notaFinal(reg)` que, dado um tuplo com o registo de um~
+   aluno, devolva a nota final calculada pela média das três notas no registo.
 
    @code python
    def notaFinal(reg):
@@ -148,10 +150,10 @@
 
 ** Parte c)
 
-   > Crie uma função `printPauta(lst)` que, dada uma lista com registos de alunos,
-   > mostre uma tabela com os números, nomes e notas finais, formatados e
-   > alinhados como no exemplo abaixo. O nome deve aparecer centrado, enquanto o
-   > número e a nota devem aparecer ajustados à direita.
+   > Crie uma função `printPauta(lst)` que, dada uma lista com registos de alunos, ~
+   mostre uma tabela com os números, nomes e notas finais, formatados e~
+   alinhados como no exemplo abaixo. O nome deve aparecer centrado, enquanto o~
+   número e a nota devem aparecer ajustados à direita.
 
    @code python
    def printPauta(lst):
@@ -163,8 +165,8 @@
 
 ** Parte d)
 
-   > Usando estas funções, complete a função `main()` para ler os ficheiros,
-   > ordenar a lista com o método `.sort()` e mostrar a pauta.
+   > Usando estas funções, complete a função `main()` para ler os ficheiros, ~
+   ordenar a lista com o método `.sort()` e mostrar a pauta.
 
    @code python
    def main():
@@ -183,8 +185,8 @@
 
 * Exercício 4
 
-  > Altere o programa anterior para gravar a pauta formatada num ficheiro de texto.
-  > Pode usar o método `write` ou a função `print` com o argumento `file=`.
+  > Altere o programa anterior para gravar a pauta formatada num ficheiro de texto.~
+  Pode usar o método `write` ou a função `print` com o argumento `file=`.
 
   @code python
   def printPauta(lst, extra=sys.stdout):
@@ -201,14 +203,14 @@
 
 * Exercício 5
 
-  > Execute o programa `floatinput.py` e experimente introduzir uma resposta não
-  > numérica. O programa terminará com uma excepção `ValueError` gerada pela
-  > chamada à função `float` dentro da função `floatInput`.
+  > Execute o programa `floatinput.py` e experimente introduzir uma resposta não~
+  numérica. O programa terminará com uma excepção `ValueError` gerada pela~
+  chamada à função `float` dentro da função `floatInput`.
 
 ** parte a)
 
-   > Altere a função `floatInput` para validar o valor: pede um valor, tenta
-   > convertê-lo em `float` e, se falhar, avisa o utilizador e repete.
+   > Altere a função `floatInput` para validar o valor: pede um valor, tenta~
+   convertê-lo em `float` e, se falhar, avisa o utilizador e repete.
 
    @code python
    def floatInput(prompt):
@@ -223,8 +225,8 @@
 
 ** parte b)
 
-   > Acrescente dois argumentos min e max e valide também se o valor está no
-   > intervalo `[min, max]`. Se não estiver, a função deve avisar e repetir.
+   > Acrescente dois argumentos min e max e valide também se o valor está no~
+   intervalo `[min, max]`. Se não estiver, a função deve avisar e repetir.
 
    @code python
    def floatInput(prompt, min, max):
@@ -245,8 +247,8 @@
 
 ** parte c)
 
-   > Torne os argumentos min e max opcionais. Quando omitidos, min deve assumir o
-   > valor $-\inf$ (`-math.inf`) e max deve assumir $+\inf$ (`+math.inf`).
+   > Torne os argumentos min e max opcionais. Quando omitidos, min deve assumir o~
+   valor $-\inf$ (`-math.inf`) e max deve assumir $+\inf$ (`+math.inf`).
 
    @code python
    def floatInput(prompt, min=-math.inf, max=math.inf):
@@ -267,8 +269,8 @@
 
 ** parte d)
 
-   > Acrescente à função uma instrução `assert` para exigir que o argumento `min`
-   > não exceda `max`.
+   > Acrescente à função uma instrução `assert` para exigir que o argumento `min`~
+   não exceda `max`.
 
    @code python
    def floatInput(prompt, min=-math.inf, max=math.inf):
@@ -291,10 +293,10 @@
 
 * Exercício 6
 
-  > Escreva uma função `compareFiles` que verifica se dois ficheiros são iguais.
-  > Para poupar tempo e memória, leia e compare blocos de 1 KiB de cada vez, e
-  > termine logo que descubra diferenças. Abra os ficheiros em _modo binário_ e
-  > use a função `read`.
+  > Escreva uma função `compareFiles` que verifica se dois ficheiros são iguais.~
+  Para poupar tempo e memória, leia e compare blocos de 1 KiB de cada vez, e~
+  termine logo que descubra diferenças. Abra os ficheiros em _modo binário_ e~
+  use a função `read`.
 
   @code python
   CHUNK_SIZE = 1024
@@ -317,9 +319,9 @@
 
 * Exercício 7
 
-  > Para saber o tamanho em bytes de um ficheiro, pode usar a função
-  > `os.stat("ficheiro").st_size`. Crie uma função que percorra um diretório (com
-  > `os.listdir`) e mostre o tamanho de cada ficheiro.
+  > Para saber o tamanho em bytes de um ficheiro, pode usar a função~
+  `os.stat("ficheiro").st_size`. Crie uma função que percorra um diretório (com~
+  `os.listdir`) e mostre o tamanho de cada ficheiro.
 
   @code python
   def dirSizes(dir):

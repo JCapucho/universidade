@@ -45,7 +45,7 @@
    print(lst) # [5, 3, [97, 98], 8, 7, 33, [34, 35], 36, 37]
    @end
 
-** Parte c)
+** Parte b)
 
    > {https://pythontutor.com/live.html#code=%23 Tente prever o que acontece quando descomenta cada linha.%0A%23 %28Se der erro, deixe a linha comentada.%29%0A%23 Try to predict what happens when you uncomment each line.%0A%23 %28In case of error, leave the line commented.%29%0A%0At %3D %28%22ana%22, %281974,4,25%29%29%0A%23R1 %3D len%28t%29%0A%23R2 %3D t%5B1%5D%0A%23R3 %3D t%5B1%5D%5B0%5D%0A%0A%23t%5B0%5D %3D %22joe%22%0A%23print%28t%29%0A%23t2 %3D t%0A%23t %2B%3D %2812, 45, 59%29%0A%23print%28t%29%0A%0A%23R4 %3D %281974,3,30%29 %3C %281974,4,1%29%0A%23R5 %3D %281974,3%29 %3C %281974,3,-1,-2%29%0A&cumulative=false&curInstr=1&heapPrimitives=nevernest&mode=display&origin=opt-live.js&py=3&rawInputLstJSON=%5B%5D&textReferences=false}[Revisão de tuplos]
 
@@ -73,7 +73,7 @@
    R5 = (1974,3) < (1974,3,-1,-2) # True
    @end
 
-** Parte b)
+** Parte c)
 
    > {https://pythontutor.com/live.html#code=%23 Tente prever o que acontece quando descomenta cada linha.%0A%23 %28Se der erro, deixe a linha comentada.%29%0A%23 Try to predict what happens when you uncomment each line.%0A%23 %28In case of error, leave the line commented.%29%0A%0As %3D %22abcde%22%0A%23R1 %3D s%5B2%3A%5D %2B s%5B%3A2%5D%0A%23R2 %3D s%5B1%3A%3A2%5D%0A%0A%23s%5B2%5D %3D %22C%22%0A%23s2 %3D s%0A%23print%28s%29%0A%23s %3D %22%3C-%22 %2B s %2B %22-%3E%22%0A%23print%28s%29%0A%0A%23R3 %3D %22abaco%22 %3E %22abel%22%0A&cumulative=false&curInstr=1&heapPrimitives=true&mode=display&origin=opt-live.js&py=3&rawInputLstJSON=%5B%5D&textReferences=false}[Revisão de strings]
 
@@ -105,9 +105,9 @@
 
 ** Parte a)
 
-   > Crie uma função `inputFloatList()` que leia uma sequência de números introduzidos
-   > pelo utilizador e os devolva numa nova lista. O utilizador deve introduzir um
-   > número por linha e indicar o fim da lista com uma linha vazia.
+   > Crie uma função `inputFloatList()` que leia uma sequência de números introduzidos~
+   pelo utilizador e os devolva numa nova lista. O utilizador deve introduzir um~
+   número por linha e indicar o fim da lista com uma linha vazia.
 
    @code python
    def inputFloatList():
@@ -122,8 +122,8 @@
 
 ** Parte b)
 
-   > Crie uma função `countLower(lst, v)` que conte (e devolva) quantos elementos
-   > da lista `lst` são inferiores ao valor `v`.
+   > Crie uma função `countLower(lst, v)` que conte (e devolva) quantos elementos~
+   da lista `lst` são inferiores ao valor `v`.
 
    @code python
    def countLower(lst, v):
@@ -136,9 +136,8 @@
 
 ** Parte c)
 
-   > Crie uma função `minmax(lst)` que devolva o mínimo e o máximo de uma lista de
-   > valores. Consegue fazê-la sem usar as funções `min`, `max`, `sort`, nem
-   > `sorted`?
+   > Crie uma função `minmax(lst)` que devolva o mínimo e o máximo de uma lista de~
+   valores. Consegue fazê-la sem usar as funções `min`, `max`, `sort`, nem `sorted`?
 
    @code python
    def minmax(lst):
@@ -154,9 +153,9 @@
 
 ** Parte d)
 
-   > Recorra às funções anteriores para fazer um programa que leia uma lista de
-   > números, determine o valor médio entre o mínimo e o máximo e conte quantos
-   > números são inferiores a esse valor.
+   > Recorra às funções anteriores para fazer um programa que leia uma lista de~
+   números, determine o valor médio entre o mínimo e o máximo e conte quantos~
+   números são inferiores a esse valor.
 
    @code python
    def inputFloatList():
@@ -203,14 +202,14 @@
 
 * Exercício 3
 
-  > O programa `telephones.py` define duas listas, uma com números de telefone e
-  > outra com os nomes correspondentes.
+  > O programa `telephones.py` define duas listas, uma com números de telefone e~
+  outra com os nomes correspondentes.
 
 ** Parte a)
 
-   > Complete a função `telToName` que, dado um número de telefone (e as duas
-   > listas), devolve o nome respetivo (ou o próprio número, se não estiver na
-   > lista). Isto é o que os telemóveis fazem quando recebem uma chamada.
+   > Complete a função `telToName` que, dado um número de telefone (e as duas~
+   listas), devolve o nome respetivo (ou o próprio número, se não estiver na~
+   lista). Isto é o que os telemóveis fazem quando recebem uma chamada.
 
    @code python
    # Convert a telephone number into corresponding name, if on list.
@@ -226,9 +225,9 @@
 
 ** Parte b)
 
-   > Complete a função `nameToTels` que, dada parte de um nome, devolve a lista
-   > dos números correspondentes a nomes que incluem essa parte. (Como quando
-   > pesquisa na lista de contactos do telemóvel.)
+   > Complete a função `nameToTels` que, dada parte de um nome, devolve a lista~
+   dos números correspondentes a nomes que incluem essa parte. (Como quando~
+   pesquisa na lista de contactos do telemóvel.)
 
    @code python
    # Return list of telephone numbers corresponding to names containing partName.
@@ -258,8 +257,8 @@
 
 * Exercício 4
 
-  > Escreva uma função que, dada uma lista de equipas de futebol, crie e devolva
-  > uma lista de todos os jogos que se podem fazer entre elas.
+  > Escreva uma função que, dada uma lista de equipas de futebol, crie e devolva~
+  uma lista de todos os jogos que se podem fazer entre elas.
 
   @code python
   def allMatches(teams):
@@ -274,8 +273,8 @@
 
 * Exercício 5
 
-  > Crie uma função que conte quantos dígitos há numa dada string. Por exemplo:
-  > `countDigits("23 mil 456")` deve devolver 5.
+  > Crie uma função que conte quantos dígitos há numa dada string. Por exemplo:~
+  `countDigits("23 mil 456")` deve devolver 5.
 
   @code python
   def countDigits(str):
@@ -288,8 +287,8 @@
 
 * Exercício 6
 
-  > Crie uma função que, dado um nome, crie uma versão abreviada, formada apenas
-  > pelas letras maiúsculas.
+  > Crie uma função que, dado um nome, crie uma versão abreviada, formada apenas~
+  pelas letras maiúsculas.
 
   @code python
   def shorten(str):
@@ -302,8 +301,8 @@
 
 * Exercício 7
 
-  > Crie uma função `ispalindrome(s)` que devolva um valor booleano indicando se a
-  > string s é um palíndromo ou não.
+  > Crie uma função `ispalindrome(s)` que devolva um valor booleano indicando se a~
+  string s é um palíndromo ou não.
 
   @code python
   def ispalindrome(s):
@@ -316,9 +315,9 @@
 
 ** Parte a)
 
-   > Crie uma função que, dada uma string, devolve outra composta pelos caracteres
-   > das posições pares seguidos pelos caracteres das posições ímpares da
-   > primeira. Por exemplo, `evenThenOdd("abcd")` deve devolver `"acbd"`.
+   > Crie uma função que, dada uma string, devolve outra composta pelos caracteres~
+   das posições pares seguidos pelos caracteres das posições ímpares da~
+   primeira. Por exemplo, `evenThenOdd("abcd")` deve devolver `"acbd"`.
 
    @code python
    def evenThenOdd(s):
@@ -327,9 +326,9 @@
 
 ** Parte b)
 
-   > Crie uma função que, dada uma string `s`, devolve uma string semelhante mas sem
-   > caracteres adjacentes duplicados. Por exemplo, para o argumento `"Mississippi"`
-   > deve devolver `"Misisipi"`.
+   > Crie uma função que, dada uma string `s`, devolve uma string semelhante mas sem~
+   caracteres adjacentes duplicados. Por exemplo, para o argumento `"Mississippi"`~
+   deve devolver `"Misisipi"`.
 
    @code python
    def removeAdjacentDuplicates(s):
@@ -344,8 +343,8 @@
 
 ** Parte c)
 
-   > Crie uma função que, dado um inteiro não negativo `n`, devolve uma lista contendo
-   > 1, 2, 2, 3, 3, 3, 4, 4, 4, 4, ... e finalmente n repetido n vezes.
+   > Crie uma função que, dado um inteiro não negativo `n`, devolve uma lista contendo~
+   1, 2, 2, 3, 3, 3, 4, 4, 4, 4, ... e finalmente n repetido n vezes.
 
    @code python
    def reapeatNumTimes(n):
@@ -358,9 +357,9 @@
 
 ** Parte d)
 
-   > Crie uma função que, dada uma lista de valores, devolve o índice da primeira
-   > ocorrência do maior valor. Pode admitir que a lista não está vazia. Não pode
-   > usar as funções `max`, find nem `index`.
+   > Crie uma função que, dada uma lista de valores, devolve o índice da primeira~
+   ocorrência do maior valor. Pode admitir que a lista não está vazia. Não pode~
+   usar as funções `max`, find nem `index`.
 
    @code python
    def positionOfFirstLargest(arr):

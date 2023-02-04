@@ -6,8 +6,8 @@
 
 * Exercício 1
 
-  > O programa `recErrors.py` define duas funções recursivas, mas ambas estão erradas:
-  > não terminam. Em cada caso, procure detetar a causa e corrija o erro.
+  > O programa `recErrors.py` define duas funções recursivas, mas ambas estão erradas:~
+  não terminam. Em cada caso, procure detetar a causa e corrija o erro.
 
   @code python
   # Calcula o factorial de n, baseado na recorrencia n! = n*(n-1)!.
@@ -30,14 +30,14 @@
 
 * Exercício 2
 
-  > No programa `genWords.py`, a função `genWords3(symbols)` permite gerar uma lista com
-  > todas as palavras de comprimento 3 que se podem formar com carateres
-  > escolhidos de um alfabeto de símbolos dado. Escreva uma versão generalizada,
-  > `genWords(symbols, n)`, que permita gerar todas as palavras de comprimento `n`. Um
-  > algoritmo recursivo para obter cada uma das palavras de tamanho `n` consiste em
-  > obter a lista de todas as palavras de tamanho `n−1` e a cada uma delas
-  > acrescentar cada um dos símbolos do alfabeto. Qual será o caso base? E que
-  > resultado lhe corresponde?
+  > No programa `genWords.py`, a função `genWords3(symbols)` permite gerar uma lista com~
+  todas as palavras de comprimento 3 que se podem formar com carateres~
+  escolhidos de um alfabeto de símbolos dado. Escreva uma versão generalizada,~
+  `genWords(symbols, n)`, que permita gerar todas as palavras de comprimento `n`. Um~
+  algoritmo recursivo para obter cada uma das palavras de tamanho `n` consiste em~
+  obter a lista de todas as palavras de tamanho `n−1` e a cada uma delas~
+  acrescentar cada um dos símbolos do alfabeto. Qual será o caso base? E que~
+  resultado lhe corresponde?
 
   @code python
   # Generates all length-n words with symbols taken from the given alphabet.
@@ -50,12 +50,12 @@
 
 * Exercício 3
 
-  > O programa `findFiles.py` define uma função `printDirFiles(d)` que mostra o
-  > conteúdo de um diretório. Analise-a para recordar as funções que permitem
-  > listar diretórios e manipular nomes de ficheiros (paths). Complete a função
-  > `findFiles` para devolver uma lista com os nomes de todos ficheiros que têm
-  > uma certa extensão num dado diretório. A procura deve percorrer o diretório e
-  > todos os seus subdiretórios recursivamente.
+  > O programa `findFiles.py` define uma função `printDirFiles(d)` que mostra o~
+  conteúdo de um diretório. Analise-a para recordar as funções que permitem~
+  listar diretórios e manipular nomes de ficheiros (paths). Complete a função~
+  `findFiles` para devolver uma lista com os nomes de todos ficheiros que têm~
+  uma certa extensão num dado diretório. A procura deve percorrer o diretório e~
+  todos os seus subdiretórios recursivamente.
 
   @code python
   def findFiles(root, ext):

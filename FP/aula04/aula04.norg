@@ -6,9 +6,9 @@
 
 * Exercício 1
 
-  > Analise os excertos de código abaixo. Para cada excerto, tente prever quantas
-  > iterações vão ser executadas e que valores vão ser impressos. Depois visualize
-  > a execução de cada excerto usando o {http://www.pythontutor.com/visualize.html#mode=edit}[PythonTutor.com].
+  > Analise os excertos de código abaixo. Para cada excerto, tente prever quantas~
+  iterações vão ser executadas e que valores vão ser impressos. Depois visualize~
+  a execução de cada excerto usando o {http://www.pythontutor.com/visualize.html#mode=edit}[PythonTutor.com].
 
   @code python
   n = 4
@@ -58,13 +58,12 @@
 
 * Exercício 2
 
-  > O programa `table.py` mostra uma tabela dos quadrados de quatro números naturais.
-  > Experimente-o. Modifique o programa para mostrar a tabela para números entre 1
-  > e 20.
-  > 
-  > Use a função range. Acrescente uma coluna para mostrar $2^n$. Ajuste a
-  > largura das colunas e o alinhamento do cabeçalho para obter um resultado
-  > semelhante ao abaixo.
+  > O programa `table.py` mostra uma tabela dos quadrados de quatro números naturais.~
+  Experimente-o. Modifique o programa para mostrar a tabela para números entre 1~
+  e 20.
+  > Use a função `range`. Acrescente uma coluna para mostrar $2^n$. Ajuste a~
+  largura das colunas e o alinhamento do cabeçalho para obter um resultado~
+  semelhante ao abaixo.
 
   @code python
   print("{:>2s} {:>3s} {:>7s}".format("n", "n²", "2**n"))
@@ -74,10 +73,10 @@
 
 * Exercício 3
 
-  > Considere a sequência real ($U_0$ , $U_1$ , ...) onde o primeiro termo é 
-  > $U_0= 100$ e os seguintes são dados por $U_n = 1.01 \times U_{n - 1} − 1.01$.
-  > O programa `sequenceUn.py` gera os primeiros 20 termos dessa sequência.
-  > Modifique o programa para mostrar todos os termos, enquanto forem positivos. 
+  > Considere a sequência real ($U_0$ , $U_1$ , ...) onde o primeiro termo é~
+  $U_0= 100$ e os seguintes são dados por $U_n = 1.01 \times U_{n - 1} − 1.01$.
+  > O programa `sequenceUn.py` gera os primeiros 20 termos dessa sequência.~
+  Modifique o programa para mostrar todos os termos, enquanto forem positivos.
 
   @code python
   Un = 100  # Un = each term of the sequence. Initially = U0
@@ -92,8 +91,8 @@
 
 * Exercício 4
 
-  > Escreva uma função `factorial(n)` que calcule o fatorial de $n$, definido por
-  > $n! = 1 \times 2 \times 3 \times \cdots \times n$. Faça no {http://codecheck.io/files/2011021807afhddlczdkgam7cslwqnxuf5p}[CodeCheck].
+  > Escreva uma função `factorial(n)` que calcule o fatorial de $n$, definido por~
+  $n! = 1 \times 2 \times 3 \times \cdots \times n$. Faça no {http://codecheck.io/files/2011021807afhddlczdkgam7cslwqnxuf5p}[CodeCheck].
 
   @code python
   def factorial(n):
@@ -107,14 +106,14 @@
 
 * Exercício 5
 
-  > O jogo HiLo consiste em tentar adivinhar um número (inteiro) entre 1 e 100. No
-  > início, o programa escolhe um número aleatoriamente. Depois, o utilizador
-  > introduz um número e o programa indica se é demasiado alto (High), ou
-  > demasiado baixo (Low). Isto é repetido até o utilizador acertar no número.
-  > Nessa altura o programa indica quantas tentativas foram feitas e termina. O
-  > programa `hilo.py` já tem um instrução para gerar um número aleatório com a
-  > função `randrange` do módulo `random`. Complete o programa para fazer o resto do
-  > jogo.
+  > O jogo HiLo consiste em tentar adivinhar um número (inteiro) entre 1 e 100. No~
+  início, o programa escolhe um número aleatoriamente. Depois, o utilizador~
+  introduz um número e o programa indica se é demasiado alto (High), ou~
+  demasiado baixo (Low). Isto é repetido até o utilizador acertar no número.~
+  Nessa altura o programa indica quantas tentativas foram feitas e termina.
+  > O programa `hilo.py` já tem um instrução para gerar um número aleatório com a~
+  função `randrange` do módulo `random`. Complete o programa para fazer o resto do~
+  jogo.
 
   @code python
   import random
@@ -142,13 +141,15 @@
 * Exercício 6
 
   > O número $\pi$ pode ser aproximado por uma versão truncada da série de Leibniz:
+
   @math
   1 - \frac{1}{3} + \frac{1}{5} - \frac{1}{7} + \frac{1}{9} - \cdots = \frac{\pi}{4}
   \text{ou, equvalentemente}
   \sum_{i=0}^{\infty} \frac{(-1)^i}{2i+1} = \frac{\pi}{4}
   @end
-  > Escreva uma função, `leibnizPi4(n)`, que devolva a soma dos n primeiros termos
-  > dessa série. Teste esta função num programa que pede o valor `n` ao utilizador.
+
+  > Escreva uma função, `leibnizPi4(n)`, que devolva a soma dos n primeiros termos dessa série.
+  > Teste esta função num programa que pede o valor `n` ao utilizador.
 
   @code python
   def leibnizPi4(n):
@@ -161,9 +162,9 @@
 
 * Exercício 7
 
-  > Escreva um programa que peça ao utilizador uma sequência de números reais. Para
-  > terminar a sequência, o utilizador pressiona ENTER, introduzindo uma linha
-  > vazia. Nessa altura, o programa deve mostrar a média dos números introduzidos.
+  > Escreva um programa que peça ao utilizador uma sequência de números reais. Para~
+  terminar a sequência, o utilizador pressiona ENTER, introduzindo uma linha~
+  vazia. Nessa altura, o programa deve mostrar a média dos números introduzidos.
 
   @code python
   def main():
@@ -188,10 +189,11 @@
 
 * Exercício 8
 
-  > O programa `turtle1.py` demonstra como se pode usar o módulo `turtle` para
-  > fazer desenhos simples. Complete a função `spiral` para desenhar uma espiral
-  > com lados que crescem/decrescem em progressão aritmética como nos exemplos
-  > abaixo.
+  > O programa `turtle1.py` demonstra como se pode usar o módulo `turtle` para~
+  fazer desenhos simples.
+  > Complete a função `spiral` para desenhar uma espiral~
+  com lados que crescem/decrescem em progressão aritmética como nos exemplos~
+  abaixo.
 
   @code python
   # Make turtle t draw a spiral.
@@ -205,11 +207,11 @@
 
 * Exercício 9
 
-  > A sequência de Fibonacci é uma sequência de inteiros na qual cada elemento é
-  > igual à soma dos dois anteriores: 0, 1, 1, 2, 3, 5, 8, 13, ..., ou seja, cada
-  > termo obtém-se como $F_n = F_{n - 1} + F_{n-2}$. Os primeiros valores são
-  > definidos como $F_0 = 0$ e $F_1 = 1$. Escreva uma função `Fibonacci(n)` para
-  > calcular o n-ésimo número de Fibonacci.
+  > A sequência de Fibonacci é uma sequência de inteiros na qual cada elemento é~
+  igual à soma dos dois anteriores: 0, 1, 1, 2, 3, 5, 8, 13, ..., ou seja, cada~
+  termo obtém-se como $F_n = F_{n - 1} + F_{n-2}$. Os primeiros valores são~
+  definidos como $F_0 = 0$ e $F_1 = 1$.
+  > Escreva uma função `Fibonacci(n)` para calcular o n-ésimo número de Fibonacci.
 
   @code python
   def Fibonacci(n):
@@ -224,39 +226,12 @@
 
 * Exercício 10
 
-  > Escreva uma função `isPrime(n)` que devolva `True` se o número n é primo e `False`,
-  > caso contrário. Sugestão: tente dividir o número por 2, por 3, etc. Se
-  > encontrar um divisor exato, então o número não é primo. Teste a função fazendo
-  > um programa que percorre todos os números entre 1 e 100 e indique para cada um
-  > se é primo ou não.
-
-  @code python
-  import math
-
-
-  def isPrime(n):
-      stop = int(math.sqrt(n)) + 1
-      if n <= 3:
-          return n > 1
-      if n % 2 == 0 or n % 3 == 0:
-          return False
-      for r in range(5, stop, 2):
-          if n % r == 0:
-              return False
-      return True
-
-
-  for n in range(1, 100):
-      print(f"isPrime({n}) = {isPrime(n)}")
-  @end
-
-* Exercício 10
-
-  > Escreva uma função `isPrime(n)` que devolva `True` se o número n é primo e `False`,
-  > caso contrário. Sugestão: tente dividir o número por 2, por 3, etc. Se
-  > encontrar um divisor exato, então o número não é primo. Teste a função fazendo
-  > um programa que percorre todos os números entre 1 e 100 e indique para cada um
-  > se é primo ou não.
+  > Escreva uma função `isPrime(n)` que devolva `True` se o número n é primo e `False`, ~
+  caso contrário.
+  > Sugestão: tente dividir o número por 2, por 3, etc. Se~
+  encontrar um divisor exato, então o número não é primo. Teste a função fazendo~
+  um programa que percorre todos os números entre 1 e 100 e indique para cada um~
+  se é primo ou não.
 
   @code python
   import math
@@ -280,10 +255,10 @@
 
 * Exercício 11
 
-  > Escreva um programa que leia do teclado um número inteiro positivo, N, e imprima
-  > no ecrã a lista de todos os seus divisores próprios (todos os números naturais
-  > que dividem N, exceto o próprio N). O programa deve ainda indicar se N é um
-  > número deficiente, perfeito ou abundante
+  > Escreva um programa que leia do teclado um número inteiro positivo, N, e imprima~
+  no ecrã a lista de todos os seus divisores próprios (todos os números naturais~
+  que dividem N, exceto o próprio N). O programa deve ainda indicar se N é um~
+  número deficiente, perfeito ou abundante
 
   @code python
   def divisors(N):

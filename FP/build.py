@@ -41,7 +41,7 @@ args = parser.parse_args()
 os.makedirs(args.out, exist_ok=True)
 shutil.copytree(args.source.parent / "res", args.out / "res", dirs_exist_ok=True)
 
-process = subprocess.Popen(["neorg-pandoc", args.source], stdout=subprocess.PIPE)
+process = subprocess.Popen(["pandoc-norg-rs", args.source], stdout=subprocess.PIPE)
 
 index_out = args.out / "index.html"
 

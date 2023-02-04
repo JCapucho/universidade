@@ -6,10 +6,10 @@
 
 * Exercício 1
 
-  > O programa `imctable2.py` define uma lista com informação dos nomes, pesos e
-  > alturas de diversas pessoas e usa uma list comprehension para obter uma lista
-  > com os nomes apenas. Substitua as reticências por outras list comprehensions
-  > que produzam:
+  > O programa `imctable2.py` define uma lista com informação dos nomes, pesos e~
+  alturas de diversas pessoas e usa uma list comprehension para obter uma lista~
+  com os nomes apenas. Substitua as reticências por outras list comprehensions~
+  que produzam:
 
 ** Parte a)
 
@@ -49,9 +49,9 @@
 
 * Exercício 2
 
-  > O ficheiro `names.txt` tem uma lista de nomes completos de pessoas, com um
-  > nome por linha. Escreva um programa que mostre, para cada apelido (último
-  > nome), o conjunto de primeiros nomes encontrados na lista, sem repetições.
+  > O ficheiro `names.txt` tem uma lista de nomes completos de pessoas, com um~
+  nome por linha. Escreva um programa que mostre, para cada apelido (último~
+  nome), o conjunto de primeiros nomes encontrados na lista, sem repetições.
 
   @code python
   lastNames = {}
@@ -70,11 +70,11 @@
 
 * Exercício 3
 
-  > Crie uma função `primesUpTo(n)` que devolva um conjunto com todos os números
-  > primos até `n`. Use o algoritmo do crivo de Eratóstenes: comece com o conjunto
-  > ${2, 3, ..., n}$, depois elimine os múltiplos de 2 a começar em $2^2$, depois
-  > elimine os múltiplos de 3 a começar em $3^2$ e assim sucessivamente. No fim, o
-  > conjunto conterá apenas os primos.
+  > Crie uma função `primesUpTo(n)` que devolva um conjunto com todos os números~
+  primos até `n`. Use o algoritmo do crivo de Eratóstenes: comece com o conjunto~
+  ${2, 3, ..., n}$, depois elimine os múltiplos de 2 a começar em $2^2$, depois~
+  elimine os múltiplos de 3 a começar em $3^2$ e assim sucessivamente. No fim, o~
+  conjunto conterá apenas os primos.
 
   Naive implementation:
 
@@ -111,14 +111,14 @@
 
 * Exercício 4
 
-  > O programa `interests.py` tem uma tabela (dicionário) com os interesses de um
-  > conjunto de pessoas. Substitua as reticências por expressões adequadas para:
+  > O programa `interests.py` tem uma tabela (dicionário) com os interesses de um~
+  conjunto de pessoas. Substitua as reticências por expressões adequadas para:
 
 ** Parte a)
 
-   > Criar um dicionário com os interesses comuns a cada par de pessoas. Ou seja, a
-   > cada par de pessoas, deve associar o conjunto dos interesses comuns a ambos.
-   > Note que se incluir o par (X, Y) não deve incluir (Y, X).
+   > Criar um dicionário com os interesses comuns a cada par de pessoas. Ou seja, a~
+   cada par de pessoas, deve associar o conjunto dos interesses comuns a ambos.~
+   Note que se incluir o par (X, Y) não deve incluir (Y, X).
 
    @code python
    commoninterests = {
@@ -141,8 +141,7 @@
 
 ** Parte c)
 
-   > Criar uma lista dos pares de pessoas que têm o número máximo de interesses
-   > comuns.
+   > Criar uma lista dos pares de pessoas que têm o número máximo de interesses comuns.
 
    @code python
    maxmatches = [pair for pair, ints in commoninterests.items() if len(ints) == maxCI]
@@ -150,11 +149,11 @@
 
 ** Parte d)
 
-   > Criar uma lista de pares de pessoas com menos de 25% de similaridade de
-   > interesses. Para medir a similaridade, use o 
-   > {índice de Jaccard}[https://en.wikipedia.org/wiki/Jaccard_index] 
-   > entre dois conjuntos, que é dado pela razão entre o tamanho da interseção e o
-   > tamanho da união entre os conjuntos.
+   > Criar uma lista de pares de pessoas com menos de 25% de similaridade de~
+   interesses. Para medir a similaridade, use o~
+   {índice de Jaccard}[https://en.wikipedia.org/wiki/Jaccard_index]~
+   entre dois conjuntos, que é dado pela razão entre o tamanho da interseção e o~
+   tamanho da união entre os conjuntos.
 
    @code python
    lowJaccard = [

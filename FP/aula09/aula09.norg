@@ -6,11 +6,11 @@
 
 * Exercício 1
 
-  > Na aula07 fez um programa que conta ocorrências de letras num ficheiro de texto.
-  > Faça uma nova versão desse programa que liste o resultado por ordem
-  > decrescente do número de ocorrências. Use o método `sorted` com os argumentos
-  > `key=` e `reverse=` para ordenar a sequência de pares chave-valor (`items`) do
-  > dicionário.
+  > Na aula07 fez um programa que conta ocorrências de letras num ficheiro de texto.~
+  Faça uma nova versão desse programa que liste o resultado por ordem~
+  decrescente do número de ocorrências. Use o método `sorted` com os argumentos~
+  `key=` e `reverse=` para ordenar a sequência de pares chave-valor (`items`) do~
+  dicionário.
 
   @code python
   import sys
@@ -54,19 +54,19 @@
 
 * Exercício 2
 
-  > O programa `tabelaFutebol.py` tem uma lista com a tabela classificativa de um
-  > campeonato de futebol. Cada elemento da lista é um tuplo com o nome da equipa
-  > e números de vitórias, de empates, de derrotas, de golos marcados e sofridos.
-  > O programa já tem uma função para mostrar a tabela devidamente formatada e uma
-  > função, definida por uma expressão lambda, para determinar o número de jogos
-  > realizados por uma equipa. Complete o programa nos locais indicados para
-  > resolver cada uma das alíneas.
+  > O programa `tabelaFutebol.py` tem uma lista com a tabela classificativa de um~
+  campeonato de futebol. Cada elemento da lista é um tuplo com o nome da equipa~
+  e números de vitórias, de empates, de derrotas, de golos marcados e sofridos.~
+  O programa já tem uma função para mostrar a tabela devidamente formatada e uma~
+  função, definida por uma expressão lambda, para determinar o número de jogos~
+  realizados por uma equipa. Complete o programa nos locais indicados para~
+  resolver cada uma das alíneas.
 
 ** Parte a)
 
-   > Complete a _expressão lambda_ para definir a função `pontos` que, dado um
-   > registo de uma equipa, deve devolver o número de pontos da equipa. (Cada
-   > vitória vale 3 pontos, cada empate vale 1 ponto.)
+   > Complete a _expressão lambda_ para definir a função `pontos` que, dado um~
+   registo de uma equipa, deve devolver o número de pontos da equipa. (Cada~
+   vitória vale 3 pontos, cada empate vale 1 ponto.)
 
    @code python
    pontos = lambda reg: 3 * reg[V] + reg[E]
@@ -74,8 +74,8 @@
 
 ** Parte b)
 
-   > Acrescente os argumentos adequados à função sorted para obter uma tabela
-   > ordenada por ordem decrescente de pontos.
+   > Acrescente os argumentos adequados à função sorted para obter uma tabela~
+   ordenada por ordem decrescente de pontos.
 
    @code python
    tab = sorted(tabela, key=pontos, reverse=True)
@@ -83,8 +83,8 @@
 
 ** Parte c)
 
-   > Acrescente os argumentos adequados à função sorted para obter uma tabela
-   > ordenada por ordem decrescente da diferença de golos marcados e sofridos.
+   > Acrescente os argumentos adequados à função sorted para obter uma tabela~
+   ordenada por ordem decrescente da diferença de golos marcados e sofridos.
 
    @code python
    tab = sorted(tabela, key=lambda reg: reg[GM] - reg[GS], reverse=True)
@@ -92,8 +92,8 @@
 
 ** Parte d)
 
-   > Acrescente os argumentos adequados à função `sorted` para ordenar a tabela por
-   > ordem decrescente de pontos e, se iguais, pela diferença de golos.
+   > Acrescente os argumentos adequados à função `sorted` para ordenar a tabela por~
+   ordem decrescente de pontos e, se iguais, pela diferença de golos.
 
    @code python
    tab = sorted(tabela, key=lambda reg: (pontos(reg), reg[GM] - reg[GS]), reverse=True)
@@ -101,10 +101,10 @@
 
 * Exercício 3
 
-  > Faça uma função que calcule a mediana de uma lista de valores, sem modificar a
-  > lista. Se a lista tiver um número ímpar de valores, a mediana é o valor no
-  > meio da lista ordenada. Se a lista tiver um número par de valores, a mediana é
-  > a média dos dois valores no meio da lista ordenada. 
+  > Faça uma função que calcule a mediana de uma lista de valores, sem modificar a~
+  lista. Se a lista tiver um número ímpar de valores, a mediana é o valor no~
+  meio da lista ordenada. Se a lista tiver um número par de valores, a mediana é~
+  a média dos dois valores no meio da lista ordenada. 
 
   @code python
   def median(lst):
@@ -120,10 +120,10 @@
 
 * Exercício 4
 
-  > O ficheiro `wordlist.txt` contém uma lista de palavras de língua inglesa, por
-  > ordem. Leia essas palavras para uma lista e, usando uma função de pesquisa
-  > binária (do módulo bisect), descubra quantas palavras começam por “ea”, sem
-  > ter de percorrer tudo.
+  > O ficheiro `wordlist.txt` contém uma lista de palavras de língua inglesa, por~
+  ordem. Leia essas palavras para uma lista e, usando uma função de pesquisa~
+  binária (do módulo bisect), descubra quantas palavras começam por “ea”, sem~
+  ter de percorrer tudo.
 
   @code python
   import bisect
@@ -149,12 +149,12 @@
 
 * Exercício 5
 
-  > Usando o mesmo princípio, faça uma função que indique todas as letras que podem
-  > suceder a um certo prefixo. Pode usar esta função num sistema de escrita
-  > inteligente que vai apresentando as letras possíveis para completar um certo
-  > prefixo já introduzido. Quando o utilizador introduz mais uma letra, é
-  > acrescentada ao prefixo anterior e apresenta-se nova lista de possibilidades e
-  > assim sucessivamente.
+  > Usando o mesmo princípio, faça uma função que indique todas as letras que podem~
+  suceder a um certo prefixo. Pode usar esta função num sistema de escrita~
+  inteligente que vai apresentando as letras possíveis para completar um certo~
+  prefixo já introduzido. Quando o utilizador introduz mais uma letra, é~
+  acrescentada ao prefixo anterior e apresenta-se nova lista de possibilidades e~
+  assim sucessivamente.
 
   @code python
   import bisect
@@ -274,9 +274,9 @@
 
 * Exercício 6
 
-  > O programa `insertionSort.py` tem uma implementação do algoritmo de ordenação por
-  > inserção. Modifique a função para aceitar um argumento opcional `key=` que
-  > funcione tal como na função pré-definida `sorted`.
+  > O programa `insertionSort.py` tem uma implementação do algoritmo de ordenação por~
+  inserção. Modifique a função para aceitar um argumento opcional `key=` que~
+  funcione tal como na função pré-definida `sorted`.
 
   @code python
   def insertionSort(lst, key=lambda x: x):
@@ -320,12 +320,12 @@
 
 * Exercício 8
 
-  > No programa `polynomial.py` pretendemos definir uma função que crie um polinómio
-  > de segundo grau arbitrário. Ou seja, `p = polynomial2(2,-1,3)` deve 2 colocar em
-  > `p` uma _função_ tal que `p(x)` calcule o valor `p(x) = 2x − x + 3` para qualquer
-  > valor `x` que lhe seja passado. Note que sempre que `polynomial2` é executada,
-  > terá de definir uma nova função para devolver. Essa definição poderá ser feita
-  > com uma instrução def ou com uma expressão lambda.
+  > No programa `polynomial.py` pretendemos definir uma função que crie um polinómio~
+  de segundo grau arbitrário. Ou seja, `p = polynomial2(2,-1,3)` deve 2 colocar em~
+  `p` uma _função_ tal que `p(x)` calcule o valor `p(x) = 2x − x + 3` para qualquer~
+  valor `x` que lhe seja passado. Note que sempre que `polynomial2` é executada,~
+  terá de definir uma nova função para devolver. Essa definição poderá ser feita~
+  com uma instrução def ou com uma expressão lambda.
 
   @code python
   # polynomial2(a,b,c) deve devolver uma função f tal que
@@ -354,12 +354,12 @@
 
 * Exercício 9
 
-  > No programa `polynomial.py` pretendemos definir uma função que crie um polinómio
-  > de segundo grau arbitrário. Ou seja, `p = polynomial2(2,-1,3)` deve 2 colocar em
-  > `p` uma _função_ tal que `p(x)` calcule o valor `p(x) = 2x − x + 3` para qualquer
-  > valor `x` que lhe seja passado. Note que sempre que `polynomial2` é executada,
-  > terá de definir uma nova função para devolver. Essa definição poderá ser feita
-  > com uma instrução def ou com uma expressão lambda.
+  > No programa `polynomial.py` pretendemos definir uma função que crie um polinómio~
+  de segundo grau arbitrário. Ou seja, `p = polynomial2(2,-1,3)` deve 2 colocar em~
+  `p` uma _função_ tal que `p(x)` calcule o valor `p(x) = 2x − x + 3` para qualquer~
+  valor `x` que lhe seja passado. Note que sempre que `polynomial2` é executada,~
+  terá de definir uma nova função para devolver. Essa definição poderá ser feita~
+  com uma instrução def ou com uma expressão lambda.
 
   @code python
   import math

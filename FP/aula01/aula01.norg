@@ -6,10 +6,10 @@
 
 * Exercício 1
 
-  > Escreva um programa que lê um valor de temperatura em graus Celsius,
-  > converte-o para graus Fahrenheit e imprime o resultado na forma "XX ºC = YY ºF".
-  > A fórmula de conversão de graus Celsius (C) para graus Fahrenheit (F)
-  > é a seguinte: F = 1.8∙C + 32.
+  > Escreva um programa que lê um valor de temperatura em graus Celsius,~
+  converte-o para graus Fahrenheit e imprime o resultado na forma "XX ºC = YY ºF".~
+  A fórmula de conversão de graus Celsius (C) para graus Fahrenheit (F)~
+  é a seguinte: F = 1.8∙C + 32.
 
   @code python
    # Pede ao utilizador para inserir a temperatura em celsius
@@ -27,9 +27,9 @@
 
 * Exercício 2
 
-  > Repare no seguinte exemplo de interação com um programa em Python.
-  > O texto à frente dos pontos de interrogação foi introduzido pela
-  > utilizadora. Consegue fazer um programa semelhante?
+  > Repare no seguinte exemplo de interação com um programa em Python.~
+  O texto à frente dos pontos de interrogação foi introduzido pela~
+  utilizadora. Consegue fazer um programa semelhante?
 
   @code python
    # Pede ao utilizador para inserir o nome
@@ -49,10 +49,10 @@
 
 * Exercício 3
 
-  > Um automóvel faz uma viagem entre duas cidades com velocidade média v1
-  > e regressa pelo mesmo percurso com velocidade média v2. Escreva um programa
-  > que peça os dois valores, v1 e v2, e calcule e imprima a velocidade média
-  > da viagem completa.
+  > Um automóvel faz uma viagem entre duas cidades com velocidade média v1~
+  e regressa pelo mesmo percurso com velocidade média v2. Escreva um programa~
+  que peça os dois valores, v1 e v2, e calcule e imprima a velocidade média~
+  da viagem completa.
 
   @code python
    # Pede ao utilizador para inserir a primeira velocidade
@@ -84,8 +84,8 @@
 
 * Exercício 4
 
-  > Escreva um programa que dado um tempo em segundos lido do teclado, mostre
-  > na consola o tempo com o formato hh:mm:ss.
+  > Escreva um programa que dado um tempo em segundos lido do teclado, mostre~
+  na consola o tempo com o formato hh:mm:ss.
 
   @code python
    # Pede ao utilizador para inserir o tempo em segundos
@@ -105,9 +105,9 @@
 
 * Exercício 5
 
-  > Um triângulo retângulo tem catetos A e B e hipotenusa C. Escreva um programa
-  > que leia os comprimentos dos catetos e determine a hipotenusa, bem como o
-  > valor do ângulo (em graus) entre o lado A e a hipotenusa.
+  > Um triângulo retângulo tem catetos A e B e hipotenusa C. Escreva um programa~
+  que leia os comprimentos dos catetos e determine a hipotenusa, bem como o~
+  valor do ângulo (em graus) entre o lado A e a hipotenusa.
 
   @code python
    import math
@@ -130,8 +130,8 @@
 
 * Exercício 6
 
-  > O programa points.py lê as coordenadas cartesianas de dois pontos, (x1, y1) e
-  > (x2, y2). Complete-o para calcular e imprimir a distância entre os pontos.
+  > O programa points.py lê as coordenadas cartesianas de dois pontos, (x1, y1) e~
+  (x2, y2). Complete-o para calcular e imprimir a distância entre os pontos.
 
   @code python
    import math
@@ -156,12 +156,12 @@
 
 * Exercício 7
 
-  > Num prédio com R/C e 3 andares e 2 moradores por andar, cada morador sobe e
-  > desce 2 vezes por dia no elevador (entre o R/C e o seu andar). Se cada andar
-  > tem uma altura de 3m, quantos km percorre o elevador por ano? Admitindo que o
-  > elevador viaja à velocidade constante de 1 m/s, quantas horas está o elevador
-  > em funcionamento num ano? Generalize o programa para um prédio de A andares e
-  > M moradores por piso.
+  > Num prédio com R/C e 3 andares e 2 moradores por andar, cada morador sobe e~
+  desce 2 vezes por dia no elevador (entre o R/C e o seu andar). Se cada andar~
+  tem uma altura de 3m, quantos km percorre o elevador por ano? Admitindo que o~
+  elevador viaja à velocidade constante de 1 m/s, quantas horas está o elevador~
+  em funcionamento num ano? Generalize o programa para um prédio de A andares e~
+  M moradores por piso.
 
   @code python
    # Número de andares no prédio e a sua altura em metros
@@ -196,13 +196,13 @@
 
 * Exercício 8
 
-  > Um livro custa 20€ a fabricar (PF). Suponha que o preço de capa de um livro é
-  > 24,95€ (PC) e que o mesmo paga uma taxa de IVA de 23% (IMP). Acresce sobre o
-  > valor do livro uma taxa para compensar os autores pelas cópias de 0,20€ fixos
-  > (SPA).
-  >   PC = (PF + Lucro) * (100% + IMP) + SPA
-  > Para uma tiragem de 500 exemplares: qual o lucro da livraria? Qual o total
-  > de impostos?
+  > Um livro custa 20€ a fabricar (PF). Suponha que o preço de capa de um livro é~
+  24,95€ (PC) e que o mesmo paga uma taxa de IVA de 23% (IMP). Acresce sobre o~
+  valor do livro uma taxa para compensar os autores pelas cópias de 0,20€ fixos~
+  (SPA).
+  > PC = (PF + Lucro) * (100% + IMP) + SPA
+  > Para uma tiragem de 500 exemplares: qual o lucro da livraria? Qual o total~
+  de impostos?
 
   @code python
    # Preço de fabrico
@@ -233,9 +233,9 @@
 
 * Exercício 9
 
-  > Se sair de casa às 6:52 e percorrer 1 km a andar (fazendo 10 min por km), depois
-  > correr 3 km ao ritmo de 6 min por km e depois voltar a casa a andar, a que
-  > horas chego a casa para o pequeno almoço?
+  > Se sair de casa às 6:52 e percorrer 1 km a andar (fazendo 10 min por km), depois~
+  correr 3 km ao ritmo de 6 min por km e depois voltar a casa a andar, a que~
+  horas chego a casa para o pequeno almoço?
 
   @code python
    # Minutos por km a andar

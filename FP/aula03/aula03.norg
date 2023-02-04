@@ -22,12 +22,12 @@
 
 ** Problema 1
 
-   > Suppose you have a `balloonVolume` function that computes the volume of a
-   > balloon with a given `width` and `height`. Your task is to write a program that
-   > prints the original volume of a balloon and shows how the volume changes when
-   > you inflate the balloon, first by one inch and then by two inches in each
-   > direction. Rearrange these lines of code to provide a program segment that
-   > makes this computation. Print each value as soon as it has been computed.
+   > Suppose you have a `balloonVolume` function that computes the volume of a~
+   balloon with a given `width` and `height`. Your task is to write a program that~
+   prints the original volume of a balloon and shows how the volume changes when~
+   you inflate the balloon, first by one inch and then by two inches in each~
+   direction. Rearrange these lines of code to provide a program segment that~
+   makes this computation. Print each value as soon as it has been computed.
 
    @code python
    width = 3
@@ -43,12 +43,11 @@
 
 ** Problema 2
 
-   > Rearrange the following lines of code to produce a function that computes the
-   > volume of a balloon with a given width and height. Not all lines are used in
-   > the solution.
-   > 
-   > Note that the volume of an ellipsoid with radii $a$, $b$, $c$ is
-   > $V = 4/3 π a b c.$
+   > Rearrange the following lines of code to produce a function that computes the~
+   volume of a balloon with a given width and height. Not all lines are used in~
+   the solution.
+   > Note that the volume of an ellipsoid with radii $a$, $b$, $c$ is~
+   $V = 4/3 π a b c.$
 
    @code python
    def balloonVolume(width, height):
@@ -61,9 +60,9 @@
 
 ** Problema 3
 
-   > Write a function that hides the characters in a string, yielding a string of
-   > equal length where each character is replaced by a *. For example, the call
-   > hideCharacters("secret") should return the string "\*\*\*\*\*\*".
+   > Write a function that hides the characters in a string, yielding a string of~
+   equal length where each character is replaced by a *. For example, the call~
+   hideCharacters("secret") should return the string "\*\*\*\*\*\*".
 
    @code python
    def hideCharacters(string):
@@ -72,9 +71,9 @@
 
 ** Problema 4
 
-   > Consider the follow program that prints a page number on the left or right
-   > side of a page. Define and use a new function, isEven, that returns a Boolean
-   > to make the condition in the if statement easier to understand.
+   > Consider the follow program that prints a page number on the left or right~
+   side of a page. Define and use a new function, isEven, that returns a Boolean~
+   to make the condition in the if statement easier to understand.
 
    @code python
    def isEven(number):
@@ -93,9 +92,9 @@
 
 ** Problema 5
 
-   > Consider the following program that counts the number of spaces in a
-   > user-supplied string. Modify the program to define and use a function,
-   > countSpaces, instead.
+   > Consider the following program that counts the number of spaces in a~
+   user-supplied string. Modify the program to define and use a function,~
+   countSpaces, instead.
 
    @code python
    def countSpaces(string):
@@ -114,14 +113,14 @@
 
 * Exercício 3
 
-  > O programa bmi.py serve para calcular o índice de massa corporal, mas está
-  > incompleto. O programa inclui três funções. Analise o seu funcionamento.
+  > O programa bmi.py serve para calcular o índice de massa corporal, mas está~
+  incompleto. O programa inclui três funções. Analise o seu funcionamento.
 
 ** Parte a.
 
-   > Complete a definição da função `bodyMassIndex` para calcular o índice pela razão
-   > $bmi = \frac{weight}{height^2}$. Complete os argumentos na invocação da função,
-   > dentro da função principal. Teste o programa.
+   > Complete a definição da função `bodyMassIndex` para calcular o índice pela razão~
+   $bmi = \frac{weight}{height^2}$. Complete os argumentos na invocação da função,~
+   dentro da função principal. Teste o programa.
 
    @code python
    def bodyMassIndex(height, weight):
@@ -138,10 +137,10 @@
 
 ** Parte b.
 
-   > Complete a função `bmiCategory` para devolver uma string com a categoria
-   > correspondente ao índice de massa corporal dado. Acrescente uma chamada a
-   > esta função na função principal, para obter o nome da categoria. Volte a
-   > testar.
+   > Complete a função `bmiCategory` para devolver uma string com a categoria~
+   correspondente ao índice de massa corporal dado. Acrescente uma chamada a~
+   esta função na função principal, para obter o nome da categoria. Volte a~
+   testar.
 
    @code python
    def bmiCategory(bmi):
@@ -218,9 +217,9 @@
 
 * Exercício 4
 
-  > Execute e analise o programa `poly.py`. Acrescente-lhe uma função para calcular o
-  > polinómio $p(x) = x^2 + 2x + 3$ e modifique a função main para mostrar os
-  > valores de $p(1)$, $p(2)$, $p(10)$ e $g(1 + p(3))$. Confira os resultados.
+  > Execute e analise o programa `poly.py`. Acrescente-lhe uma função para calcular o~
+  polinómio $p(x) = x^2 + 2x + 3$ e modifique a função main para mostrar os~
+  valores de $p(1)$, $p(2)$, $p(10)$ e $g(1 + p(3))$. Confira os resultados.
 
   @code python
   # Esta função implementa g(x) = 8 - x³
@@ -263,10 +262,10 @@
 
 * Exercício 5
 
-  > Defina uma função que devolva o maior dos seus dois argumentos. Por exemplo,
-  > `max2(4, 3)` deve devolver $4$ e `max2(-3, -2)` deve devolver $-2$. Não pode
-  > usar a função pré-definida `max`. Use uma instrução `if` ou uma expressão
-  > condicional. Teste a função com vários conjuntos de argumentos.
+  > Defina uma função que devolva o maior dos seus dois argumentos. Por exemplo,~
+  `max2(4, 3)` deve devolver $4$ e `max2(-3, -2)` deve devolver $-2$. Não pode~
+  usar a função pré-definida `max`. Use uma instrução `if` ou uma expressão~
+  condicional. Teste a função com vários conjuntos de argumentos.
 
   @code python
   def max2(a, b):
@@ -278,10 +277,10 @@
 
 * Exercício 6
 
-  > No mesmo programa, crie uma função `max3` que devolva o maior dos seus 3
-  > argumentos. Não pode usar a função `max`, nem instruções ou expressões
-  > condicionais. Recorra apenas à função max2 que definiu atrás. Teste a nova
-  > função.
+  > No mesmo programa, crie uma função `max3` que devolva o maior dos seus 3~
+  argumentos. Não pode usar a função `max`, nem instruções ou expressões~
+  condicionais. Recorra apenas à função max2 que definiu atrás. Teste a nova~
+  função.
 
   @code python
   def max3(a, b, c):
@@ -303,9 +302,9 @@
   \right. 
   @end
 
-  > Use uma instrução `if-elif-else` e evite condições redundantes.  Teste a
-  > função para diversos valores de `r` e confirme os resultados. Que valores deve
-  > testar?
+  > Use uma instrução `if-elif-else` e evite condições redundantes.  Teste a~
+  função para diversos valores de `r` e confirme os resultados. Que valores deve~
+  testar?
 
   @code python
   def tar(r):
@@ -319,9 +318,9 @@
 
 * Exercício 8
 
-  > Escreva uma função `intersects(a1, b1, a2, b2)` que devolva `True` se os
-  > intervalos $[a1, b1[$ e $[a2, b2[$ se intersectarem e devolva `False`, caso
-  > contrário. Pode admitir que $a_1 \leq b_1 \land a_2 \leq b_2$.
+  > Escreva uma função `intersects(a1, b1, a2, b2)` que devolva `True` se os~
+  intervalos $[a1, b1[$ e $[a2, b2[$ se intersectarem e devolva `False`, caso~
+  contrário. Pode admitir que $a_1 \leq b_1 \land a_2 \leq b_2$.
 
   @code python
   def intersects(a1, b1, a2, b2):
@@ -334,11 +333,11 @@
 
 ** Parte a.
 
-   > A função `isLeapYear` deveria indicar quando um ano é bissexto, mas está
-   > errada. Corrija-a. Um ano é bissexto se for múltiplo de 4, com exceção dos
-   > fins de século (múltiplos de 100), que só são bissextos se forem múltiplos de
-   > 400. Por exemplo: 1980, 1984, 2004 foram bissextos; 1800 e 1900 foram anos
-   > comuns, mas 2000 foi bissexto.
+   > A função `isLeapYear` deveria indicar quando um ano é bissexto, mas está~
+   errada. Corrija-a. Um ano é bissexto se for múltiplo de 4, com exceção dos~
+   fins de século (múltiplos de 100), que só são bissextos se forem múltiplos de~
+   400. Por exemplo: 1980, 1984, 2004 foram bissextos; 1800 e 1900 foram anos~
+   comuns, mas 2000 foi bissexto.
 
    @code python
    def isLeapYear(year):
@@ -347,9 +346,9 @@
 
 ** Parte b.
 
-   > A função `monthDays`, para determinar o número de dias de um mês, também está
-   > errada. Quando o mês é fevereiro, invoque a função anterior para determinar
-   > se o ano é bissexto e devolva 29 dias nesse caso.
+   > A função `monthDays`, para determinar o número de dias de um mês, também está~
+   errada. Quando o mês é fevereiro, invoque a função anterior para determinar~
+   se o ano é bissexto e devolva 29 dias nesse caso.
 
    @code python
    def monthDays(year, month):
@@ -384,8 +383,8 @@
 
 * Exercício 10
 
-  > Complete a função `hms2sec` de forma a devolver o número de segundos
-  > correspondente a h horas, m minutos e s segundos.
+  > Complete a função `hms2sec` de forma a devolver o número de segundos~
+  correspondente a h horas, m minutos e s segundos.
 
   @code python
   def hms2sec(h, m, s):
@@ -395,8 +394,8 @@
 
 * Exercício 11
 
-  > Complete a função `sec2hms` de forma a converter um número de segundos em
-  > horas, minutos e segundos
+  > Complete a função `sec2hms` de forma a converter um número de segundos em~
+  horas, minutos e segundos
 
   @code python
   def sec2hms(sec):
@@ -408,9 +407,9 @@
 
 * Exercício 12
 
-  > Escreva uma função `countdown(N)` que imprima uma contagem decrescente a
-  > partir de um número positivo `N`. Note que pode imprimir `N` e depois chamar
-  > `countdown(N-1)`.
+  > Escreva uma função `countdown(N)` que imprima uma contagem decrescente a~
+  partir de um número positivo `N`. Note que pode imprimir `N` e depois chamar~
+  `countdown(N-1)`.
 
   @code python
   def countdown(N):
@@ -422,8 +421,8 @@
 
 * Exercício 13
 
-  > O algoritmo de Euclides para determinar o máximo divisor comum de dois números
-  > naturais baseia-se na igualdade seguinte:
+  > O algoritmo de Euclides para determinar o máximo divisor comum de dois números~
+  naturais baseia-se na igualdade seguinte:
 
   @math
   mdc(a, b) = \left\{
@@ -434,8 +433,8 @@
   \right. 
   @end
 
-  > onde $r$ é o resto da divisão de $a$ por $b$. Escreva uma função para calcular
-  > o m.d.c. e teste-a com diversos pares de valores.
+  > onde $r$ é o resto da divisão de $a$ por $b$. Escreva uma função para calcular~
+  o m.d.c. e teste-a com diversos pares de valores.
 
   @code python
   def mdc(a, b):

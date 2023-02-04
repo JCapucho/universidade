@@ -6,15 +6,18 @@
 
 * Exercício 1
 
-  > Escreva um programa que determine a frequência de ocorrência de todas as
-  > letras que ocorrem num ficheiro de texto. (Pode usar `c.isalpha()` para
-  > verificar se um caráter `c` é uma letra). O nome do ficheiro deve ser passado
-  > como argumento na linha de comando (use `sys.argv`). Descarregue “Os Lusíadas”
-  > ({documento 3333 do Projeto Gutenberg}[http://www.gutenberg.org/ebooks/3333.txt.utf-8])
-  > e faça a contagem. Ajuste o programa para não distinguir maiúsculas de
-  > minúsculas. (Pode usar `s.lower()` para converter uma string `s` para
-  > minúsculas.) Finalmente, modifique o programa para mostrar o resultado por
-  > ordem alfabética.
+  > Escreva um programa que determine a frequência de ocorrência de todas as~
+  letras que ocorrem num ficheiro de texto. (Pode usar `c.isalpha()` para~
+  verificar se um caráter `c` é uma letra).
+  > O nome do ficheiro deve ser passado~
+  como argumento na linha de comando (use `sys.argv`). Descarregue “Os Lusíadas”~
+  ({documento 3333 do Projeto Gutenberg}[http://www.gutenberg.org/ebooks/3333.txt.utf-8])~
+  e faça a contagem.
+  > Ajuste o programa para não distinguir maiúsculas de~
+  minúsculas. (Pode usar `s.lower()` para converter uma string `s` para~
+  minúsculas.)
+  > Finalmente, modifique o programa para mostrar o resultado por~
+  ordem alfabética.
 
   @code python
   import sys
@@ -58,15 +61,15 @@
 
 * Exercício 2
 
-  > O programa `telefone.py` simula a lista de contactos de um telemóvel,
-  > implementada com um dicionário. O programa apresenta um menu com cinco
-  > operações. A operação “Listar contactos” já está implementada. Experimente e
-  > analise o programa.
+  > O programa `telefone.py` simula a lista de contactos de um telemóvel, ~
+  implementada com um dicionário. O programa apresenta um menu com cinco~
+  operações. A operação “Listar contactos” já está implementada. Experimente e ~
+  analise o programa.
 
 ** Parte a)
 
-   > Acrescente a operação de “Adicionar contacto”. Deve pedir um número e nome, e
-   > acrescentá-los ao dicionário.
+   > Acrescente a operação de “Adicionar contacto”. Deve pedir um número e nome, e~
+   acrescentá-los ao dicionário.
 
    @code python
    # SNIP
@@ -90,8 +93,8 @@
 
 ** Parte b)
 
-   > Acrescente a operação de “Remover contacto”. Deve pedir o número e eliminar o
-   > item correspondente. (Use o operador `del` ou o método `pop`.)
+   > Acrescente a operação de “Remover contacto”. Deve pedir o número e eliminar o~
+   item correspondente. (Use o operador `del` ou o método `pop`.)
 
    @code python
    # SNIP
@@ -118,8 +121,8 @@
 
 ** Parte c)
 
-   > Acrescente a operação “Procurar Número”. Deve pedir um número e mostrar o nome
-   > correspondente, se existir, ou o próprio número, caso contrário.
+   > Acrescente a operação “Procurar Número”. Deve pedir um número e mostrar o nome~
+   correspondente, se existir, ou o próprio número, caso contrário.
 
    @code python
    # SNIP
@@ -149,10 +152,10 @@
 
 ** Parte d)
 
-   > Complete a função `filterPartName`, que dada uma string, deve devolver um
-   > dicionário com os contactos `{número: nome}` cujos nomes incluam essa string.
-   > Use essa função para implementar a operação “Procurar Parte do nome”, que
-   > deve pedir um nome parcial e listar os contactos que o contêm.
+   > Complete a função `filterPartName`, que dada uma string, deve devolver um~
+   dicionário com os contactos `{número: nome}` cujos nomes incluam essa string.~
+   Use essa função para implementar a operação “Procurar Parte do nome”, que~
+   deve pedir um nome parcial e listar os contactos que o contêm.
 
    @code python
    def filterPartName(contacts, partName):
@@ -195,12 +198,12 @@
 
 * Exercício 3
 
-  > Adapte o programa anterior para ser possível associar a morada a um contacto.
-  > Sugere-se que altere o dicionário para ter pares `(nome, morada)` como valores
-  > associados às chaves. Altere a função de listagem para mostrar os dados em 3
-  > colunas com larguras fixas, número ajustado à direita, nome centrado na
-  > coluna, morada ajustada à esquerda. Faça também as adaptações necessárias nas
-  > restantes operações.
+  > Adapte o programa anterior para ser possível associar a morada a um contacto.~
+  Sugere-se que altere o dicionário para ter pares `(nome, morada)` como valores~
+  associados às chaves. Altere a função de listagem para mostrar os dados em 3~
+  colunas com larguras fixas, número ajustado à direita, nome centrado na~
+  coluna, morada ajustada à esquerda. Faça também as adaptações necessárias nas~
+  restantes operações.
 
   @code python
   def listContacts(dic):
@@ -306,8 +309,8 @@
 
 ** Parte b)
 
-   > Use a função criada no exercício 4 da aula05 para gerar uma lista com todos os
-   > jogos. Cada jogo é representado por um par `(equipa1, equipa2)`.
+   > Use a função criada no exercício 4 da aula05 para gerar uma lista com todos os~
+   jogos. Cada jogo é representado por um par `(equipa1, equipa2)`.
 
    @code python
    # SNIP
@@ -329,8 +332,8 @@
 
 ** Parte c)
 
-   > O programa deverá perguntar ao utilizador o resultado de cada jogo (golos de
-   > cada equipa) e registar essa informação num dicionário indexado pelo jogo.
+   > O programa deverá perguntar ao utilizador o resultado de cada jogo (golos de~
+   cada equipa) e registar essa informação num dicionário indexado pelo jogo.
 
    @code python
    # SNIP
@@ -361,11 +364,11 @@
 
 ** Parte d)
 
-   > O programa deve manter uma tabela com o registo do número de vitórias, de
-   > empates, de derrotas, o total de golos marcados e sofridos, e os pontos de
-   > cada equipa. Com o resultado de cada jogo, deve atualizar os registos das
-   > duas equipas envolvidas. O melhor é manter os registos noutro dicionário
-   > indexado pela equipa.
+   > O programa deve manter uma tabela com o registo do número de vitórias, de~
+   empates, de derrotas, o total de golos marcados e sofridos, e os pontos de~
+   cada equipa. Com o resultado de cada jogo, deve atualizar os registos das~
+   duas equipas envolvidas. O melhor é manter os registos noutro dicionário~
+   indexado pela equipa.
 
    @code python
    # SNIP
@@ -413,9 +416,9 @@
 
 ** Parte e)
 
-   > No final, apresente a tabela classificativa com as seguintes colunas: equipa,
-   > vitórias, empates, derrotas, golos marcados, golos sofridos e pontos.
-   > Desafio: consegue ordenar a tabela por ordem decrescente de pontos?
+   > No final, apresente a tabela classificativa com as seguintes colunas: equipa, ~
+   vitórias, empates, derrotas, golos marcados, golos sofridos e pontos.~
+   Desafio: consegue ordenar a tabela por ordem decrescente de pontos?
 
    @code python
    # SNIP
@@ -447,9 +450,9 @@
 
 ** Parte f)
 
-   > Finalmente, deverá apresentar a equipa campeã. A campeã é a equipa com mais
-   > pontos ou, em caso de empate, a que tiver maior diferença entre golos
-   > marcados e sofridos.
+   > Finalmente, deverá apresentar a equipa campeã. A campeã é a equipa com mais~
+   pontos ou, em caso de empate, a que tiver maior diferença entre golos~
+   marcados e sofridos.
 
    @code python
    # SNIP
@@ -485,22 +488,24 @@
 
 * Exercício 5
 
-  > O ficheiro `nasdaq.csv` tem um registo das transações das ações de algumas
-  > empresas ao longo de um mês na bolsa de valores NASDAQ. Cada linha do ficheiro
-  > tem os campos seguintes, separados por TABs
+  > O ficheiro `nasdaq.csv` tem um registo das transações das ações de algumas~
+  empresas ao longo de um mês na bolsa de valores NASDAQ. Cada linha do ficheiro~
+  tem os campos seguintes, separados por TABs
+
   @code
   Empresa Data ValorAbertura ValorMaximo ValorMinimo ValorFecho Volume
   @end
-  > O programa `stocks.py` tem uma função que lê esse ficheiro e devolve essa
-  > informação numa lista de tuplos. Complete as funções que faltam para colocar o
-  > programa a funcionar corretamente, *respeitando as invocações feitas na função*
-  > `main()`.
+
+  > O programa `stocks.py` tem uma função que lê esse ficheiro e devolve essa~
+  informação numa lista de tuplos. Complete as funções que faltam para colocar o~
+  programa a funcionar corretamente, *respeitando as invocações feitas na função*~
+  `main()`.
 
 ** Parte a)
 
-   > Complete a função `totalVolume(lst)` para devolver um dicionário com a
-   > estrutura `{empresa: volumeTotal}`, que indique para cada empresa, qual o
-   > volume total transacionado no período completo.
+   > Complete a função `totalVolume(lst)` para devolver um dicionário com a~
+   estrutura `{empresa: volumeTotal}`, que indique para cada empresa, qual o~
+   volume total transacionado no período completo.
 
    @code python
    def totalVolume(lst):
@@ -515,10 +520,10 @@
 
 ** Parte b)
 
-   > Complete `maxValorization(lst)` para devolver um dicionário com a estrutura
-   > `{data: (empresa, valorização)}` que, para cada data, indica qual a empresa
-   > com maior valorização diária relativa (ValorFecho/ValorAbertura - 100%) e
-   > qual essa valorização.
+   > Complete `maxValorization(lst)` para devolver um dicionário com a estrutura~
+   `{data: (empresa, valorização)}` que, para cada data, indica qual a empresa~
+   com maior valorização diária relativa ($\text{ValorFecho}/\text{ValorAbertura} - 100%$) e~
+   qual essa valorização.
 
    @code python
    def maxValorization(lst):
@@ -538,8 +543,8 @@
 
 ** Parte c)
 
-   > Complete `stocksByDateByName(lst)` para devolver a informação num dicionário
-   > indexado por data e por nome da empresa.
+   > Complete `stocksByDateByName(lst)` para devolver a informação num dicionário~
+   indexado por data e por nome da empresa.
 
    @code python
    def stocksByDateByName(lst):
@@ -557,10 +562,10 @@
 
 ** Parte d)
 
-   > Complete a função que calcula o valor de uma dada carteira de ações (um
-   > /portfólio/) de um investidor no fecho de uma dada data. A carteira de ações
-   > deve ser um dicionário com o número de ações de cada título, e.g.:
-   > `{'NFLX':100, 'CSCO':80}`.
+   > Complete a função que calcula o valor de uma dada carteira de ações (um~
+   /portfólio/) de um investidor no fecho de uma dada data. A carteira de ações~
+   deve ser um dicionário com o número de ações de cada título, e.g.:~
+   `{'NFLX':100, 'CSCO':80}`.
 
    @code python
    def portfolioValue(stocks, portfolio, date):
@@ -578,10 +583,10 @@
 
 * Exercício 6
 
-  > O programa `coins.py` contém um conjunto de funções para gerir carteiras de
-  > moedas. Cada carteira (bag) é representada por um dicionário que a cada tipo
-  > de moeda associa o número dessas moedas na carteira. A lista `COINS` contém os
-  > tipos de moedas válidas, por ordem decrescente de valor (em cêntimos).
+  > O programa `coins.py` contém um conjunto de funções para gerir carteiras de~
+  moedas. Cada carteira (bag) é representada por um dicionário que a cada tipo~
+  de moeda associa o número dessas moedas na carteira. A lista `COINS` contém os~
+  tipos de moedas válidas, por ordem decrescente de valor (em cêntimos).
 
 ** Parte a)
 
@@ -598,11 +603,10 @@
 
 ** Parte b)
 
-   > Complete a função `transfer1coin(b1, c, b2)` para tentar transferir uma moeda
-   > de tipo `c` da carteira `b1` para a `b2`. Se `b1` não tiver moedas do tipo
-   > `c`, a função deve devolver `False` e deixar as carteiras inalteradas. Se
-   > tiver, deve devolver `True` e atualizar o número de moedas nas duas
-   > carteiras.
+   > Complete a função `transfer1coin(b1, c, b2)` para tentar transferir uma moeda~
+   de tipo `c` da carteira `b1` para a `b2`. Se `b1` não tiver moedas do tipo~
+   `c`, a função deve devolver `False` e deixar as carteiras inalteradas. Se~
+   tiver, deve devolver `True` e atualizar o número de moedas nas duas carteiras.
 
    @code python
    def transfer1coin(bag1, c, bag2):
@@ -618,10 +622,10 @@
 
 ** Parte c)
 
-   > Complete a função `transfer(b1, a, b2)` para tentar transferir um montante `a`
-   > de `b1` para `b2`. Deve fazê-lo à custa de várias transferências de uma moeda
-   > de cada vez. Se conseguir, a função deve devolver `True` e alterar as
-   > carteiras. Se não, deve devolver `False` e manter as carteiras intactas.
+   > Complete a função `transfer(b1, a, b2)` para tentar transferir um montante `a`~
+   de `b1` para `b2`. Deve fazê-lo à custa de várias transferências de uma moeda~
+   de cada vez. Se conseguir, a função deve devolver `True` e alterar as~
+   carteiras. Se não, deve devolver `False` e manter as carteiras intactas.
 
    @code python
    def strbag(bag):
