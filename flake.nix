@@ -64,16 +64,21 @@
       devShells.default = pkgs.mkShell {
         buildInputs = with pkgs;
           [
-            jdk
+            # Python
             black
-            nodejs
-            dotnet-sdk
             python-dev
-            jdt-language-server
-            nodePackages.serve
-            nodePackages.prettier
-            nodePackages.firebase-tools
             nodePackages.pyright
+
+            # Java
+            jdk
+            jdt-language-server
+
+            # .Net
+            dotnet-sdk
+
+            # Node
+            nodejs
+            nodePackages.serve
             nodePackages.typescript-language-server
             nodePackages.vscode-langservers-extracted
           ]
