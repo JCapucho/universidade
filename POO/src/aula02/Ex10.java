@@ -2,20 +2,16 @@ package aula02;
 
 import utils.UserInput;
 
-import java.util.Scanner;
-
 public class Ex10 {
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-
-        double primeiro = UserInput.promptDouble(sc, "Insira um número: ");
+        double primeiro = UserInput.promptDouble("Insira um número: ");
         double max = primeiro;
         double min = primeiro;
         double sum = primeiro;
         int len = 1;
 
         while (true) {
-            double next = UserInput.promptDouble(sc, "Insira um número: ");
+            double next = UserInput.promptDouble("Insira um número: ");
 
             len++;
             sum += next;

@@ -2,20 +2,16 @@ package aula02;
 
 import utils.UserInput;
 
-import java.util.Scanner;
-
 public class Ex7 {
 
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-
         System.out.println("Insira as cordenadas do primeiro ponto");
-        double p1X = UserInput.promptDouble(sc, "x: ");
-        double p1Y = UserInput.promptDouble(sc, "y: ");
+        double p1X = UserInput.promptDouble("x: ");
+        double p1Y = UserInput.promptDouble("y: ");
 
         System.out.println("Insira as cordenadas do segundo ponto");
-        double p2X = UserInput.promptDouble(sc, "x: ");
-        double p2Y = UserInput.promptDouble(sc, "y: ");
+        double p2X = UserInput.promptDouble("x: ");
+        double p2Y = UserInput.promptDouble("y: ");
 
         double xDiff = (p1X - p2X);
         double xDiff2 = xDiff * xDiff;

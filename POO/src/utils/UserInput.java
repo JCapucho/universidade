@@ -1,23 +1,38 @@
 package utils;
 
-import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.util.InputMismatchException;
 
 /**
  * Helper class for dealing with user input
  */
-public class UserInput {
+public final class UserInput {
+    private final static Scanner scanner = new Scanner(System.in);
+
+    /**
+     * Dummy constructor to prevent UserInput from being instantiated
+     */
+    private UserInput() {
+        throw new UnsupportedOperationException();
+    }
+
     /**
      * Prints to the terminal the prompt argument and waits for the user to
      * insert an integer.
      *
-     * @param sc     the instance that will be used to get the user input
      * @param prompt the text to be printed to the terminal before waiting for the input
      * @return the number inserted by the user
      */
-    public static int promptInt(Scanner sc, String prompt) {
-        System.out.print(prompt);
-        return sc.nextInt();
+    public static int promptInt(String prompt) {
+        while (true) {
+            System.out.print(prompt);
+            try {
+                return scanner.nextInt();
+            } catch (InputMismatchException e) {
+                scanner.nextLine();
+                System.out.println("O valor têm que ser um inteiro");
+            }
+        }
     }
 
     /**
@@ -25,13 +40,12 @@ public class UserInput {
      * insert an integer that's greater or equal than the provided minimum limit,
      * repeats the prompt until a valid number is inserted.
      *
-     * @param sc     the instance that will be used to get the user input
      * @param prompt the text to be printed to the terminal before waiting for the input
      * @param min    the lower limit of the number the user must insert (inclusive)
      * @return the number inserted by the user
      */
-    public static int promptIntMin(Scanner sc, String prompt, int min) {
-        return promptIntMin(sc, prompt, min, false);
+    public static int promptIntMin(String prompt, int min) {
+        return promptIntMin(prompt, min, false);
     }
 
     /**
@@ -40,14 +54,14 @@ public class UserInput {
      * or just greater (if exclusive is true) than the provided minimum limit,
      * repeats the prompt until a valid number is inserted.
      *
-     * @param sc        the instance that will be used to get the user input
      * @param prompt    the text to be printed to the terminal before waiting for the input
      * @param min       the lower limit of the number the user must insert
      * @param exclusive controls if the limit is exclusive (true) or inclusive (false)
      * @return the number inserted by the user
      */
-    public static int promptIntMin(Scanner sc, String prompt, int min, boolean exclusive) {
-        return promptIntRange(sc, prompt, min, exclusive, Integer.MAX_VALUE, false);
+    public static int promptIntMin(String prompt, int min, boolean exclusive) {
+        InputValidator<Integer> validator = InputValidator.minValidator(min, exclusive);
+        return promptIntValidator(prompt, validator);
     }
 
     /**
@@ -55,13 +69,12 @@ public class UserInput {
      * insert an integer that's less or equal than the provided maximum limit,
      * repeats the prompt until a valid number is inserted.
      *
-     * @param sc     the instance that will be used to get the user input
      * @param prompt the text to be printed to the terminal before waiting for the input
      * @param max    the upper limit of the number the user must insert (inclusive)
      * @return the number inserted by the user
      */
-    public static int promptIntMax(Scanner sc, String prompt, int max) {
-        return promptIntMax(sc, prompt, max, false);
+    public static int promptIntMax(String prompt, int max) {
+        return promptIntMax(prompt, max, false);
     }
 
     /**
@@ -70,14 +83,14 @@ public class UserInput {
      * or just less (if exclusive is true) than the provided maximum limit,
      * repeats the prompt until a valid number is inserted.
      *
-     * @param sc        the instance that will be used to get the user input
      * @param prompt    the text to be printed to the terminal before waiting for the input
      * @param max       the upper limit of the number the user must insert
      * @param exclusive controls if the limit is exclusive (true) or inclusive (false)
      * @return the number inserted by the user
      */
-    public static int promptIntMax(Scanner sc, String prompt, int max, boolean exclusive) {
-        return promptIntRange(sc, prompt, Integer.MIN_VALUE, false, max, exclusive);
+    public static int promptIntMax(String prompt, int max, boolean exclusive) {
+        InputValidator<Integer> validator = InputValidator.maxValidator(max, exclusive);
+        return promptIntValidator(prompt, validator);
     }
 
     /**
@@ -86,14 +99,13 @@ public class UserInput {
      * and less or equal than the provided maximum limit, repeats the prompt until
      * a valid number is inserted.
      *
-     * @param sc     the instance that will be used to get the user input
      * @param prompt the text to be printed to the terminal before waiting for the input
      * @param min    the lower limit of the number the user must insert
      * @param max    the upper limit of the number the user must insert
      * @return the number inserted by the user
      */
-    public static int promptIntRange(Scanner sc, String prompt, int min, int max) {
-        return promptIntRange(sc, prompt, min, false, max, false);
+    public static int promptIntRange(String prompt, int min, int max) {
+        return promptIntRange(prompt, min, false, max, false);
     }
 
     /**
@@ -104,7 +116,6 @@ public class UserInput {
      * or just less (if maxExclusive is true) than the provided maximum limit,
      * repeats the prompt until a valid number is inserted.
      *
-     * @param sc           the instance that will be used to get the user input
      * @param prompt       the text to be printed to the terminal before waiting for the input
      * @param min          the lower limit of the number the user must insert
      * @param minExclusive controls if the lower limit is exclusive (true) or inclusive (false)
@@ -112,41 +123,43 @@ public class UserInput {
      * @param maxExclusive controls if the upper limit is exclusive (true) or inclusive (false)
      * @return the number inserted by the user
      */
-    public static int promptIntRange(Scanner sc, String prompt, int min, boolean minExclusive, int max, boolean maxExclusive) {
-        int value;
+    public static int promptIntRange(String prompt, int min, boolean minExclusive, int max, boolean maxExclusive) {
+        InputValidator<Integer> validator = InputValidator.rangeValidator(min, max, minExclusive, maxExclusive);
+        return promptIntValidator(prompt, validator);
+    }
+
+    public static int promptIntValidator(String prompt, InputValidator<Integer> validator) {
         while (true) {
+            int value = promptInt(prompt);
+
             try {
-                value = promptInt(sc, prompt);
-            } catch (InputMismatchException e) {
-                sc.nextLine();
-                System.out.println("O valor têm que ser um inteiro");
+                validator.apply(value);
+            } catch (UserInputValidationException e) {
+                System.out.println(e.getMessage());
                 continue;
             }
 
-            boolean minGood = minExclusive && min < value || !minExclusive && min <= value;
-            boolean maxGood = maxExclusive && max > value || !maxExclusive && max >= value;
-
-            if (minGood && maxGood)
-                break;
-
-            String minBound = minExclusive ? "]" : "[";
-            String maxBound = maxExclusive ? "[" : "]";
-            System.out.printf("O valor têm que estar entre %s%d, %d%s\n", minBound, min, max, maxBound);
+            return value;
         }
-        return value;
     }
 
     /**
      * Prints to the terminal the prompt argument and waits for the user to
      * insert a double.
      *
-     * @param sc     the instance that will be used to get the user input
      * @param prompt the text to be printed to the terminal before waiting for the input
      * @return the number inserted by the user
      */
-    public static double promptDouble(Scanner sc, String prompt) {
-        System.out.print(prompt);
-        return sc.nextDouble();
+    public static double promptDouble(String prompt) {
+        while (true) {
+            System.out.print(prompt);
+            try {
+                return scanner.nextDouble();
+            } catch (InputMismatchException e) {
+                scanner.nextLine();
+                System.out.println("O valor têm que ser um real");
+            }
+        }
     }
 
     /**
@@ -154,13 +167,12 @@ public class UserInput {
      * insert a double that's greater or equal than the provided minimum limit,
      * repeats the prompt until a valid number is inserted.
      *
-     * @param sc     the instance that will be used to get the user input
      * @param prompt the text to be printed to the terminal before waiting for the input
      * @param min    the lower limit of the number the user must insert (inclusive)
      * @return the number inserted by the user
      */
-    public static double promptDoubleMin(Scanner sc, String prompt, double min) {
-        return promptDoubleMin(sc, prompt, min, false);
+    public static double promptDoubleMin(String prompt, double min) {
+        return promptDoubleMin(prompt, min, false);
     }
 
     /**
@@ -169,14 +181,14 @@ public class UserInput {
      * or just greater (if exclusive is true) than the provided minimum limit,
      * repeats the prompt until a valid number is inserted.
      *
-     * @param sc        the instance that will be used to get the user input
      * @param prompt    the text to be printed to the terminal before waiting for the input
      * @param min       the lower limit of the number the user must insert
      * @param exclusive controls if the limit is exclusive (true) or inclusive (false)
      * @return the number inserted by the user
      */
-    public static double promptDoubleMin(Scanner sc, String prompt, double min, boolean exclusive) {
-        return promptDoubleRange(sc, prompt, min, exclusive, Double.POSITIVE_INFINITY, true);
+    public static double promptDoubleMin(String prompt, double min, boolean exclusive) {
+        InputValidator<Double> validator = InputValidator.minValidator(min, exclusive);
+        return promptDoubleValidator(prompt, validator);
     }
 
     /**
@@ -184,13 +196,12 @@ public class UserInput {
      * insert a double that's less or equal than the provided maximum limit,
      * repeats the prompt until a valid number is inserted.
      *
-     * @param sc     the instance that will be used to get the user input
      * @param prompt the text to be printed to the terminal before waiting for the input
      * @param max    the upper limit of the number the user must insert (inclusive)
      * @return the number inserted by the user
      */
-    public static double promptDoubleMax(Scanner sc, String prompt, double max) {
-        return promptDoubleMax(sc, prompt, max, false);
+    public static double promptDoubleMax(String prompt, double max) {
+        return promptDoubleMax(prompt, max, false);
     }
 
     /**
@@ -199,14 +210,14 @@ public class UserInput {
      * or just less (if exclusive is true) than the provided maximum limit,
      * repeats the prompt until a valid number is inserted.
      *
-     * @param sc        the instance that will be used to get the user input
      * @param prompt    the text to be printed to the terminal before waiting for the input
      * @param max       the upper limit of the number the user must insert
      * @param exclusive controls if the limit is exclusive (true) or inclusive (false)
      * @return the number inserted by the user
      */
-    public static double promptDoubleMax(Scanner sc, String prompt, double max, boolean exclusive) {
-        return promptDoubleRange(sc, prompt, Double.NEGATIVE_INFINITY, true, max, exclusive);
+    public static double promptDoubleMax(String prompt, double max, boolean exclusive) {
+        InputValidator<Double> validator = InputValidator.maxValidator(max, exclusive);
+        return promptDoubleValidator(prompt, validator);
     }
 
     /**
@@ -215,14 +226,13 @@ public class UserInput {
      * and less or equal than the provided maximum limit, repeats the prompt until
      * a valid number is inserted.
      *
-     * @param sc     the instance that will be used to get the user input
      * @param prompt the text to be printed to the terminal before waiting for the input
      * @param min    the lower limit of the number the user must insert
      * @param max    the upper limit of the number the user must insert
      * @return the number inserted by the user
      */
-    public static double promptDoubleRange(Scanner sc, String prompt, double min, double max) {
-        return promptDoubleRange(sc, prompt, min, false, max, false);
+    public static double promptDoubleRange(String prompt, double min, double max) {
+        return promptDoubleRange(prompt, min, false, max, false);
     }
 
     /**
@@ -233,7 +243,6 @@ public class UserInput {
      * or just less (if maxExclusive is true) than the provided maximum limit,
      * repeats the prompt until a valid number is inserted.
      *
-     * @param sc           the instance that will be used to get the user input
      * @param prompt       the text to be printed to the terminal before waiting for the input
      * @param min          the lower limit of the number the user must insert
      * @param minExclusive controls if the lower limit is exclusive (true) or inclusive (false)
@@ -241,27 +250,23 @@ public class UserInput {
      * @param maxExclusive controls if the upper limit is exclusive (true) or inclusive (false)
      * @return the number inserted by the user
      */
-    public static double promptDoubleRange(Scanner sc, String prompt, double min, boolean minExclusive, double max, boolean maxExclusive) {
-        double value;
+    public static double promptDoubleRange(String prompt, double min, boolean minExclusive, double max, boolean maxExclusive) {
+        InputValidator<Double> validator = InputValidator.rangeValidator(min, max, minExclusive, maxExclusive);
+        return promptDoubleValidator(prompt, validator);
+    }
+
+    public static double promptDoubleValidator(String prompt, InputValidator<Double> validator) {
         while (true) {
+            double value = promptDouble(prompt);
+
             try {
-                value = promptDouble(sc, prompt);
-            } catch (InputMismatchException e) {
-                sc.nextLine();
-                System.out.println("O valor têm que ser um real");
+                validator.apply(value);
+            } catch (UserInputValidationException e) {
+                System.out.println(e.getMessage());
                 continue;
             }
 
-            boolean minGood = minExclusive && min < value || !minExclusive && min <= value;
-            boolean maxGood = maxExclusive && max > value || !maxExclusive && max >= value;
-
-            if (minGood && maxGood)
-                break;
-
-            String minBound = minExclusive ? "]" : "[";
-            String maxBound = maxExclusive ? "[" : "]";
-            System.out.printf("O valor têm que estar entre %s%f, %f%s\n", minBound, min, max, maxBound);
+            return value;
         }
-        return value;
     }
 }
