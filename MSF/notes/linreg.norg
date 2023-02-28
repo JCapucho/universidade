@@ -1,0 +1,147 @@
+@document.meta
+	title: Regressão linear
+    author: João Capucho
+@end
+
+* Introdução
+
+  A regressão linear permite obter uma equação linear $y = mx +b$ a
+  partir de dados experimentais permitindo estimar o comportamento de
+  uma dada experiência sem ter de realizar mais medições.
+
+* Aviso
+
+  A regressão linear só se pode aplicar a modelos lineares, se os dados
+  experimentais não apresentarem uma tendência linear então não se deve
+  aplicar a regressão linear (ou pelo menos não diretamente).
+
+  A imagem em baixo mostra dois gráficos de dados experimentais.
+
+  @embed image
+  assets/linear-non-linear-plot.png
+  @end
+
+  O gráfico da esquerda mostra dados experimentais que exibem uma relação
+  linear logo pode ser aplicada uma relação linear para obter um model da
+  experiência, no entanto o gráfico da direita apresenta dados com uma
+  relação não linear logo não se pode aplicar uma regressão linear.
+
+  @embed image
+  assets/linear-non-linear-plot-reg.png
+  @end
+
+  A reta da esquerda modela os dados experimentais com bastante proximidade
+  enquanto que a da esquerda diverge bastante dos do esperado.
+
+* Coeficiente de determinação
+
+  Uma maneira de verificarmos se a reta obtida se ajusta ou bem aos dados
+  experimentais obtidos é utilizando o coeficiente de determinação este
+  denota-se por $r^2$ e varia entre 1 que indica um ajuste perfeito, e
+  0 que indica que o modelo não é linear.
+
+  @embed image
+  assets/linear-non-linear-plot-reg-r2.png
+  @end
+
+  A imagem mostra os coeficientes de determinação para dois modelos, podemos
+  considerar o modelo da esquerda como linear pois o coeficiente de determinação
+  deste aproxima-se de 1, enquanto que o da direita consideramos como não linear,
+  pois este apesar de não se aproximar de 0, também não se aproxima de 1 o
+  suficiente para o considerar como linear.
+
+* Calcular a reta
+
+  A regressão linear é calculada de acordo com as seguintes fórmulas.
+
+  @math
+  m = \frac {
+  N \sum_{i=1}^N x_i y_i - \sum_{i=1}^N x_i \sum_{i=1}^N y_i
+  }{
+  N \sum_{i=1}^N x_i^2 - \left( \sum_{i=1}^N x_i \right)^2
+  }
+  @end
+
+  @math
+  b = \frac {
+  \sum_{i=1}^N x_i^2 \sum_{i=1}^N y_i - \sum_{i=1}^N x_i \sum_{i=1}^N x_i y_i
+  }{
+  N \sum_{i=1}^N x_i^2 - \left( \sum_{i=1}^N x_i \right)^2
+  }
+  @end
+
+  $m$ e $b$ são o declive e a ordenada na origem respetivamente da nossa reta
+  $y = mx + b$ os valores presentes nas fórmulas são:
+
+  - $x_i$ e $y_i$ são os dados experimentais
+  - $N$ é o número de dados experimentais recolhidos
+
+  Em baixo apresenta-se uma implementação em python com numpy destas fórmulas
+  (Neste código `x` e `y` precisam de ser arrays do numpy).
+
+  @code python
+  data_points = np.size(x)
+
+  mul_sum = np.sum(np.multiply(x, y))
+
+  x_sum = np.sum(x)
+  y_sum = np.sum(y)
+
+  m_numerator = data_points * mul_sum - x_sum * y_sum
+
+  x2_sum = np.sum(np.square(x))
+  x_sum2 = np.square(np.sum(x))
+
+  x_denom = data_points * x2_sum - x_sum2
+
+  m = m_numerator / x_denom
+
+  b = (x2_sum * y_sum - x_sum * mul_sum) / x_denom
+  @end
+
+* Calcular o coeficiente de determinação
+
+  O coeficiente de determinação é dado pela seguinte fórmula.
+
+  @math
+  r^2 = \frac {
+  \left( N \sum_{i=1}^N x_i y_i - \sum_{i=1}^N x_i \sum_{i=1}^N y_i \right)^2
+  }{
+  \left[ N \sum_{i=1}^N x_i^2 - \left( \sum_{i=1}^N x_i \right)^2 \right]
+  \left[ N \sum_{i=1}^N y_i^2 - \left( \sum_{i=1}^N y_i \right)^2 \right]
+  }
+  @end
+
+  Que em python calculara-se ia com o seguinte código (depende de variavéis
+  apresentadas no código anterior)
+
+  @code python
+  y2_sum = np.sum(np.square(y))
+  y_sum2 = np.square(np.sum(y))
+
+  y_denom = data_points * y2_sum - y_sum2
+
+  r2 = m_numerator**2 / (x_denom * y_denom)
+  @end
+
+* Calcular os erros
+
+  A regressão linear permite-nos também obter os erros associados a $m$ e a $b$,
+  para os calcular utiliza-se as seguinte fórmulas.
+
+  @math
+  \Delta m = \lvert m \rvert \sqrt{ \frac{\frac{1}{r^2} - 1}{N-2} }
+  @end
+
+  @math
+  \Delta b = \Delta m \sqrt{ \frac{ \sum_{i=1}^N x_i^2 }{N} }
+  @end
+
+  Que se pode calcular em python da seguinte forma (mais uma vez isto depende
+  das variavéis da ultimas duas secções)
+
+  @code python
+  delta_m = np.absolute(m) * np.sqrt((1 / r2 - 1) / (data_points - 2))
+
+  delta_b = delta_m * np.sqrt(x2_sum / data_points)
+  @end

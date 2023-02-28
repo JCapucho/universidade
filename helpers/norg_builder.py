@@ -18,6 +18,12 @@ parser.add_argument(
     help="The template to use",
 )
 parser.add_argument(
+    "--static-assets",
+    metavar="PATH",
+    type=Path,
+    help="The path to the static assets to be used",
+)
+parser.add_argument(
     "out",
     metavar="PATH",
     type=Path,
@@ -39,7 +45,11 @@ parser.add_argument(
 args = parser.parse_args()
 
 os.makedirs(args.out, exist_ok=True)
-shutil.copytree(args.source.parent / "res", args.out / "res", dirs_exist_ok=True)
+shutil.copytree(
+    args.source.parent / args.static_assets,
+    args.out / args.static_assets,
+    dirs_exist_ok=True,
+)
 
 process = subprocess.Popen(["pandoc-norg-rs", args.source], stdout=subprocess.PIPE)
 

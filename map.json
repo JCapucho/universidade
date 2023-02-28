@@ -9,8 +9,8 @@
 			"builder": "helpers/norg_builder.py",
 			"workdir": "FP",
 			"args": [
-				"--template",
-				"templates/Simple.html"
+				"--template=templates/Simple.html",
+				"--static-assets=res"
 			],
 			"children": "FP/map.json"
 		},
@@ -42,6 +42,17 @@
 					"target": "https://uapt33090-my.sharepoint.com/:f:/g/personal/jcapucho_ua_pt/EuyAFPpIiv1NtM3Q5r9g0AoB_4ntyJuT9thYvp5oL0sNtg?e=mM8dtF"
 				}
 			]
+		},
+		{
+			"name": "Modelação de Sistemas Físicos",
+			"type": "builder",
+			"builder": "helpers/norg_builder.py",
+			"workdir": "MSF",
+			"args": [
+				"--template=templates/Simple.html",
+				"--static-assets=assets"
+			],
+			"children": "MSF/map.json"
 		}
 	]
 }

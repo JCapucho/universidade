@@ -1,0 +1,9 @@
+[
+	{
+		"name": "Regressão linear",
+		"workdir": "notes",
+		"args": [
+			"MSF/notes/linreg.norg"
+		]
+	}
+]
