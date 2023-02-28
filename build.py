@@ -8,6 +8,7 @@ import sys
 import time
 import asyncio
 import typing
+import aiofiles
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -139,9 +140,7 @@ async def processNodeCode(_name, raw_node, state):
     lexer = guess_lexer_for_filename(filename, srcCode)
 
     code = highlight(srcCode, lexer, HtmlFormatter())
-    source_template.stream(code=code, filename=filename, links=[]).dump(
-        str(target)
-    )
+    source_template.stream(code=code, filename=filename, links=[]).dump(str(target))
 
     return SiteLink(link)
 
@@ -173,24 +172,38 @@ async def processNodeGeneric(raw_node, state):
 
     logging.debug(f"Finished building node '{name}' took {ms:.3f}ms")
 
-    children = await processChildren(raw_node.get("children", []), child_state)
+    node_children = raw_node.get("children", None)
+
+    if isinstance(node_children, str):
+        async with aiofiles.open(node_children, mode="r") as f:
+            contents = await f.read()
+            node_children = json.loads(contents)
+
+    if node_children is not None:
+        children = await processChildren(node_children, child_state)
+    else:
+        children = []
 
     return SiteNode(name, link, children)
+
 
 async def processChildren(children, state) -> list["SiteNode"]:
     tasks = []
     results: list[None | "SiteNode"] = [None] * len(children)
 
     for i, raw_node in enumerate(children):
+
         async def process(i, raw_node):
             node = await processNodeGeneric(raw_node, state)
             results[i] = node
+
         task = asyncio.create_task(process(i, raw_node))
         tasks.append(task)
 
     await asyncio.gather(*tasks)
 
     return typing.cast(list["SiteNode"], results)
+
 
 async def main():
     site_data = json.load(program_args.map)
@@ -204,7 +217,10 @@ async def main():
         sitemap=sitemap,
     ).dump(str(program_args.build_dir / "index.html"))
 
-    shutil.copytree("resources", program_args.build_dir / "resources", dirs_exist_ok=True)
+    shutil.copytree(
+        "resources", program_args.build_dir / "resources", dirs_exist_ok=True
+    )
+
 
 logging.basicConfig(level=logging.DEBUG)
 

@@ -1,0 +1,96 @@
+[
+	{
+		"name": "Aula 00",
+		"workdir": "aula00",
+		"args": [
+			"FP/aula00/aula00.norg"
+		]
+	},
+	{
+		"name": "Aula 01",
+		"workdir": "aula01",
+		"args": [
+			"FP/aula01/aula01.norg"
+		]
+	},
+	{
+		"name": "Aula 02",
+		"workdir": "aula02",
+		"args": [
+			"FP/aula02/aula02.norg"
+		]
+	},
+	{
+		"name": "Aula 03",
+		"workdir": "aula03",
+		"args": [
+			"FP/aula03/aula03.norg"
+		]
+	},
+	{
+		"name": "Aula 04",
+		"workdir": "aula04",
+		"args": [
+			"FP/aula04/aula04.norg"
+		]
+	},
+	{
+		"name": "Aula 05",
+		"workdir": "aula05",
+		"args": [
+			"FP/aula05/aula05.norg"
+		]
+	},
+	{
+		"name": "Aula 06",
+		"workdir": "aula06",
+		"args": [
+			"FP/aula06/aula06.norg"
+		]
+	},
+	{
+		"name": "Aula 07",
+		"workdir": "aula07",
+		"args": [
+			"FP/aula07/aula07.norg"
+		]
+	},
+	{
+		"name": "Aula 08",
+		"workdir": "aula08",
+		"args": [
+			"FP/aula08/aula08.norg"
+		]
+	},
+	{
+		"name": "Aula 09",
+		"workdir": "aula09",
+		"args": [
+			"FP/aula09/aula09.norg"
+		]
+	},
+	{
+		"name": "Aula 10",
+		"workdir": "aula10",
+		"args": [
+			"FP/aula10/aula10.norg"
+		]
+	},
+	{
+		"name": "APx2",
+		"type": "group",
+		"workdir": "apx2",
+		"children": [
+			{
+				"name": "APx2 (PDF)",
+				"type": "file",
+				"target": "FP/apx2/apx2.pdf"
+			},
+			{
+				"name": "Solution",
+				"type": "code",
+				"target": "FP/apx2/shop.py"
+			}
+		]
+	}
+]

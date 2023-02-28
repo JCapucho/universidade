@@ -20,6 +20,7 @@
           numpy
           sympy
           jinja2
+          aiofiles
           matplotlib
           beautifulsoup4
           pygments

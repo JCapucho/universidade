@@ -1,0 +1,215 @@
+[
+	{
+		"name": "Laboratório 1",
+		"type": "group",
+		"workdir": "Lab01",
+		"children": [
+			{
+				"name": "Relatório (PDF)",
+				"type": "file",
+				"target": "MAS/Lab01/Lab 01.pdf"
+			},
+			{
+				"name": "Relatório (Word/ODT)",
+				"type": "file",
+				"download": true,
+				"target": "MAS/Lab01/Lab 01.odt"
+			},
+			{
+				"name": "Projeto do visual paradigm",
+				"type": "file",
+				"download": true,
+				"target": "MAS/Lab01/diagramas/Lab 01.vpp"
+			}
+		]
+	},
+	{
+		"name": "Laboratório 2",
+		"type": "group",
+		"workdir": "Lab02",
+		"children": [
+			{
+				"name": "Relatório (PDF)",
+				"type": "file",
+				"download": false,
+				"target": "MAS/Lab02/Lab 02.pdf"
+			},
+			{
+				"name": "Relatório (Word/ODT)",
+				"type": "file",
+				"download": true,
+				"target": "MAS/Lab02/Lab 02.odt"
+			},
+			{
+				"name": "Projeto do visual paradigm",
+				"type": "file",
+				"download": true,
+				"target": "MAS/Lab02/diagramas/Lab 02.vpp"
+			}
+		]
+	},
+	{
+		"name": "Laboratório 3",
+		"type": "group",
+		"workdir": "Lab03",
+		"children": [
+			{
+				"name": "Relatório (PDF)",
+				"type": "file",
+				"download": false,
+				"target": "MAS/Lab03/Lab 03.pdf"
+			},
+			{
+				"name": "Relatório (Word/ODT)",
+				"type": "file",
+				"download": true,
+				"target": "MAS/Lab03/Lab 03.odt"
+			},
+			{
+				"name": "Projeto do visual paradigm",
+				"type": "file",
+				"download": true,
+				"target": "MAS/Lab03/diagramas/Lab 03.vpp"
+			}
+		]
+	},
+	{
+		"name": "Laboratório 4",
+		"type": "group",
+		"workdir": "Lab04",
+		"children": [
+			{
+				"name": "Relatório (PDF)",
+				"type": "file",
+				"download": false,
+				"target": "MAS/Lab04/Lab 04.pdf"
+			},
+			{
+				"name": "Relatório (Word/ODT)",
+				"type": "file",
+				"download": true,
+				"target": "MAS/Lab04/Lab 04.odt"
+			},
+			{
+				"name": "Projeto do visual paradigm",
+				"type": "file",
+				"download": true,
+				"target": "MAS/Lab04/diagramas/Lab 04.vpp"
+			}
+		]
+	},
+	{
+		"name": "Projeto",
+		"type": "group",
+		"workdir": "projeto",
+		"children": [
+			{
+				"name": "Iteração 1",
+				"type": "group",
+				"workdir": "Iteração 1",
+				"children": [
+					{
+						"name": "Relatório Visão (PDF)",
+						"type": "file",
+						"target": "MAS/projeto/Iteração 1/E2-Relatorio-Visao.pdf"
+					},
+					{
+						"name": "Relatório Visão (Word/ODT)",
+						"type": "file",
+						"download": true,
+						"target": "MAS/projeto/Iteração 1/E2-Relatorio-Visao.odt"
+					},
+					{
+						"name": "Backlog (PDF)",
+						"type": "file",
+						"download": true,
+						"target": "MAS/projeto/Iteração 1/E1-Backlog.pdf"
+					},
+					{
+						"name": "Apresentação 1 (PDF)",
+						"type": "file",
+						"download": true,
+						"target": "MAS/projeto/Iteração 1/Apresentação-1.pdf"
+					},
+					{
+						"name": "Projeto do visual paradigm",
+						"type": "file",
+						"download": true,
+						"target": "MAS/projeto/Iteração 1/diagramas/CaU.vpp"
+					}
+				]
+			},
+			{
+				"name": "Iteração 2",
+				"type": "group",
+				"workdir": "Iteração 2",
+				"children": [
+					{
+						"name": "Relatório incremento 1 (PDF)",
+						"type": "file",
+						"target": "MAS/projeto/Iteração 2/E3-1-Incremento-1.pdf"
+					},
+					{
+						"name": "Relatório incremento 1 (Word/ODT)",
+						"type": "file",
+						"download": true,
+						"target": "MAS/projeto/Iteração 2/E3-1-Incremento-1.odt"
+					},
+					{
+						"name": "Backlog (PDF)",
+						"type": "file",
+						"download": true,
+						"target": "MAS/projeto/Iteração 2/E1-Backlog.pdf"
+					},
+					{
+						"name": "Apresentação 2 (PDF)",
+						"type": "file",
+						"download": true,
+						"target": "MAS/projeto/Iteração 2/Apresentação-2.pdf"
+					},
+					{
+						"name": "Projeto do visual paradigm",
+						"type": "file",
+						"download": true,
+						"target": "MAS/projeto/Iteração 2/diagramas/E3.vpp"
+					}
+				]
+			},
+			{
+				"name": "Iteração 3",
+				"type": "group",
+				"workdir": "Iteração 3",
+				"children": [
+					{
+						"name": "Relatório incremento 2 (PDF)",
+						"type": "file",
+						"target": "MAS/projeto/Iteração 3/E3-2-Incremento-2.pdf"
+					},
+					{
+						"name": "Relatório incremento 2 (Word/ODT)",
+						"type": "file",
+						"download": true,
+						"target": "MAS/projeto/Iteração 3/E3-2-Incremento-2.odt"
+					},
+					{
+						"name": "Backlog (PDF)",
+						"type": "file",
+						"download": true,
+						"target": "MAS/projeto/Iteração 3/E1-Backlog.pdf"
+					},
+					{
+						"name": "Apresentação 3 (PDF)",
+						"type": "file",
+						"download": true,
+						"target": "MAS/projeto/Iteração 3/Apresentação-3.pdf"
+					},
+					{
+						"name": "Site final",
+						"type": "external",
+						"target": "https://github.com/JCapucho/mas-projeto-final"
+					}
+				]
+			}
+		]
+	}
+]
