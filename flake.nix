@@ -1,8 +1,10 @@
 {
   description = "Site para os resumos da universidade";
   inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
     pandoc-norg-rs.url = "github:JCapucho/pandoc-norg-rs";
+    pandoc-norg-rs.inputs.nixpkgs.follows = "nixpkgs";
   };
   outputs = {
     nixpkgs,
@@ -15,6 +17,8 @@
 
       python-packages = python-packages:
         with python-packages; [
+          numpy
+          sympy
           jinja2
           matplotlib
           beautifulsoup4
