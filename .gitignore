@@ -1,3 +1,5 @@
 /build
 /result
+.jupyter
+.ipynb_checkpoints
 __pycache__

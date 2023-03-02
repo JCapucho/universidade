@@ -3,17 +3,33 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
+
     pandoc-norg-rs.url = "github:JCapucho/pandoc-norg-rs";
     pandoc-norg-rs.inputs.nixpkgs.follows = "nixpkgs";
+
+    jupyenv.url = "github:tweag/jupyenv";
   };
   outputs = {
     nixpkgs,
     flake-utils,
     pandoc-norg-rs,
+    jupyenv,
     ...
   }:
     flake-utils.lib.eachDefaultSystem (system: let
       pkgs = nixpkgs.legacyPackages.${system};
+
+      inherit (jupyenv.lib.${system}) mkJupyterlabNew;
+      jupyterlab = mkJupyterlabNew ({...}: {
+        nixpkgs = nixpkgs;
+        imports = [
+          ({pkgs, ...}: {
+            kernel.python.minimal = {
+              enable = true;
+            };
+          })
+        ];
+      });
 
       python-packages = python-packages:
         with python-packages; [
@@ -66,6 +82,7 @@
 
         src = ./.;
       };
+
       devShells.default = pkgs.mkShell {
         buildInputs = with pkgs;
           [
@@ -89,5 +106,9 @@
           ]
           ++ sharedPackages;
       };
+
+      packages.jupyter = jupyterlab;
+      apps.jupyter.type = "app";
+      apps.jupyter.program = "${jupyterlab}/bin/jupyter-lab";
     });
 }

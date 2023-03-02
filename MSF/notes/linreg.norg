@@ -145,3 +145,61 @@
 
   delta_b = delta_m * np.sqrt(x2_sum / data_points)
   @end
+
+* Modelos exponenciais e de potências
+
+  Apesar de a regressão linear só se poder aplicar a modelos lineares, é
+  possivel processar os dados experimentais de modo a elaborar um modelo
+  linear e a partir desse extrair informação acerca do modelo experimental.
+
+** Modelo de potência
+
+   Um desses casos é quando se trata de um modelo de potência, apresenta-se em
+   baixo um exemplo de dados experimentais que representam um desses modelos.
+
+   @embed image
+   assets/power-plot.png
+   @end
+
+   Aplicar diretamente uma regressão linear a este modelo resulta numa reta mal ajustada.
+
+   @embed image
+   assets/power-plot-reg.png
+   @end
+
+   No entanto se aplicarmos a função log a ambos os eixos deste gráfico,
+   obtemos o seguinte gráfico.
+
+   @embed image
+   assets/power-plot-log.png
+   @end
+
+   Este gráfico chama-se de gráfico log-log e apresenta agora uma tendência linear
+   entre os eixos das ordenadas e das abcissas e portanto é um bom candidato para
+   se fazer uma regressão linear.
+
+   *Cuidado*: A função log têm de domínio $]0, +\infty[$ logo as coordenadas dos pontos
+   experimentais não podem ser negativas ou $0$, ou será necessário processar os dados
+   primeiros antes de se fazer o gráfico log-log.
+
+   @embed image
+   assets/power-plot-log-reg.png
+   @end
+
+   O modelo de potência tem a forma de $y = cx^n$, podemos obter estes parâmetros
+   a partir da regressão linear que obtemos no gráfico de logaritmos. Se aplicarmos
+   o logaritmo (de qualquer base mas normalmente usa-se o número de euler `e` ou `10`)
+   a esta fórmula obtemos a seguinte expressão.
+
+   @math
+   \log_d y = \log_d \left( cx^n \right) = \log_d c + \log_d x^n = \log_d c + n \log_d x
+   @end
+
+   Logo $n$ será o declive da regresssão linear $m$ enquanto que $c$ podemos obter
+   calculando o exponencial da coordenada na origem da regressão linear $d^b$, mais
+   uma vez $d$ aqui é uma base qualquer (tipicamente $e$ ou $10$) mas o valor têm
+   que ser igual para todas as expressões.
+
+   @embed image
+   assets/power-plot-fitted.png
+   @end
