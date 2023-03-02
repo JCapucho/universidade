@@ -18,6 +18,18 @@ public final class UserInput {
 
     /**
      * Prints to the terminal the prompt argument and waits for the user to
+     * insert anything.
+     *
+     * @param prompt the text to be printed to the terminal before waiting for the input
+     * @return the string inserted by the user
+     */
+    public static String prompt(String prompt) {
+        System.out.print(prompt);
+        return scanner.nextLine();
+    }
+
+    /**
+     * Prints to the terminal the prompt argument and waits for the user to
      * insert an integer.
      *
      * @param prompt the text to be printed to the terminal before waiting for the input
@@ -27,7 +39,10 @@ public final class UserInput {
         while (true) {
             System.out.print(prompt);
             try {
-                return scanner.nextInt();
+                int input = scanner.nextInt();
+                // Consume the newline after the number
+                scanner.nextLine();
+                return input;
             } catch (InputMismatchException e) {
                 scanner.nextLine();
                 System.out.println("O valor têm que ser um inteiro");
@@ -128,6 +143,14 @@ public final class UserInput {
         return promptIntValidator(prompt, validator);
     }
 
+    /**
+     * Prints to the terminal the prompt argument and waits for the user to
+     * insert an integer that passes the validator tests.
+     *
+     * @param prompt    the text to be printed to the terminal before waiting for the input
+     * @param validator the validator to use for validating the input
+     * @return the number inserted by the user
+     */
     public static int promptIntValidator(String prompt, InputValidator<Integer> validator) {
         while (true) {
             int value = promptInt(prompt);
@@ -154,7 +177,10 @@ public final class UserInput {
         while (true) {
             System.out.print(prompt);
             try {
-                return scanner.nextDouble();
+                double input = scanner.nextDouble();
+                // Consume the newline after the number
+                scanner.nextLine();
+                return input;
             } catch (InputMismatchException e) {
                 scanner.nextLine();
                 System.out.println("O valor têm que ser um real");
@@ -255,6 +281,14 @@ public final class UserInput {
         return promptDoubleValidator(prompt, validator);
     }
 
+    /**
+     * Prints to the terminal the prompt argument and waits for the user to
+     * insert an double that passes the validator tests.
+     *
+     * @param prompt    the text to be printed to the terminal before waiting for the input
+     * @param validator the validator to use for validating the input
+     * @return the number inserted by the user
+     */
     public static double promptDoubleValidator(String prompt, InputValidator<Double> validator) {
         while (true) {
             double value = promptDouble(prompt);
