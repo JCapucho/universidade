@@ -35,13 +35,7 @@
 			"name": "Cálculo II",
 			"type": "group",
 			"workdir": "CalcII",
-			"children": [
-				{
-					"name": "Resumos",
-					"type": "external",
-					"target": "https://uapt33090-my.sharepoint.com/:f:/g/personal/jcapucho_ua_pt/EuyAFPpIiv1NtM3Q5r9g0AoB_4ntyJuT9thYvp5oL0sNtg?e=mM8dtF"
-				}
-			]
+			"children": "maps/CálculoII.json"
 		},
 		{
 			"name": "Modelação de Sistemas Físicos",
@@ -53,6 +47,12 @@
 				"--static-assets=assets"
 			],
 			"children": "MSF/map.json"
+		},
+		{
+			"name": "Matemática Discreta",
+			"type": "group",
+			"workdir": "MD",
+			"children": "maps/MD.json"
 		}
 	]
 }
