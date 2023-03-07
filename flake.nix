@@ -41,7 +41,12 @@
           beautifulsoup4
           pygments
         ];
-      python = pkgs.python3.withPackages python-packages;
+      python = pkgs.python3.withPackages (pyPkgs:
+        (python-packages pyPkgs)
+        ++ [
+          pyPkgs.ipykernel
+          pyPkgs.nbconvert
+        ]);
       python-dev =
         pkgs.python3.withPackages
         (pyPkgs: (python-packages pyPkgs) ++ [pyPkgs.snakeviz]);
@@ -57,16 +62,18 @@
         pname = "export";
         version = "0.1";
 
-        buildInputs = sharedPackages;
+        buildInputs = sharedPackages ++ [python];
 
         dontInstall = true;
 
         buildPhase = ''
           runHook preBuild
 
+          shopt -s globstar
+
           mkdir -p $out
 
-          shopt -s globstar
+          export MPLCONFIGDIR=/build/.config/matplotlib
 
           for i in **/*.py; do
             substituteInPlace "$i" \
@@ -103,6 +110,8 @@
             nodePackages.serve
             nodePackages.typescript-language-server
             nodePackages.vscode-langservers-extracted
+
+            jupyterlab
           ]
           ++ sharedPackages;
       };

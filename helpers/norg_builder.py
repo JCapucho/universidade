@@ -10,7 +10,7 @@ from pathlib import Path
 # (set strict=True because we want to verify the file exists)
 script_dir = Path(__file__).resolve(True).parent
 
-parser = argparse.ArgumentParser(description="Build FP")
+parser = argparse.ArgumentParser(description="Build Norg file")
 parser.add_argument(
     "--template",
     metavar="PATH",

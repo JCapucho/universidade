@@ -5,5 +5,23 @@
 		"args": [
 			"MSF/notes/linreg.norg"
 		]
+	},
+	{
+		"name": "Guiões",
+		"type": "builder",
+		"builder": "helpers/jupyter_builder.py",
+		"workdir": "guioes",
+		"override_args": [
+			"--template=templates/capucho-jupyter"
+		],
+		"children": [
+			{
+				"name": "Prática 2",
+				"workdir": "pr2",
+				"args": [
+					"MSF/aula02/guião.ipynb"
+				]
+			}
+		]
 	}
 ]

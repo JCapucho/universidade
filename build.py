@@ -57,12 +57,17 @@ class SiteNode:
 async def processNodeBuilder(_name, raw_node, state):
     await processNodeGroup(_name, raw_node, state)
     state["builder"] = raw_node["builder"]
-    state["args"] = state.get("args", []) + raw_node.get("args", [])
+    args = state.get("args", []) + raw_node.get("args", [])
+    if "override_args" in raw_node:
+        args = raw_node["override_args"]
+    state["args"] = args
     state["type"] = "invocation"
 
 
 async def processNodeInvocation(name, raw_node, state):
     args = state.get("args", []) + raw_node.get("args", [])
+    if "override_args" in raw_node:
+        args = raw_node["override_args"]
     state["args"] = args
     workdir = state.get("workdir", Path(".")) / raw_node["workdir"]
     state["workdir"] = workdir
@@ -86,7 +91,7 @@ async def processNodeInvocation(name, raw_node, state):
     await process.wait()
 
     if process.returncode > 0:
-        print(f"Failed to build page {name}", file=sys.stderr)
+        print(f"Failed to build node {name}", file=sys.stderr)
         sys.exit(1)
 
     if raw_node.get("has_index", True):

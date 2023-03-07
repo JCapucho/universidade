@@ -203,3 +203,9 @@
    @embed image
    assets/power-plot-fitted.png
    @end
+
+** Modelo exponencial
+
+   Outro modelo não linear mas que também se pode analizar com a ajuda de uma
+   regressão linear é o modelo exponencial, este tem a forma $y = y_0 e^{\lambda t}$,
+   o gráfico abaixo apresenta dados experimentais que se ajustam a este modelo.
