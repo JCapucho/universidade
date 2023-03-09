@@ -21,6 +21,13 @@
 				"args": [
 					"MSF/aula02/guião.ipynb"
 				]
+			},
+			{
+				"name": "Prática 3",
+				"workdir": "pr3",
+				"args": [
+					"MSF/aula03/guião.ipynb"
+				]
 			}
 		]
 	}
