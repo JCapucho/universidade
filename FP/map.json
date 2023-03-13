@@ -1,79 +1,211 @@
 [
 	{
 		"name": "Aula 00",
+		"type": "group",
 		"workdir": "aula00",
-		"args": [
-			"FP/aula00/aula00.norg"
+		"children": [
+			{
+				"name": "Enunciado",
+				"type": "external",
+				"target": "https://uapt33090-my.sharepoint.com/:b:/g/personal/jcapucho_ua_pt/Ef3QHqRi00BAkrBolrf2QkwBzFh8cg9wvmcdC8q7Xgh6kw?e=zhBZvu"
+			},
+			{
+				"name": "Resolução",
+				"workdir": "res",
+				"args": [
+					"FP/aula00/aula00.norg"
+				]
+			}
 		]
 	},
 	{
 		"name": "Aula 01",
+		"type": "group",
 		"workdir": "aula01",
-		"args": [
-			"FP/aula01/aula01.norg"
+		"children": [
+			{
+				"name": "Enunciado",
+				"type": "external",
+				"target": "https://uapt33090-my.sharepoint.com/:b:/g/personal/jcapucho_ua_pt/EYoQDD-ZSO1MopgWyyhvELABgW9yPgdiZi-SSAYV0vmzFg?e=anZ8jt"
+			},
+			{
+				"name": "Resolução",
+				"workdir": "res",
+				"args": [
+					"FP/aula01/aula01.norg"
+				]
+			}
 		]
 	},
 	{
 		"name": "Aula 02",
+		"type": "group",
 		"workdir": "aula02",
-		"args": [
-			"FP/aula02/aula02.norg"
+		"children": [
+			{
+				"name": "Enunciado",
+				"type": "external",
+				"target": "https://uapt33090-my.sharepoint.com/:b:/g/personal/jcapucho_ua_pt/ERwvWVd6HyJHj4O3LHN5J-8B4rBua91fPnL5-vBayxu17g?e=iedhcE"
+			},
+			{
+				"name": "Resolução",
+				"workdir": "res",
+				"args": [
+					"FP/aula02/aula02.norg"
+				]
+			}
 		]
 	},
 	{
 		"name": "Aula 03",
+		"type": "group",
 		"workdir": "aula03",
-		"args": [
-			"FP/aula03/aula03.norg"
+		"children": [
+			{
+				"name": "Enunciado",
+				"type": "external",
+				"target": "https://uapt33090-my.sharepoint.com/:b:/g/personal/jcapucho_ua_pt/EcBJWOCmf6NGkYdtNfQ4aIIBLHmfAGrh1wn2C0sxzBgJFQ?e=b4m1yo"
+			},
+			{
+				"name": "Resolução",
+				"workdir": "res",
+				"args": [
+					"FP/aula03/aula03.norg"
+				]
+			}
 		]
 	},
 	{
 		"name": "Aula 04",
+		"type": "group",
 		"workdir": "aula04",
-		"args": [
-			"FP/aula04/aula04.norg"
+		"children": [
+			{
+				"name": "Enunciado",
+				"type": "external",
+				"target": "https://uapt33090-my.sharepoint.com/:b:/g/personal/jcapucho_ua_pt/EZeg6drhFhJEqp5YoZmltksB6P12MWcBKqA22DD-z9MsCw?e=2S8O3m"
+			},
+			{
+				"name": "Resolução",
+				"workdir": "res",
+				"args": [
+					"FP/aula04/aula04.norg"
+				]
+			}
 		]
 	},
 	{
 		"name": "Aula 05",
+		"type": "group",
 		"workdir": "aula05",
-		"args": [
-			"FP/aula05/aula05.norg"
+		"children": [
+			{
+				"name": "Enunciado",
+				"type": "external",
+				"target": "https://uapt33090-my.sharepoint.com/:b:/g/personal/jcapucho_ua_pt/EZeg6drhFhJEqp5YoZmltksB6P12MWcBKqA22DD-z9MsCw?e=2S8O3m"
+			},
+			{
+				"name": "Resolução",
+				"workdir": "res",
+				"args": [
+					"FP/aula05/aula05.norg"
+				]
+			}
 		]
 	},
 	{
 		"name": "Aula 06",
+		"type": "group",
 		"workdir": "aula06",
-		"args": [
-			"FP/aula06/aula06.norg"
+		"children": [
+			{
+				"name": "Enunciado",
+				"type": "external",
+				"target": "https://uapt33090-my.sharepoint.com/:b:/g/personal/jcapucho_ua_pt/EWB5a0LS8GlCowfAZdz3NZMBBxkKeeBRGCdOBQqVu2dKOQ?e=JIDDvx"
+			},
+			{
+				"name": "Resolução",
+				"workdir": "res",
+				"args": [
+					"FP/aula06/aula06.norg"
+				]
+			}
 		]
 	},
 	{
 		"name": "Aula 07",
+		"type": "group",
 		"workdir": "aula07",
-		"args": [
-			"FP/aula07/aula07.norg"
+		"children": [
+			{
+				"name": "Enunciado",
+				"type": "external",
+				"target": "https://uapt33090-my.sharepoint.com/:b:/g/personal/jcapucho_ua_pt/Eds6QOu8BM5IvJ0ofRCAZ9wBy2vFMPYHf2T2ScLuHLGfng?e=xjmjFD"
+			},
+			{
+				"name": "Resolução",
+				"workdir": "res",
+				"args": [
+					"FP/aula07/aula07.norg"
+				]
+			}
 		]
 	},
 	{
 		"name": "Aula 08",
+		"type": "group",
 		"workdir": "aula08",
-		"args": [
-			"FP/aula08/aula08.norg"
+		"children": [
+			{
+				"name": "Enunciado",
+				"type": "external",
+				"target": "https://uapt33090-my.sharepoint.com/:b:/g/personal/jcapucho_ua_pt/EbfzvALWcYNMsY2gLvw4W9QBABa5I1pr4tHaqZN9YDM3-w?e=owfm9C"
+			},
+			{
+				"name": "Resolução",
+				"workdir": "res",
+				"args": [
+					"FP/aula08/aula08.norg"
+				]
+			}
 		]
 	},
 	{
 		"name": "Aula 09",
+		"type": "group",
 		"workdir": "aula09",
-		"args": [
-			"FP/aula09/aula09.norg"
+		"children": [
+			{
+				"name": "Enunciado",
+				"type": "external",
+				"target": "https://uapt33090-my.sharepoint.com/:b:/g/personal/jcapucho_ua_pt/Ed7Iy0Vd2KpAjPvq3CybZSQBhBOTdU7fl6RyFW1RYSYONA?e=uMB3YZ"
+			},
+			{
+				"name": "Resolução",
+				"workdir": "res",
+				"args": [
+					"FP/aula09/aula09.norg"
+				]
+			}
 		]
 	},
 	{
 		"name": "Aula 10",
+		"type": "group",
 		"workdir": "aula10",
-		"args": [
-			"FP/aula10/aula10.norg"
+		"children": [
+			{
+				"name": "Enunciado",
+				"type": "external",
+				"target": "https://uapt33090-my.sharepoint.com/:b:/g/personal/jcapucho_ua_pt/EVjflqp7okNJsPq052dvO10BNt0bgqbxUU9j5FXYEkQWUg?e=A3FcRt"
+			},
+			{
+				"name": "Resolução",
+				"workdir": "res",
+				"args": [
+					"FP/aula10/aula10.norg"
+				]
+			}
 		]
 	},
 	{
@@ -83,8 +215,8 @@
 		"children": [
 			{
 				"name": "APx2 (PDF)",
-				"type": "file",
-				"target": "FP/apx2/apx2.pdf"
+				"type": "external",
+				"target": "https://uapt33090-my.sharepoint.com/:b:/g/personal/jcapucho_ua_pt/EcUM50BIEN5HviKb1l3_7-0B2lnOCUSE_KLEv5qymZGo5w?e=CdA675"
 			},
 			{
 				"name": "Solution",

@@ -62,7 +62,6 @@ process = subprocess.run(
         "--toc",
         # fmt: off
         "-f", "json",
-        "--metadata", f"title={args.title}",
         "--metadata", "lang=pt-PT",
         "--template", args.template,
         "--mathjax",
