@@ -35,6 +35,13 @@
 				"args": [
 					"MSF/aula04/guião.ipynb"
 				]
+			},
+			{
+				"name": "Prática 5",
+				"workdir": "pr5",
+				"args": [
+					"MSF/aula05/guião.ipynb"
+				]
 			}
 		]
 	}
