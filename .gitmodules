@@ -1,3 +1,6 @@
 [submodule "ITW/itw-projeto-final"]
 	path = ITW/itw-projeto-final
 	url = https://github.com/JCapucho/itw-projeto-final.git
+[submodule "MAS/Projeto (site)"]
+	path = MAS/Projeto (site)
+	url = https://github.com/JCapucho/mas-projeto-final.git
