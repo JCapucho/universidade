@@ -28,6 +28,13 @@
 				"args": [
 					"MSF/aula03/guião.ipynb"
 				]
+			},
+			{
+				"name": "Prática 4",
+				"workdir": "pr4",
+				"args": [
+					"MSF/aula04/guião.ipynb"
+				]
 			}
 		]
 	}
