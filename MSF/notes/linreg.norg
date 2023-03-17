@@ -188,7 +188,7 @@
 
    O modelo de potência tem a forma de $y = cx^n$, podemos obter estes parâmetros
    a partir da regressão linear que obtemos no gráfico de logaritmos. Se aplicarmos
-   o logaritmo (de qualquer base mas normalmente usa-se o número de euler `e` ou `10`)
+   o logaritmo (de qualquer base mas normalmente usa-se o número de euler $e$ ou $10$)
    a esta fórmula obtemos a seguinte expressão.
 
    @math
@@ -209,3 +209,44 @@
    Outro modelo não linear mas que também se pode analizar com a ajuda de uma
    regressão linear é o modelo exponencial, este tem a forma $y = y_0 e^{\lambda t}$,
    o gráfico abaixo apresenta dados experimentais que se ajustam a este modelo.
+
+   @embed image
+   assets/exp-plot.png
+   @end
+
+   Mais uma vez a aplicação direta da regressão linear apresenta uma reta que não se ajusta
+   ao modelo.
+
+   @embed image
+   assets/exp-plot-reg.png
+   @end
+
+   Mas se antes de realizarmos a regressão linear aplicarmos a função log (neste caso log têm
+   de ser o logaritmo natural pois na fórmula do modelo utilizamos $e$) ao eixo das ordenadas,
+   conseguimos obter o seguinte gráfico que já demonstra uma relação linear.
+
+   @embed image
+   assets/exp-plot-semilog.png
+   @end
+
+   Isto é um gráfico semilog (porque só aplicamos o log a um dos eixos) e neste caso mostra uma
+   relação linear entre os seus eixos, logo faz sentido aplicar-lhe uma regressão linear.
+
+   @embed image
+   assets/exp-plot-semilog-reg.png
+   @end
+
+   Agora é preciso calcular $y_0$ e $\lambda$ utilizando os valores obtidos através da regressão
+   linear. Mais uma vez é necessário aplicar a função log a fórmula do modelo.
+
+   @math
+   \log y = \log \left( y_0 e^{\lambda t} \right) = \log y_0 + \log \left( e^{\lambda t} \right)
+   = \log y_0 + \lambda t
+   @end
+
+   Esta fórmula é semelhante a da reta e podemos assim extrair $\lambda$ diretamente do declive da
+   reta e $y_0$ a partir da coordenada na origem através de $e^b$.
+
+   @embed image
+   assets/exp-plot-fitted.png
+   @end
