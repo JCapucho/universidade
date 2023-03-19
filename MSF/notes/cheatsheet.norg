@@ -1,0 +1,117 @@
+@document.meta
+title: Cheat Sheet
+author: João Capucho
+@end
+
+Este documento contêm várias fórmulas e bocados de informação utéis.
+
+* Incertezas
+
+  Todas as medições do mundo real contêm uma incerteza associada esta é denotada depois
+  do valor medido como $\pm c$ onde $c$ têm a mesma unidade que o valor. Para medições
+  diretas o valor da incerteza é normalmente obtido de duas maneiras:
+
+  - Medições com instrumentos analógicas: A incerteza é igual a metade da menor divisão
+	da escala.
+  - Medições com instrumentos digitais: A incerteza é igual a menor divisão da escala.
+
+  Para medições indiretas (calculadas a partir de outras medições) a incerteza é calculada
+  dependendo da operação aplicada, o gráfico seguinte a incerteza para algumas operações.
+
+  @embed image
+  assets/Incerteza.png
+  @end
+
+  $F$ é uma função qualquer e $\frac{\partial F}{\partial a}$ é a derivada parcial de $F$
+  para $a$.
+
+* Derivadas parciais
+
+  A derivada parcial é uma derivada que se aplica a uma função que têm mais de um argumento,
+  a derivada parcial utiliza o símbolo $\partial$ em vez de $d$ e é calculada em relação a
+  uma variavél em específico, todas as outras variavéis assumem-se como constantes.
+
+  Dada a seguinte função com três argumentos
+
+  @math
+  F(a, b, c) = ba + c
+  @end
+
+  A sua derivada parcial para $a$ é a seguinte
+
+  @math
+  \frac{\partial F}{\partial a} = b
+  @end
+
+  Aqui $c$ foi eleminado pois considera-se uma constante, $b$ também é uma constante neste
+  caso mas como está a multiplicar por $a$ logo mantêm-se, $a$ calcula-se normalmente.
+
+* Movimento
+
+  O movimento é descrito por três quantidades, a posição, a velocidade a aceleração, estas
+  quantidades relacionam-se das seguintes maneiras, onde $t$ é o tempo.
+
+  @embed image
+  assets/movimento-relacoes.png
+  @end
+
+** Movimento uniforme
+
+   Caso a aceleração seja constante durante o intervalo de tempo em estudo, pode-se calcular
+   a posição instantânea utilizando a seguinte fórmula:
+
+   @math
+   x(t) = x_0 + v_0t + \frac{1}{2}at^2
+   @end
+
+   Onde $x_0$ e $v_0$ são a posição e a velocidade do corpo no instante inicial respetivamente,
+   e $a$ é a aceleração.
+
+   A velocidade pode ser obtida diretamente através da seguinte fórmula:
+
+   @math
+   v(t) = v_0 + at
+   @end
+
+** Queda livre sem resistência do ar
+
+   A queda livre sem resistência do ar, é um caso especial do movimento uniforme onde a
+   aceleração corresponde a aceleração gravitíca do planeta em questão ($g = 9.8$ na terra).
+
+   @math
+   \begin{align*}
+   a(t) &= g \\
+   v(t) &= v_0t + gt \\
+   x(t) &= x_0 + v_0t + \frac{1}{2}gt^2
+   \end{align*}
+   @end
+
+   CUIDADO: $g = 9.8$ assume que a posição aumenta em direção ao planeta (ou seja o eixo da
+   posição está invertido face ao normalmente utilizado).
+
+** Queda livre com resistência do ar
+
+   A queda livre com resistência do ar não é um movimento uniforme pois a aceleração varia
+   com a velocidade do corpo, pois esta causa atrito com o ar. A aceleração é dada pela
+   seguinte fórmula:
+
+   @math
+   a(t) = g - \frac{g}{v_T^2} v \lvert v \rvert
+   @end
+
+   Onde $v_T$ é a velocidade terminal do corpo e $v$ é a velocidade instantânea do corpo
+   em $t$. A posição instantânea é dada pela seguinte expressão:
+
+   @math
+   y(t) = \frac{v_T^2}{g} \ln \left[ \cosh \left( \frac{gt}{v_T} \right) \right]
+   @end
+
+   CUIDADO: Ambas estas expressões assumem que $g$ é positivo e que a posição aumenta
+   em direção ao planeta (ou seja o eixo da posição está invertido face ao normalmente
+   utilizado), para utilizar um eixo de posição que aumenta a medida que o corpo se
+   afasta da superfície do planeta, basta negarmos o $g$ na aceleração ($g$ continua
+   positivo).
+
+   @math
+   a(t) = -g - \frac{g}{v_T^2} v \lvert v \rvert
+   @end
