@@ -2,95 +2,87 @@
 <html lang="pt-PT">
 
 <head>
-	<title>{{ title }}</title>
-	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<title>{{ title }}</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
 
-	<meta name="referrer" content="no-referrer" />
-	<meta name="theme-color" content="#EEEEEE" />
-	<meta name="color-scheme" content="dark light" />
+<meta name="referrer" content="no-referrer" />
+<meta name="theme-color" content="#EEEEEE" />
+<meta name="color-scheme" content="dark light" />
 
-	<meta name="author" content="{{ author }}" />
-	<meta name="description" content="{{ description }}">
+<meta name="author" content="{{ author }}" />
+<meta name="description" content="{{ description }}">
 
-	<meta property="og:title" content="{{ title }}" />
-	<meta property="og:type" content="website" />
-	<meta property="og:description" content="{{ description }}" />
-	<meta property="og:locale" content="pt-PT" />
+<meta property="og:title" content="{{ title }}" />
+<meta property="og:type" content="website" />
+<meta property="og:description" content="{{ description }}" />
+<meta property="og:locale" content="pt-PT" />
 
-	<meta name="twitter:card" content="summary" />
-	<meta name="twitter:title" content="{{ title }}" />
-	<meta name="twitter:description" content="{{ description }}" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="{{ title }}" />
+<meta name="twitter:description" content="{{ description }}" />
 
-	<link href="resources/simple.min.css" rel="stylesheet" type="text/css">
-	<style>
-		ul {
-  			list-style: none;
-		}
+<link href="resources/simple.min.css" rel="stylesheet" type="text/css">
+<style>
+ul {
+list-style: none;
+}
 
-		ul > li {
-		  	margin-bottom: 16px;
-		}
+ul>li {
+margin-bottom: 16px;
+}
 
-		.icon {
-		  	vertical-align: sub;
-		  	padding-right: .25rem;
-		  	display: inline-block;
-		  	width: 1.3em;
-		  	height: 1.3em;
-		  	margin-left: 0.2rem;
-		}
-	</style>
+.icon {
+vertical-align: sub;
+padding-right: .25rem;
+display: inline-block;
+width: 1.3em;
+height: 1.3em;
+margin-left: 0.2rem;
+}
+</style>
 </head>
 
 <body>
-	<h1>Resumos Universidade</h1>
-	<ul class="root-content">
-		{% set ns = namespace(path=[]) %}
-		{%- for node in sitemap recursive %}
-		{% set ns.path = ns.path[:loop.depth0] + [loop.index|string] %}
-		<li>
-			{%- if node.children -%}
-			<details>
-				<summary>
-			{%- endif %}
+<h1>Resumos Universidade</h1>
+<ul class="root-content">
+{%- for node in sitemap recursive %}
+<li>
+{%- if node.children -%}
+<details>
+<summary>
+{%- endif %}
+{%- if 'href' in node -%}
+<a href="{{ node.href|e }}" {{ "download" if node.download }}>
+{{node.name}}
+{%- if node.external -%}
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="icon">
+<path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+</svg>
+{%- endif -%}
 
-			{%- if node.link is not none -%}
-			<a href="{{ node.link.href|e }}" {{ "download" if node.link.download }}>
-				{{node.name}}
-
-				{%- if node.link.external -%}
-				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-					stroke="currentColor" class="icon">
-					<path stroke-linecap="round" stroke-linejoin="round"
-						d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
-				</svg>
-				{%- endif -%}
-
-				{%- if node.link.download -%}
-				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-					stroke="currentColor" class="icon">
-					<path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-				</svg>
-				{%- endif -%}
-			</a>
-			{%- else %}
-			{{node.name}}
-			{%- endif %}
-
-			{%- if node.children -%}
-				</summary>
-				<ul>
-					{{ loop(node.children) }}
-				</ul>
-			</details>
-			{%- endif %}
-		</li>
-		{%- endfor %}
-	</ul>
+{%- if node.download -%}
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="icon">
+<path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+</svg>
+{%- endif -%}
+</a>
+{%- else %}
+{{node.name}}
+{%- endif %}
+{%- if node.children -%}
+</summary>
+<ul>
+{{ loop(node.children) }}
+</ul>
+</details>
+{%- endif %}
+</li>
+{%- endfor %}
+</ul>
 </body>
 
 </html>
 <!--
-    vi: ft=html
+vi: ft=html
 -->
