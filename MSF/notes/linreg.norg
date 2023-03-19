@@ -250,3 +250,44 @@
    @embed image
    assets/exp-plot-fitted.png
    @end
+
+* Escolher o tipo de modelo certo
+
+  Quando apresentados com um modelo novo, a melhor maneira de decidir qual o tipo deste: se é linear,
+  um modelo de potência, um modelo exponencial, ou outro, é fazer o gráfico normal, o gráfico
+  log-log e o gráfico semilog, todos de uma vez.
+
+  Se nenhum destes for linear, o modelo quase não será nenhum dos enumerados anteriormente, no entanto
+  se algum dos gráficos apresentar uma relação linear, sabemos que o tipo de modelo que lhe corresponde
+  provavelmente será o correto.
+
+  A seguinte função recebe dois argumentos, as abcissas e as ordenadas de um conjunto de dados e faz os
+  três gráficos lado a lado de uma só vez.
+
+  @code python
+  def graphAll(x, y):
+    has_log_plot = np.min(x) > 0
+    plots = 3 if has_log_plot else 2
+
+    logy = np.log(y)
+
+    _, plts = plt.subplots(1, plots)
+
+    plts[0].plot(x, y, "go")
+    plts[0].set_title("Regular graph")
+    plts[1].plot(x, logy, "go")
+    plts[1].set_title("Semilog graph")
+    if has_log_plot:
+      plts[2].plot(np.log(x), logy, "go")
+      plts[2].set_title("log-log graph")
+    else:
+      print("x values fall below 0, not drawing log-log graph")
+
+    plt.show()
+  @end
+
+  A função gera os seguintes gráficos para um modelo de potência.
+
+  @embed image
+  assets/side-by-side-graphs.png
+  @end
