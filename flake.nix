@@ -31,89 +31,49 @@
         ];
       });
 
-      python-packages = python-packages:
-        with python-packages; [
-          numpy
-          sympy
-          jinja2
-          aiofiles
-          matplotlib
-          beautifulsoup4
-          pygments
-        ];
-      python = pkgs.python3.withPackages (pyPkgs:
-        (python-packages pyPkgs)
-        ++ [
-          pyPkgs.ipykernel
-          pyPkgs.nbconvert
-        ]);
       python-dev =
         pkgs.python3.withPackages
-        (pyPkgs: (python-packages pyPkgs) ++ [pyPkgs.snakeviz]);
-
-      sharedPackages = with pkgs; [
-        ghostscript
-        imagemagick
-        pandoc
-        pandoc-norg-rs.packages.${system}.default
-      ];
+        (pyPkgs:
+          with pyPkgs; [
+            numpy
+            sympy
+            jinja2
+            aiofiles
+            matplotlib
+            beautifulsoup4
+            pygments
+            snakeviz
+          ]);
     in {
-      packages.default = pkgs.stdenv.mkDerivation {
-        pname = "export";
-        version = "0.1";
-
-        buildInputs = sharedPackages ++ [python];
-
-        dontInstall = true;
-
-        buildPhase = ''
-          runHook preBuild
-
-          shopt -s globstar
-
-          mkdir -p $out
-
-          export MPLCONFIGDIR=/build/.config/matplotlib
-
-          for i in **/*.py; do
-            substituteInPlace "$i" \
-              --replace "/usr/bin/env python3" "${python}/bin/python3"
-          done
-
-          ./build.py --build-dir $out
-
-          cp robots.txt $out
-
-          runHook postBuild
-        '';
-
-        src = ./.;
-      };
+      packages.default = import ./default.nix {inherit pkgs system pandoc-norg-rs;};
 
       devShells.default = pkgs.mkShell {
-        buildInputs = with pkgs;
-          [
-            # Python
-            black
-            python-dev
-            nodePackages.pyright
+        buildInputs = with pkgs; [
+          pandoc
+          ghostscript
+          imagemagick
+          pandoc-norg-rs.packages.${system}.default
 
-            # Java
-            jdk
-            jdt-language-server
+          # Python
+          black
+          python-dev
+          nodePackages.pyright
 
-            # .Net
-            dotnet-sdk
+          # Java
+          jdk
+          jdt-language-server
 
-            # Node
-            nodejs
-            nodePackages.serve
-            nodePackages.typescript-language-server
-            nodePackages.vscode-langservers-extracted
+          # .Net
+          dotnet-sdk
 
-            jupyterlab
-          ]
-          ++ sharedPackages;
+          # Node
+          nodejs
+          nodePackages.serve
+          nodePackages.typescript-language-server
+          nodePackages.vscode-langservers-extracted
+
+          jupyterlab
+        ];
       };
 
       packages.jupyter = jupyterlab;

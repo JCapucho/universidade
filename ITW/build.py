@@ -44,14 +44,10 @@ parser.add_argument(
     "source",
     metavar="FILE",
     type=Path,
-    help="The source neorg file",
+    help="The source directory",
 )
 
 args = parser.parse_args()
-
-os.makedirs(args.out / "raw", exist_ok=True)
-shutil.copytree(args.source, args.out, dirs_exist_ok=True)
-shutil.copytree(args.source.parent / "lib", args.out.parent / "lib", dirs_exist_ok=True)
 
 env = Environment(
     loader=FileSystemLoader(args.template_dir), autoescape=select_autoescape()
