@@ -37,6 +37,11 @@
           type = "notebook";
           target = "aula05/guião.ipynb";
         }
+        {
+          name = "Prática 6";
+          type = "notebook";
+          target = "aula06/guião.ipynb";
+        }
       ];
     }
   ];
