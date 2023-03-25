@@ -46,6 +46,12 @@
       shorthand = "MD";
       map = mapCallPackage ./nix/MD.nix {};
     }
+    rec {
+      name = "Introdução à Arquitetura de Computadores";
+      shorthand = "IAC";
+      drv = mapCallPackage ./IAC {};
+      map = drv.passthru.map;
+    }
   ];
 
   patchModuleMap = prefix: {

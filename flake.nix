@@ -8,6 +8,8 @@
     pandoc-norg-rs.inputs.nixpkgs.follows = "nixpkgs";
 
     jupyenv.url = "github:tweag/jupyenv";
+    # jupyenv.inputs.nixpkgs.follows = "nixpkgs";
+    # jupyenv.inputs.flake-utils.follows = "flake-utils";
   };
   outputs = {
     nixpkgs,
@@ -26,6 +28,7 @@
           ({pkgs, ...}: {
             kernel.python.minimal = {
               enable = true;
+              # extraPackages = ps: [ps.ipympl];
             };
           })
         ];

@@ -1,0 +1,291 @@
+@document.meta
+title: Representação digital de informação
+author: João Capucho
+@end
+
+* Introdução (ou o porquê)
+
+  A informação no mundo real é contínua ou seja tem "infinitas" casas decimais
+  de precisão. No entanto os computadores apresentam um número limitado de
+  memória, logo é necessário fazer algumas concessões para representar a informação
+  nos computadores.
+
+  A primeira concessão feita é o bit, esta é a menor unidade de informação
+  representada e tem dois estados 1 (true/on) e 0 (false/off), esta concessão é
+  feita pois simplifica em muito o design das lógicas dos computadores em vários
+  níveis.
+
+  A segunda concessão é a discretização da informação, ou seja transformar dados
+  contínuos em dados discretos representando apenas certos pontos de interesse.
+  Por exemplo para representar a temperatura num termostato digital podemos apenas
+  representar a temperatura com um grau decimal de precisão (i.e. 23.4°).
+
+** Quantidade de informação
+
+   Para calcular quantos estados diferentes é possível representar com $N$
+   níveis (ou bits), podesse utilizar a seguinte fórmula.
+
+   @math
+   D = \log_2 N
+   @end
+
+   Onde $D$ é então o número de estados.
+
+* Representação de inteiros
+
+  O primeiro bocado de informação que queremos representar são os números
+  inteiros pois a partir destes podemos representar outros tipos de informação.
+
+** Bases
+
+   Um número pode ser representado em diferentes bases: $10_{10}$, $A_{16}$
+   e $1010_2$ são todos representações equivalentes do mesmo número.
+
+   A base $10$ é a mais comum e foi criada porque temos 10 dedos, a base $2$
+   é utilizada pelos computadores pois cada digito pode ser representado por
+   um bit, e a base $16$ é utilizada na programação de computadores pois
+   representa de maneira mais clara um grupo de 4 bits (ou um nibble).
+
+   Num número a base representa o peso de cada digito no número final, por
+   exemplo para $127_{10}$, podemos decompor nos seus digítos.
+
+   @math
+   127_{10} = 1 \times 10^2 + 2 \times 10^1 + 7 \times 10^0
+   @end
+
+   Cada dígito têm então um peso da sua base elevada a posição do digíto no
+   número (a posição começa em zero).
+
+   No entanto com todas estas bases surge o problema de converter entre elas.
+
+*** Conversão de base n para base 10
+
+    Já vimos como converter de uma base qualquer $n$ para base $10$, basta
+    multiplicar cada dígito pela base elevada a posição do dígito no número.
+
+    @math
+    10101_{2} = 2^4 + 2^2 + 2^0 = 16 + 4 + 1 = 21
+    @end
+
+    @math
+    1B2_{16} = 1 \times 16^2 + 11 \times 16^1 + 2 \times 16^0
+    = 256 + 176 + 2 = 434
+    @end
+
+*** Conversão de base n para 2
+
+    A conversão de uma base qualquer $n$ para $2$ já é mais complicada, é
+    necessário realizar divisões sucessivas por 2 até o quociente ser 0,
+    depois o número em binário será o resto das divisões ordenado pela ordem
+    contrária das divisões (o primeiro bit é o resto da última divisão e
+    o último bit é o resto da primeira divisão).
+
+    @embed image
+    assets/repeated-divsion.png
+    @end
+
+*** Conversão entre base 16 e base 2
+
+    A converão de base 16 para base 2 é bastante simples visto que cada
+    dígito em base 16 corresponde a 4 bits (dígitos em base 2), bastando
+    então utilizar a seguinte tabela para converter entre as duas.
+
+    @table
+    Hexadecimal (base 16) | Binário (base 2) | Decimal (base 10)
+    0 | 0000 | 0
+    1 | 0001 | 1
+    2 | 0010 | 2
+    3 | 0011 | 3
+    4 | 0100 | 4
+    5 | 0101 | 5
+    6 | 0110 | 6
+    7 | 0111 | 7
+    8 | 1000 | 8
+    9 | 1001 | 9
+    A | 1010 | 10
+    B | 1011 | 11
+    C | 1100 | 12
+    D | 1101 | 13
+    E | 1110 | 14
+    F | 1111 | 15
+    @end
+
+    @math
+    1B2_{16} = 0001\;1011\;0010_2
+    @end
+
+    Depois para converter de volta para base 16, basta fazer o inverso,
+    dividimos o número binário em grupos de 4 bits e convertemos cada um
+    para o dígito hexadecimal correspondente.
+
+    @math
+    0101\;1001\;1010_{2} = 59A_{16}
+    @end
+
+    Os mesmos metódos podem-se aplicar a base 8, no entanto em vez de considerar
+    4 bits de uma só vez consideramos apenas 3.
+
+** Adição
+
+   Agora que já conseguimos expressar número positivos em binário, queremos operar
+   sobre eles, a operação mais fundamental que se pode fazer com números é a adição.
+
+   A adição entre dois números binários, realiza-se de modo semelhante a adição normal
+   soma-se os bits da direita para a esquerda e se a soma for maior que a quantidade
+   representável num dígito (no caso de binário for maior que 1) carrega-se um 1 para
+   a próxima soma.
+
+   @embed image
+   assets/soma-binaria.png
+   @end
+
+   Os 1s que são carregadas para o bit seguinte são chamados de *carry*.
+
+*** Overflow
+
+    Dado o número limitado de bits que estão dipóniveis para representar um número,
+    pode ocorrer que a soma de dois números retorne um valor que é maior dos que são
+    possíveis representar. Esses bits serão truncados e o valor retornado da soma
+    estará incorreto, a esta situação chama-se de overflow
+
+    @embed image
+    assets/overflow.png
+    @end
+
+    O overflow acontece quando a soma tem mais bits dos que estão disponíveis para
+    representar um número.
+
+** Números negativos
+
+   Até agora vimos como representar inteiros positivos, no entanto os números
+   negatvios são também bastante utéis, logo é do nosso interesse também
+   representá-los.
+
+   Existem várias maneiras de representar números negativos, mas todas elas
+   requerem um número fixo de bits para representar o número, logo antes de
+   poderemos analizar um número precisamos não só de saber o tipo de representação
+   utilizada mas também o número de bits usados.
+
+*** Sinal e Módulo
+
+	A maneira mais intuitiva de representar um número negativo é adicionando um
+	bit para representar o sinal, podendo assim distinguir entre negativo e positivo.
+	Sendo assim um número teria a seguinte representação.
+
+	@embed image
+	assets/Sinal-Módulo.png
+	@end
+
+	$N$ é o número de bits do número, o sinal consome 1 bit e um valor de 0 representa
+	um número postivo enquanto que um valor de 1 representa um número negativo, os
+	restantes bits representam o módulo do número.
+
+	Os seguintes são exemplos de algums números em base 10 convertidos para binário
+	com a representação Sinal e Módulo utilizando 8 bits.
+
+	@math
+	\begin{align*}
+	+17_{10} &= 0001 0001 \\
+	-17_{10} &= 0001 0001 \\
+	+127_{10} &= 0111 1111 \\
+	-127_{10} &= 1111 1111
+	\end{align*}
+	@end
+
+	Apesar desta representação ser bastante intuitiva, apresenta algums problemas em
+	termos de utilização num computador. O primeiro deles é a dupla representação do
+	zero, com esta representação o zero pode ser representado de duas maneiras.
+
+	@math
+	\begin{align*}
+	+0_{10} &= 0000 0000 \\
+	-0_{10} &= 1000 0000
+	\end{align*}
+	@end
+
+	Isto não só desperdiça um estado possível, mas também dificulta a comparação entre
+	números visto que as duas representações são iguais simbolicamente mas em termos
+	de bits são diferentes.
+
+	O segundo problema é que a realização de cálculos também se torna dificíl, visto que
+	já não é possível somar diretamente os dois números, sendo necessário primeiro
+	verificar os seus sinais.
+
+*** Complemento para 2
+
+	Os problemas presentes na representação anterior levaram a criação de outra
+	representação, complemento para 2, esta representação é quase idêntica a
+	representação para números positivos, exceto que o bit mais significativo
+	têm agora um peso negativo. Por exemplo o seguinte número representado em
+	complemento para 2 com 8 bits.
+
+    @math
+	1101 1011_{2} = -2^7 + 2^6 + 2^4 + 2^3 + 2^1 + 2^0 = -37
+    @end
+
+	O mais significativo têm então um peso de $-2^{N-1}$.
+
+	Esta representação já não têm os problemas da anterior, o 0 só têm uma
+	representação (todos os bits a zero), e a adição pode ser feita
+	diretamente. Além disso a subtração é também mais fácil de fazer, pois
+	apenas é necessário negar o número a direita e adiciona-lo com o número
+	a esquerda da subtração.
+
+	A negação em si, apesar de ser um pouco mais complicada do que na representação
+	sinal e módulo em que bastava inverter um bit, é bastante simples. Basta inverter
+	todos os bits e somar um. Dá se o seguinte exemplo para uma negação com 8 bits.
+
+    @math
+	-3_{10} = - 0000 0011_2 = \overline{0000 0011_2} + 1 = 1111 1100_2 + 1 = 1111 1101_2
+    @end
+
+**** Overflow
+
+	 Os overflows também acontecem em operações com números em complemento para 2. No
+	 entanto a sua deteção é mais complicada, para número positivos bastava verificar
+	 se havia carry no bit mais significativo, mas agora essa situação pode acontecer
+	 para contas sem overflow, observe-se a seguinte adição entre dois números de
+	 4 bits em complemento para 2.
+
+	 @embed image
+	 assets/no-overflow-2bc.png
+	 @end
+
+	 Esta adição está correta apesar de haver carry no bit mais significativo e o bit
+	 extra ter sido truncado. Mas a seguinte adição não têm o carry no bit mais
+	 significativo e têm um overflow.
+
+	 @embed image
+	 assets/overflow-2bc.png
+	 @end
+
+	 Sendo assim é necessário um conjunto de regras diferentes para detetar overflows
+	 em números em complemento para 2, essas regras são:
+
+	 - Um overflow ocorre na soma de dois números positivos se o resultado for um número
+	negativo.
+	 - Um overflow ocorre na soma de dois números negativos se o resultado for um número
+	positivo.
+	 - Um overflow nunca ocorre na soma de dois números com sinal diferente.
+
+**** Extensão de sinal
+
+	 Os números em complemento para 2 apresentam um número de bits fixo, no entanto pode
+	 haver casos onde é necessário extender estes números para mais bits. Em números sem
+	 sinal bastava adicionar zeros a esquerda. Mas para números em complemento para 2 isso
+	 poderia resultar no sinal inverter-se.
+
+	 Logo um metódo diferente de extensão é utilizado, onde o bit mais significativo
+	 (o com peso negativo) é extendido para a esquerda, logo repete-se um 0 se o
+	 número é positivo ou um 1 se o número é negativo.
+
+	 Seguem-se exemplos de extensão de 4 bits para 8 bits.
+
+	 @math
+	 \begin{align*}
+	 +3_{10} &= 0011_2 \rightarrow 0000 0011_2 \\
+	 -3_{10} &= 1101_2 \rightarrow 1111 1101_2 \\
+	 +7_{10} &= 0111_2 \rightarrow 0000 0111_2 \\
+	 -7_{10} &= 1001_2 \rightarrow 1111 1001_2
+	 \end{align*}
+	 @end

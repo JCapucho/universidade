@@ -1,6 +1,7 @@
 package aula05;
 
 import java.security.InvalidParameterException;
+import java.time.LocalDate;
 
 public class DateYMD {
     public static final int MONTHS_IN_YEAR = 12;
@@ -64,9 +65,9 @@ public class DateYMD {
         }
     }
 
-    @Override
-    protected DateYMD clone() {
-        return new DateYMD(day, month, year);
+    public static DateYMD now() {
+        LocalDate date = LocalDate.now();
+        return new DateYMD(date.getDayOfMonth(), date.getMonthValue(), date.getYear());
     }
 
     public static boolean validMonth(int month) {
@@ -91,6 +92,11 @@ public class DateYMD {
             return false;
 
         return day >= 1 && day <= monthDays(month, year);
+    }
+
+    @Override
+    protected DateYMD clone() {
+        return new DateYMD(day, month, year);
     }
 
     @Override

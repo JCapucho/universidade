@@ -30,6 +30,29 @@ public final class UserInput {
 
     /**
      * Prints to the terminal the prompt argument and waits for the user to
+     * insert a string that passes the validator tests.
+     *
+     * @param prompt    the text to be printed to the terminal before waiting for the input
+     * @param validator the validator to use for validating the input
+     * @return the string inserted by the user
+     */
+    public static String promptValidator(String prompt, InputValidator<String> validator) {
+        while (true) {
+            String value = prompt(prompt);
+
+            try {
+                validator.apply(value);
+            } catch (UserInputValidationException e) {
+                System.out.println(e.getMessage());
+                continue;
+            }
+
+            return value;
+        }
+    }
+
+    /**
+     * Prints to the terminal the prompt argument and waits for the user to
      * insert an integer.
      *
      * @param prompt the text to be printed to the terminal before waiting for the input
@@ -301,6 +324,42 @@ public final class UserInput {
             }
 
             return value;
+        }
+    }
+
+    /**
+     * Prints to the terminal a menu with options and waits for the user to select
+     * one of them.
+     *
+     * @param options the options to be listed in the menu
+     * @return the number inserted by the user
+     */
+    public static int menuSelection(String... options) {
+        for (String option : options)
+            System.out.println(option);
+
+        return UserInput.promptIntRange("Insira a sua seleção: ", 0, options.length - 1);
+    }
+
+    /**
+     * Prints to the terminal the prompt argument and waits for the user to
+     * insert a valid date.
+     *
+     * @param prompt the text to be printed to the terminal before waiting for the input
+     * @return the date inserted by the user
+     */
+    public static DateYMD promptDate(String prompt) {
+        while (true) {
+            System.out.println(prompt);
+            int day = UserInput.promptInt("dia: ");
+            int month = UserInput.promptInt("mês: ");
+            int year = UserInput.promptInt("ano: ");
+
+            try {
+                return new DateYMD(day, month, year);
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+            }
         }
     }
 }

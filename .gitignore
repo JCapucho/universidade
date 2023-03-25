@@ -3,3 +3,5 @@
 .jupyter
 .ipynb_checkpoints
 __pycache__
+
+*.bkp
