@@ -23,7 +23,7 @@ author: João Capucho
 ** Quantidade de informação
 
    Para calcular quantos estados diferentes é possível representar com $N$
-   níveis (ou bits), podesse utilizar a seguinte fórmula.
+   níveis (ou bits), pode-se utilizar a seguinte fórmula.
 
    @math
    D = \log_2 N
@@ -47,13 +47,13 @@ author: João Capucho
    representa de maneira mais clara um grupo de 4 bits (ou um nibble).
 
    Num número a base representa o peso de cada digito no número final, por
-   exemplo para $127_{10}$, podemos decompor nos seus digítos.
+   exemplo para $127_{10}$, podemos decompor nos seus dígitos.
 
    @math
    127_{10} = 1 \times 10^2 + 2 \times 10^1 + 7 \times 10^0
    @end
 
-   Cada dígito têm então um peso da sua base elevada a posição do digíto no
+   Cada dígito têm então um peso da sua base elevada a posição do digito no
    número (a posição começa em zero).
 
    No entanto com todas estas bases surge o problema de converter entre elas.
@@ -86,7 +86,7 @@ author: João Capucho
 
 *** Conversão entre base 16 e base 2
 
-    A converão de base 16 para base 2 é bastante simples visto que cada
+	A conversão de base 16 para base 2 é bastante simples visto que cada
     dígito em base 16 corresponde a 4 bits (dígitos em base 2), bastando
     então utilizar a seguinte tabela para converter entre as duas.
 
@@ -122,7 +122,7 @@ author: João Capucho
     0101\;1001\;1010_{2} = 59A_{16}
     @end
 
-    Os mesmos metódos podem-se aplicar a base 8, no entanto em vez de considerar
+	Os mesmos métodos podem-se aplicar a base 8, no entanto em vez de considerar
     4 bits de uma só vez consideramos apenas 3.
 
 ** Adição
@@ -143,7 +143,7 @@ author: João Capucho
 
 *** Overflow
 
-    Dado o número limitado de bits que estão dipóniveis para representar um número,
+	Dado o número limitado de bits que estão disponíveis para representar um número,
     pode ocorrer que a soma de dois números retorne um valor que é maior dos que são
     possíveis representar. Esses bits serão truncados e o valor retornado da soma
     estará incorreto, a esta situação chama-se de overflow
@@ -158,12 +158,12 @@ author: João Capucho
 ** Números negativos
 
    Até agora vimos como representar inteiros positivos, no entanto os números
-   negatvios são também bastante utéis, logo é do nosso interesse também
+   negativos são também bastante uteis, logo é do nosso interesse também
    representá-los.
 
    Existem várias maneiras de representar números negativos, mas todas elas
    requerem um número fixo de bits para representar o número, logo antes de
-   poderemos analizar um número precisamos não só de saber o tipo de representação
+   poderemos analisar um número precisamos não só de saber o tipo de representação
    utilizada mas também o número de bits usados.
 
 *** Sinal e Módulo
@@ -177,10 +177,10 @@ author: João Capucho
 	@end
 
 	$N$ é o número de bits do número, o sinal consome 1 bit e um valor de 0 representa
-	um número postivo enquanto que um valor de 1 representa um número negativo, os
+	um número positivo enquanto que um valor de 1 representa um número negativo, os
 	restantes bits representam o módulo do número.
 
-	Os seguintes são exemplos de algums números em base 10 convertidos para binário
+	Os seguintes são exemplos de alguns números em base 10 convertidos para binário
 	com a representação Sinal e Módulo utilizando 8 bits.
 
 	@math
@@ -207,7 +207,7 @@ author: João Capucho
 	números visto que as duas representações são iguais simbolicamente mas em termos
 	de bits são diferentes.
 
-	O segundo problema é que a realização de cálculos também se torna dificíl, visto que
+	O segundo problema é que a realização de cálculos também se torna difícil, visto que
 	já não é possível somar diretamente os dois números, sendo necessário primeiro
 	verificar os seus sinais.
 
@@ -228,7 +228,7 @@ author: João Capucho
 	Esta representação já não têm os problemas da anterior, o 0 só têm uma
 	representação (todos os bits a zero), e a adição pode ser feita
 	diretamente. Além disso a subtração é também mais fácil de fazer, pois
-	apenas é necessário negar o número a direita e adiciona-lo com o número
+	apenas é necessário negar o número a direita e adicioná-lo com o número
 	a esquerda da subtração.
 
 	A negação em si, apesar de ser um pouco mais complicada do que na representação
@@ -242,7 +242,7 @@ author: João Capucho
 **** Overflow
 
 	 Os overflows também acontecem em operações com números em complemento para 2. No
-	 entanto a sua deteção é mais complicada, para número positivos bastava verificar
+	 entanto a sua detecção é mais complicada, para número positivos bastava verificar
 	 se havia carry no bit mais significativo, mas agora essa situação pode acontecer
 	 para contas sem overflow, observe-se a seguinte adição entre dois números de
 	 4 bits em complemento para 2.
@@ -271,12 +271,12 @@ author: João Capucho
 **** Extensão de sinal
 
 	 Os números em complemento para 2 apresentam um número de bits fixo, no entanto pode
-	 haver casos onde é necessário extender estes números para mais bits. Em números sem
+	 haver casos onde é necessário estender estes números para mais bits. Em números sem
 	 sinal bastava adicionar zeros a esquerda. Mas para números em complemento para 2 isso
 	 poderia resultar no sinal inverter-se.
 
-	 Logo um metódo diferente de extensão é utilizado, onde o bit mais significativo
-	 (o com peso negativo) é extendido para a esquerda, logo repete-se um 0 se o
+	 Logo um método diferente de extensão é utilizado, onde o bit mais significativo
+	 (o com peso negativo) é estendido para a esquerda, logo repete-se um 0 se o
 	 número é positivo ou um 1 se o número é negativo.
 
 	 Seguem-se exemplos de extensão de 4 bits para 8 bits.
