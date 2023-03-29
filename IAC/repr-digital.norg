@@ -289,6 +289,21 @@ author: João Capucho
 	 -7_{10} &= 1001_2 \rightarrow 1111 1001_2
 	 \end{align*}
 	 @end
+
+** Gama de representação
+
+   Como já vimos os números representados no computador têm um número limitado de bits
+   e diferente representações usam-os de diferentes maneiras resultando em diferentes
+   estados que conseguem representar.
+
+   Logo faz sentido falar da gama de representação ou os diferentes estados que uma dada
+   representação consegue representar com $N$ bits, a tabela seguinte mostra a gama de
+   representação para as representações que falamos até agora.
+
+	@embed image
+	assets/Gama-Representação.png
+	@end
+
 * Representação de reais
 
   Algumas quantidades precisam de ser representadas como reais (ou fazem mais sentido
