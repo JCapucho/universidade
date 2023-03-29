@@ -410,3 +410,28 @@ author: João Capucho
 	@embed image
 	assets/IEEE-754-special-cases.png
 	@end
+
+* Representação de Caracteres
+
+  Outro valor importante de representar são caracteres usados no alfabeto, fazendo assim
+  possível armazenar texto. Existem vários standards para representar caracteres, sendo
+  os dois mais comuns ASCII e Unicode.
+
+** ASCII
+
+   ASCII (ou American Standard Code for Information Interchange) é dos dois o standard
+   mais antigo, cada carácter ocupa 7 bits (sendo comum adicionar um bit extra, que não
+   é usado, para arrendondar). É possível representar 95 caracteres que vão desde letros
+   do alfabeto a números e símbolos de pontuação. Além disso são definidos 33 caracteres
+   de "controlo", como o "Esc" e o "Del".
+
+   O standard ASCII foi definido apenas para representar o alfabeto inglês e como tal é
+   menos utilizado atualmente pois não é utilizável por outras línguas.
+
+** Unicode
+
+   O standard Unicode é mais recente e foi criado de forma a ser extensível e suportar
+   várias línguas. O standard em si não é uma representação mas sim um conjunto de
+   /codepoints/ que são um valor númerico associado a um caractere. Existem várias
+   representações que são associadas ao Unicode sendo uma das mais comuns o UTF-8 pois
+   é bastante compacta quando comparada com as alternativas e é compatível com código ASCII.
