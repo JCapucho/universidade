@@ -289,3 +289,124 @@ author: João Capucho
 	 -7_{10} &= 1001_2 \rightarrow 1111 1001_2
 	 \end{align*}
 	 @end
+* Representação de reais
+
+  Algumas quantidades precisam de ser representadas como reais (ou fazem mais sentido
+  ser representadas deste modo), logo necessitamos de encontrar maneiras de representá-los.
+
+** Vírgula fixa
+
+   A representação mais intuitiva é igual a que usamos para números decimais normalmente,
+   definimos um ponto onde a esquerda temos a parte inteira e a direita a parte fracionária.
+
+   Em decimal temos por exemplo $20.43$ onde $20$ é a parte inteira e $43$ a parte
+   fracionária, podemos decompor este número nos seus dígitos a multiplicar pela base
+   elevada a posição do digito, mas agora a posição começa na vírgula e é negativa atrás
+   dela.
+
+   @math
+   20.43 = 2\times10^1 + 0\times10^0 + 4\times10^{-1} + 3\times10^{-2}
+   @end
+
+   Em binário utilizamos o mesmo conceito mas a posição da vírgula têm que ser definida
+   previamente, por exemplo com 16 bits e vírgula no meio (entre o bit 7 e 8).
+
+   @math
+   0001 0100 0010 1011_2 = 2^4 + 2^2 + 2^{-2} + 2^{-4} + 2^{-6} + 2^{-7} = 20.3359375
+   @end
+
+   Nesta representação o maior e menor valor representáveis dependem da quantidade de bits
+   na parte inteira. A precisão depende do número de bits para a parte fracionária.
+
+*** Conversão a partir de um decimal em base 10
+
+	A parte inteira pode ser convertida normalmente. Para converter a parte fracionária
+	utiliza-se um algoritmo semelhante ao de conversão da parte inteira, mas em vez de
+	dividir, multiplica-se os números. O algoritmo é então o seguinte:
+
+	- Multiplicar a parte fracionária por 2.
+	- Repetir com o resultado da multiplicação até a parte fracionária ser 0.
+	- As partes inteiras das multiplicações são os bits pela ordem da primeira
+	  para a última multiplicação.
+
+	O seguinte exemplo converte o número $9.125$ para um número de vírgula fixa binária com
+	8 bits para a parte inteira e 8 bits para a parte fracionária.
+
+	@embed image
+	assets/Vírgula-Fixa-Conversão.png
+	@end
+
+*** Problema
+
+	A representação em virgula fixa binária precisa de muitos dígitos para representar
+	números muitos grandes ou com muita precisão, no entanto muitas vezes estas situações
+	são opostas, ou seja, quando se quer representar um número muito grande a precisão é
+	menos importante e quando a precisão é importante o número é mais pequeno.
+
+** Vírgula Flutuante
+
+   O modelo de virgula flutuante baseia-se na notação científica, nesta o número é
+   representado como $a \times 10^b$, onde $a$ chama-se de mantissa e $b$ é o expoente,
+   $10$ é a base utilizada.
+
+   A notação científica permite facilmente representar números muito grandes ou muitos
+   pequenos sem utilizar muitos dígitos de informação. Logo a vírgula flutuante é um
+   formato onde a mantissa e o expoente são usados para representar o número (a base
+   é definida implicitamente como $2$).
+
+   Existe um formato definido internacionalmente chamado IEEE 754 que especifica
+   a representação exata de números binários em virgula flutuante com vários
+   níveis de precisão e as operações sobre eles. Os níveis mais comuns são o de
+   precisão simples que utiliza 32 bits e o de precisão dupla que usa 64 bits.
+
+   @embed image
+   assets/IEEE-754-format.png
+   @end
+
+   No nível de precisão simples o expoente usa 8 bits e a mantissa 23 bits, o
+   nível de precisão dupla usa 11 bits para o expoente e 52 bits para a mantissa,
+   adicionalmente existe 1 bit para o sinal. O formato apresenta ainda mais alguns
+   valores implícitos para o tornar mais compacto, a mantissa apresenta um 1 sempre
+   a esquerda da vírgula implicitamente (este não é representado no código binário),
+   além disso, o expoente não é definido diretamente mas em relação a um "bias":
+
+   @math
+   X = (-1)^S * \text{mantissa} * 2^{\text{exp} - \text{bias}}
+   @end
+
+   Onde $S$ é o sinal, $exp$ o expoente e $bias$ o "bias", o "bias" é 127 para
+   números de precisão simples e 1023 para precisão dupla.
+
+*** Conversão a partir de um decimal em base 10
+
+	A conversão é mais complicada quando comparada a um número de vírgula fixa.
+	Os primeiros passos são idênticos, mas de seguida é necessário calcular o
+	expoente de modo a que a vírgula fica após o primeiro $1$, de seguida adiciona-se
+	o "bias" ao expoente, para obter a representação final deste. De seguida utiliza-se
+	a mantissa do valor calculado no passo anterior (sendo que o $1$ antes da vírgula
+	não se representa). Finalmente define-se o bit do sinal.
+
+	Mais uma vez temos o exemplo do $9.125$ para precisão simples.	
+
+   @embed image
+   assets/Vírgula-Flutuante-Conversão.png
+   @end
+
+*** Casos especiais
+
+	O número zero possuem uma representação especial pois caso contrário existiram várias
+	maneiras de o representar o que traria problemas, para representar um zero todos os
+	bits são definidos como 0.
+
+	O infinito e menos infinitos também possuem representações, nestas o expoente tens os
+	seus bits todos a 1 e a mantissa definida a zeros, o sinal é o mesmo que o infinito que
+	se pretende representar.
+
+	Finalmente existe mais uma representação especial chamada NaN (or Not a Number, inglês
+	para um não número), este número aparece quando operações inválidas são executadas
+	(como uma divisão por zero. Um NaN tem todos os bits do expoente a 1 e a mantissa com
+	um valor não nulo (o sinal é ignorado).
+
+	@embed image
+	assets/IEEE-754-special-cases.png
+	@end
