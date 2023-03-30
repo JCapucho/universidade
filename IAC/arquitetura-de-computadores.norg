@@ -1,0 +1,211 @@
+@document.meta
+title: Arquitetura de computadores
+author: João Capucho
+@end
+
+* Modelo de Von Neumann
+
+  John Von Neumann propôs no início da revolução computacional um modelo para
+  a arquitetura de computadores. Este modelo tinha uma distinção importante dos
+  computadores que até então tinham sido produzidos, a memória usada para os
+  programas seria a mesma que para os dados. Esta mudança permitiu que os programas
+  pudessem não só ser guardados como reaproveitados.
+
+  Sendo este o conceito base do modelo de Von Neumann, os blocos básicos que constituem
+  o modelo são modelados a sua volta. Estes blocos básicos são os seguintes:
+
+  - Memória
+  - CPU (unidade de processamento central)
+  - Unidades de entrada
+  - Unidades de saída
+
+** Organização
+
+   Todos estes blocos básicos precisam de estar ligados entre si, para tal introduz-se
+   outro componente, o *System Bus*. O System Bus ou barramento de sistema liga-se a
+   todos os blocos e define três sub barramentos, o /Data Bus/ onde ocorrerá a
+   transferência de dados, o /Address Bus/ que é usado para selecionar a origem/destino
+   da informação, e finalmente o /Control Bus/ que contêm os sinais que controlam as
+   transferências no System Bus.
+
+   @embed image
+   assets/System-Bus.png
+   @end
+
+   Um barramento ou Bus, nada mais é do que uma coleção de fios (cada fio carrega um bit).
+
+   Os barramentos do System Bus são um tipo especial de bus, chamado de shared bus ou
+   barramento partilhado, pois o mesmo bus é usado para conectar mais do que 2 blocos
+   funcionais.
+
+** CPU
+
+   O CPU ou unidade de processamento central é o bloco básico responsável por executar
+   instruções. O CPU pode ser também dividido em outros blocos básicos, que podem ser
+   agrupados em duas secções: secção de dados (datapath) e secção de controlo. Na secção
+   de controlo existem os seguintes blocos:
+
+   - Registos, são pequenas memórias específicas ao processador que são usadas para
+	 armazenar os operandos e resultados das operações, bem como outros valores especiais
+     tal como o contador de programa que guarda o endereço da instrução que está a ser
+	 executada.
+   - ALU ou unidade de aritmética e lógica, esta unidade é responsável por executar as
+	 operações.
+
+   Na secção de controlo, existem várias partes que são responsáveis por garantir que
+   as instruções são executadas sequencialmente, que as partes corretas do CPU são
+   ativadas e de comunicar com o System Bus para aceder a memória e outros blocos.
+
+   @embed image
+   assets/CPU.png
+   @end
+
+* Instruções
+
+  Os computadores tem como objetivo executar instruções, mas as instruções não são
+  todas iguais, variando em forma de tipo de processador para tipo de processador.
+  No entanto de uma maneira ou outra têm de conseguir responder as seguintes questões,
+  qual o tipo de operação a ser executada? Onde é que vão ser buscadas os operandos?
+  Onde vão ser colocados os resultados? Qual é a próxima instrução a executar?
+
+** Representação de instruções
+
+   Antes de respondermos a estas questões vamos primeiro ver como é que as instruções
+   são representadas. A maneira a que estamos mais habituados de ver instruções
+   representadas é através de linguagens de alto nível, como por exemplo: 
+
+   @code c
+   dest = src[1];
+   @end
+
+   Esta instrução no entanto não pode ser executada diretamente pois o processador não
+   entende texto e nem algumas das operações de alto nível utilizadas, por isso o código
+   é primeiro passado por um compilador que irá converter o código em instruções que o
+   processador consegue entender, estas instruções estarão em binário numa representação
+   específica, e cada instrução de alto nível pode necessitar de ser convertida em várias
+   de baixo nível.
+
+   Mas as vezes é necessário (ou útil) ver/escrever diretamente as instruções que o
+   processador entende, mas manipular diretamente o código binário seria muito difícil,
+   utiliza-se então uma representação textual chamada de assembly que mapeia quase
+   diretamente para as instruções binárias, o código assembly passa por um programa
+   chamado assembler que faz esta conversão.
+
+   @code assembly
+   lw $15, 4($2)
+   sw $15, 0($3)
+   @end
+
+   @embed image
+   assets/Instruções-niveis.png
+   @end
+
+** Ciclo de execução
+
+   O processador divide a execução de uma dada instrução em duas fases, a primeira fase
+   é chamada de /Instruction Fetch/, nesta o processador lê a instrução da memória,
+   separa a instrução nos seus componentes (tipo, operandos, destino). A segunda fase
+   chama-se /Instruction Execute/ e nesta o processador carrega os operandos, aplica
+   a operação e guarda o resultado.
+
+   @embed image
+   assets/basic-execution-cycle.png
+   @end
+
+   Após a instrução acabar de executar o ciclo repete-se para a instrução seguinte.
+
+** ISA ou arquitetura do conjunto de instruções
+
+   A arquitetura de um computador é definida por duas grandes partes, a
+   arquitetura/organização da máquina e a arquitetura do conjunto de instruções (ISA),
+   como já vimos as instruções são o que o processador executa e vimos também que
+   precisam de responder a algumas questões para serem executadas.
+
+   A ISA define as operações disponíveis e a maneira como as instruções respondem as
+   questões como qual a operação, onde estão os operandos, etc. Muitas vezes é também
+   chamada de modelo de programação pois além de especificar as instruções, também
+   define o comportamento geral da arquitetura de forma a criar uma abstração do hardware
+   útil para o software, isto permite ao software de não ter de se preocupar como é que
+   o hardware implementa a ISA.
+
+   @embed image
+   assets/ISA-abstraction.png
+   @end
+
+   Sendo assim ISA define as seguintes propriedades:
+
+   - As instruções suportadas
+   - A organização da memória e as regras de acesso/escrita para esta
+   - Os registos, quantos existem, se existem registo especiais e quais são
+   - Os tipos de dados suportados e a sua representação
+   - O formato das instruções
+   - Condições de execução que podem levar a exceções (ex. divisão por 0)
+
+   Tendo em conta todas esta propriedades que precisam de ser especificadas, o objetivo
+   de uma ISA é suportar o máximo de casos de utilização possíveis de uma maneira rápida
+   e eficiente, mas sem comprometer a eficiência e simplicidade do design do hardware.
+
+** Ciclo de execução de uma instrução 
+
+   Já vimos o ciclo básico de execução de um programa, vamos agora observar mais
+   atentamente o ciclo de execução de uma instrução específica. Este ciclo apresenta
+   um número de passos dependente da arquitetura do processador, mas estes podem ser 
+   categorizados de uma maneira geral em 5:
+
+   - /Instruction fetch/, neste passo o processador carrega a instrução da memória.
+   - /Instruction decode/, A instrução já na memória é descodificada nos seus
+     componentes essenciais: tipo, operandos, destino, etc.
+   - /Operand fetch/, neste passo o processador carrega os operandos dos
+     registos/memória.
+   - /execute/, a operação especificada na instrução é executada sobre os operandos.
+   - /Store result/, o resultado da operação é guardado no destino, seja este registo
+     ou memória.
+
+   @embed image
+   assets/instruction-execution-cycle.png
+   @end
+
+   Este passos abrangem também passos auxiliares, por exemplo incrementar o contador de
+   programa para apontar para a próxima instrução, no final da execução da instrução atual.
+
+** Formato das instruções
+
+   O formato das instruções depende da ISA mas pode ser categorizado quanto ao tamanho das
+   instruções em duas categorias:
+
+   - *Tamanho variável*, neste esquema as instruções tem vários tamanhos (em bits), este
+     esquema permite obter código mais compacto e denso, o que requer menos acesso a
+     memória para o ler. Além disso também é mais flexível, mas faz com que o passo de
+     /Instruction fetch/ seja mais complexo.
+   - *Tamanho Fixo*, é o contrário do anterior, todas as instruções têm o mesmo tamanho,
+     isto inverte as vantagens e desvantagens da abordagem anterior, o código é menos
+     compacto e flexível, mas a implementação é mais fácil e simples.
+     
+** Arquitetura dos registos
+
+   Outro fator importante a considerar quando se implementa uma arquitetura nova é o
+   número de registos, um número menor de registos permite um design mais simples com
+   menos hardware e menos bits necessários para identificar um registo, bem como
+   benefícios para os sistemas operativos que precisam de guardar os registos em memória
+   quando trocam o programa que está a executar. Por outro lado um número maior de registos
+   permite manter mais variáveis em registos e menos acessos a memória como consequência.
+
+   Além disso é importante falar também de registos especiais, por exemplo algumas
+   arquiteturas apresentam um registo especial que guarda sempre o valor 0, pois este
+   é um valor utilizado muitas vezes por instruções.
+
+** Operandos e resultados
+
+   Finalmente é importante especificar como é que as instruções escolhem os seus
+   operandos e onde guardam os seus resultados, existem vários esquemas mas os mais
+   comuns são os seguintes:
+
+   - *Acumulador*, neste todas as operações guardam o seu resultado num registo especial
+     chamado de acumulador.
+   - *Baseado em Stack*, neste os operandos e resultado vivem num conjunto de registos
+     organizado na forma de uma stack (lista FIFO).
+   - *Register-Memory*, neste os operandos podem ser escolhidos livremente entre registos
+     e memória.
+   - *Load-store*, neste os operandos residem sempre em registos e movimentos entre
+     memória e registos são sempre feitos com instruções explicitas, comparado ao
+     esquema anterior este permite uma implementação mais simples.

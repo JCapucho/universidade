@@ -9,6 +9,11 @@
       type = "norg";
       target = "repr-digital.norg";
     }
+    {
+      name = "Arquitetura de computadores";
+      type = "norg";
+      target = "arquitetura-de-computadores.norg";
+    }
   ];
 
   mapper = args:
