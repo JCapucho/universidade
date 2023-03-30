@@ -10,6 +10,11 @@
       target = "repr-digital.norg";
     }
     {
+      name = "Blocos combinatórios";
+      type = "norg";
+      target = "combinatorios.norg";
+    }
+    {
       name = "Arquitetura de computadores";
       type = "norg";
       target = "arquitetura-de-computadores.norg";

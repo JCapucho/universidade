@@ -1,0 +1,85 @@
+@document.meta
+title: Blocos combinatórios
+author: João Capucho
+@end
+
+Os blocos combinatórios recebem o seu nome pois dependem exclusivamente do estado atual
+das suas entradas para obter o estado das saídas, ou seja não têm estado nenhum.
+
+Todos os portões básicos como o NOT, AND e OR são exemplos de blocos combinatórios,
+no entanto apesar de se poder construir todos os outros blocos que vão ser apresentados
+a partir deles, estes blocos são tão comuns e uteis que possuem designações próprias. 
+
+* Multiplexer
+
+  O multiplexer (ou multiplexador em português, por favor não, digam em inglês), é
+  um circuito que tem $N$ entradas e apenas uma saída, alem disso têm ainda um sinal
+  de seleção com  $\log_2 N$ bits.
+
+  A função do multiplexer é simples, a saída terá o valor da entrada na posição
+  correspondente ao número atualmente na entrada de seleção. Ou seja o multiplexer
+  permite escolher o valor de uma entrada.
+
+  @embed image
+  assets/multiplexer.png
+  @end
+
+** Implementação de funções lógicas
+
+   Como os multiplexers permitem escolher o output dependendo de uma seleção,
+   uma tradução direta de uma tabela de verdade para um multiplexer é possível,
+   os bits de entrada correspondem aos bits da seleção e as entradas têm o valor
+   da linha correspondente na tabela de verdade.
+
+   @embed image
+   assets/multiplexer-logic.png
+   @end
+
+* Decoder
+
+  O decoder (ou descodificador em português) é um circuito de $N$ entradas e $2^N$
+  saídas, num decoder uma e apenas uma saída está ativa num dado momento e essa saída
+  é a que está na mesma posição que o número representado nas entradas.
+
+  @embed image
+  assets/decoder.png
+  @end
+
+** Implementação de funções lógicas
+
+   Como os decoders geram uma saída correspondente ao código binário das entradas,
+   são basicamente geradores de mintermos, logo com um decoder e alguns gates OR
+   é possível implementar funções lógicas.
+
+   @embed image
+   assets/decoder-logic.png
+   @end
+
+* Somadores
+
+  Outro bloco usado frequentemente é o somador, que como o nome implica soma dois
+  números binários. O somador é construído a partir de outro bloco combinatório base,
+  o somador completo de um bit.
+
+** Somador completo de um bit
+
+   O somador completo de um bit, não só faz a adição entre 2 bits mas também com um
+   terceiro que representa o carry in, alem disso dá como output o resultado da soma
+   e o carry da adição.
+
+   @embed image
+   assets/full-adder.png
+   @end
+
+** Somador de $N$ bits
+
+   Depois de já termos definido o nosso somador de 1 bit é fácil combiná-los em
+   somador de $N$ bits ligando o bit dos números a ser somados a cada adder de 1
+   bit e ligando os carrys sequencialmente.
+
+   @embed image
+   assets/n-bit-adder.png
+   @end
+
+   Nota\: Esta implementação não é a mais eficiente pois têm muito tempo de atraso,
+   visto que o primeiro carry tem que percorrer todos os adders
