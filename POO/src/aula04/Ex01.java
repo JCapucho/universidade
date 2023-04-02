@@ -3,7 +3,6 @@ package aula04;
 import utils.UserInput;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class Ex01 {
     private static ArrayList<Figura> figuras = new ArrayList();
@@ -14,7 +13,7 @@ public class Ex01 {
             System.out.println(" 2) Criar triângulo");
             System.out.println(" 3) Criar retângulo");
             System.out.println(" 4) Imprimir figura");
-            System.out.println(" 5) Comparar figuras");
+            System.out.println(" 6) Comparar figuras");
             System.out.println(" 6) Modificar figura");
             System.out.println(" 7) Área da figura");
             System.out.println(" 8) Perímetro da figura");
