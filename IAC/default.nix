@@ -15,6 +15,11 @@
       target = "combinatorios.norg";
     }
     {
+      name = "Circuitos sequenciais";
+      type = "norg";
+      target = "sequenciais.norg";
+    }
+    {
       name = "Arquitetura de computadores";
       type = "norg";
       target = "arquitetura-de-computadores.norg";

@@ -1,0 +1,133 @@
+@document.meta
+title: Circuitos sequenciais
+author: João Capucho
+@end
+
+Os circuitos sequenciais ao contrário do circuitos combinatórios, contêm estado
+logo as suas saídas dependem não só do valor das entradas mas também de estado anterior
+ou seja do valor anterior das entradas.
+
+A armazenação deste estado é feita por um conjunto especial de circuitos chamados de
+bi-estáveis, estes circuitos conseguem guardar um bit de informação como estado.
+
+* Latch
+
+  O primeiro circuito bi-estável que encontramos é a latch, a latch é uma familia de
+  circuitos mas os tipos que nos interessam estudar são a latch SR e a latch D.
+
+** Latch SR
+
+   A Latch SR ou /Set-Reset/ apresenta duas entradas uma chamada /Set/ e outra
+   chamada /Reset/, e duas saídas uma chamada $\text{Q}$ e a sua negação
+   $\overline{\text{Q}}$. Quando /Set/ é 1, o valor guardado na latch será 1.
+   Quando /Reset/ é 1, o valor guardado na latch será 0. /Set/ e /Reset/
+   *nunca* podem ser ambos iguais a 1, senão a latch entra num estado inválido.
+
+   @embed image
+   assets/latch-sr.png
+   @end
+
+** Latch D
+
+   A latch D é uma extensão a latch SR, agora em vez desta aceitar sinais /Set/ e /Reset/,
+   esta vai passar a aceitar um sinal /CLK/ e um sinal /D/, sempre que /CLK/ estiver a 1,
+   a latch D vai guardar o valor da entrada /D/, quando /CLK/ for 0, a latch D vai guardar
+   o valor anterior.
+
+   Esta latch D é mais fácil de trabalhar com e além disso resolve o problema do estado
+   inválido em que era possível entrar-se com a latch SR.
+
+   @embed image
+   assets/latch-d.png
+   @end
+
+* Flip-Flops
+
+  Os Flip-Flops são quase idênticos as latches mas com a exceção que invés de alterarem
+  o valor guardado sempre que o clock é 1, o valor é apenas guardado na transição do
+  relógio de 0 para 1.
+
+** Flip-Flop D
+
+   Este é o único tipo de flip-flop que vamos utilizar, este é idêntico a uma latch D,
+   com a diferença que só guarda o valor na transição do clock.
+
+   @embed image
+   assets/flip-flop-d.png
+   @end
+
+   O flip-flop é identificado com um triângulo na entrada do /CLK/. Além desta versão
+   existem outras versões com portas para ativar escrita e para assincronamente (sem
+   esperar pela transição do /CLK/) mudar o valor do flip-flop.
+
+   @embed image
+   assets/flip-flop-d-variations.png
+   @end
+
+* Registos
+
+  Até agora só vimos circuitos capazes de guardar um bit de informação no entanto como
+  já vimos a maior parte das quantidades necessita de vários bits para ser representada,
+  logo é necessário criar um circuito capaz de guardar mais bits.
+
+  Uma maneira simples de o fazer é ligar vários flip-flops em paralelo, este circuito
+  chama-se de registo.
+
+  @embed image
+  assets/register.png
+  @end
+
+  Um registo é identificado através dos seus inputs com mais de um bit de largura (neste
+  caso utilizou-se a notação de barramento ou bus, onde uma barra diagonal é colocada por
+  cima da linha para denotar que esta carrega $N$ bits).
+
+  Tal como os flip-flops existem também outras variações com entradas e saídas extras, sendo
+  uma variação bastante comum, a introdução de uma porta para controlar a escrita (write enable).
+
+* Memórias
+
+  Apesar dos registos permitirem guardar vários bits, estes são bastante ineficientes para guardar
+  grandes quantidades de dados em termos de custo e hardware necessário para implementar. Logo
+  existe outro tipo de circuitos responsáveis por guardar dados em grandes quantidades chamados
+  memórias.
+
+  As memórias são uma categoria muita diversa mas podem ser subclassificadas em duas propriedades:
+
+  - Volatilidade, ou seja se o circuito precisa de alimentação para guardar os dados.
+  - E se podem ser rescritas ou se são apenas de leitura.
+
+  Todas as memórias podem ser pensadas como arrays bidimensionais de 1 bit, sendo as colunas
+  o número de bits acessíveis de uma só vez a que se chama de word ou palavra, e as linhas são
+  o número de palavras que a memória consegue guardar.
+
+  @embed image
+  assets/memory.png
+  @end
+
+  Usa-se muitas vezes a notação `NxM` quando se fala do tamanho de uma memória, onde $N$ é o
+  número de palavras (ou depth) e precisam de $\log_2 N$ bits para ser adereçados, através da
+  porta de entrada /Address/, e o $M$ é o tamanho da palavra. Sendo assim o número total de bits
+  que uma memória pode guardar calculado multiplicando as duas quantidades. Caso seja apenas
+  dado o número de bits de endereço o tamanho da memória é dado por $2^\text{bits} \times M$.
+
+  As linhas disponíveis são também muitas vezes chamadas de *Espaço de endereçamento* e o número de
+  bits em cada endereço (o tamanho da palavra) é chamado de *Endereçabilidade*.
+
+  Além das portas de endereço e dados, as memórias também costumam ter mais duas portas de entrada,
+  /WE/ ou write enable que controla se a operação atual na memória é de leitura ou escrita (0 - leitura,
+  1 - escrita), e uma porta /CE/ ou chip select usada para sinalizar se a operação atual é para esta
+  memória em específico (usada em sistemas em que existem mais de que um chips de memória).
+
+** Memórias RAM
+
+   As memórias mais comum são as RAM ou Random Access Memory, estas memórias são voláteis e podem ser
+   escritas e lidas. Dentro das RAMs distinguem-se dois tipos:
+
+   - As SRAMs ou static RAM, que são mais simples de usar e tendem a ser mais rápidas.
+   - E as DRAMs ou dynamic RAM, que são mais densas mas os dados precisam de ser re-escritos
+     periodicamente e sempre que ocorre uma leitura (o processo de leitura é destrutivo).
+
+** Memórias ROM
+
+   Em contraste as memórias ROM ou Read-Only Memory são não voláteis mas não podem ser escritas
+   (ou é um processo lento).
