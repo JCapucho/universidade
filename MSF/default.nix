@@ -15,8 +15,18 @@
       target = "notes/cheatsheet.norg";
     }
     {
+      name = "Slides teóricos";
+      type = "external";
+      target = "https://uapt33090-my.sharepoint.com/:f:/g/personal/jcapucho_ua_pt/EiBQ_4gRz79Mq-MdPpM4stwBCvhJ7tiaxazbuxOObDiK1A?e=ycMBJ5";
+    }
+    {
       name = "Guiões";
       children = [
+        {
+          name = "Guiões";
+          type = "external";
+          target = "https://uapt33090-my.sharepoint.com/:f:/g/personal/jcapucho_ua_pt/Etzx87VMIY5Hgc_nZyznkp4Bsr6TBWCkq2nJxRv2VW_sQg?e=e23jka";
+        }
         {
           name = "Prática 2";
           type = "notebook";
