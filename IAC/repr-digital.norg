@@ -31,6 +31,25 @@ author: João Capucho
 
    Onde $D$ é então o número de estados.
 
+* Glossário
+
+  Os seguintes termos são usados e podem aparecer noutros sítios.
+
+  $ byte
+  Conjunto de 8 bits, pode representar $2^8 = 256$ estados diferentes
+  $ nibble
+  Conjunto de 4 bits, pode representar $2^4 = 16$ estados diferentes
+  $ word
+  Um processador opera sobre words, words são um conjunto de bits de
+  tamanho específico a plataforma mas variam entre plataformas, o
+  tamanho mais comum é 64 bits (i.e. processadores de 64 bits).
+  $ lsb
+  O Least Significant bit ou bit menos significativo é o bit num grupo
+  de bits que têm menos peso no número (ie. está mais a direita).
+  $ msb
+  O Most Significant bit ou bit mais significativo é o bit num grupo
+  de bits que têm o maior peso no número (ie. está mais a esquerda).
+
 * Representação de inteiros
 
   O primeiro bocado de informação que queremos representar são os números
