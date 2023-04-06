@@ -10,6 +10,11 @@
       target = "repr-digital.norg";
     }
     {
+      name = "Lógica binária e Circuitos";
+      type = "norg";
+      target = "binary-logic.norg";
+    }
+    {
       name = "Blocos combinatórios";
       type = "norg";
       target = "combinatorios.norg";

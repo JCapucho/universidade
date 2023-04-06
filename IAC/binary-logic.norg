@@ -1,0 +1,152 @@
+@document.meta
+title: Lógica binária e Circuitos
+author: João Capucho
+@end
+
+A lógica binária ou álgebra booleana baseia-se no estudo da matemática onde as variáveis
+podem apenas ter 2 valores\: Verdadeiro ou Falso. Esta é útil pois como já vimos os computadores
+representam tudo como bits, que só tem dois estados também\: 0 (Falso) ou 1 (Verdadeiro).
+
+* Operações lógicas
+
+  A álgebra de bool define três operações fundamentais com as quais é possível construir todas as
+  outras operações, são estas a negação (/NOT/), a conjunção (/AND/) e a disjunção (/OR/).
+
+  @embed image
+  assets/logic-fundamental-operations.png
+  @end
+
+  No entanto, e principalmente quando se trata de circuitos digitais, operações extra são usadas,
+  isto acontece por duas razões\: torna mais legível o que está a acontecer numa dada fórmula e,
+  quando na implementação real, algumas operações podem ser mais eficientes de implementar do que
+  outras (incluindo as operações fundamentais).
+
+  As operações extra mais comuns são as seguintes:
+
+  - /NAND/\: Not AND, como diz o nome é a negação do /AND/.
+  - /NOR/\: Not OR, é também a negação do /OR/.
+  - /XOR/\: OR exclusivo, só é verdadeira quando apenas um dos inputs é verdadeiro (ou seja
+	os inputs são diferentes).
+  - /XNOR/\: Not XOR, é a negação da operação /XOR/ (ou seja verifica se os inputs são iguais).
+
+  @embed image
+  assets/logic-extra-operations.png
+  @end
+
+* Portas lógicas
+
+  As operações lógicas podem ser traduzidas diretamente para circuitos lógicos, estes circuitos
+  chamam-se portas lógicas ou Logic Gates e implementam as operações lógicas diretamente. Estes
+  podem ter 1+ mais entradas dependendo da operação (o /NOT/ só têm uma entrada, o /XOR/ têm
+  duas e o /AND/ pode ter 2+ entradas).
+
+  @embed image
+  assets/logic-gates.png
+  @end
+
+  As portas lógicas com mais de 2 entradas aplicam a operação a todas as entradas, por exemplo
+  a seguinte porta /AND/ de 4 entradas:
+
+  @embed image
+  assets/4-way-and.png
+  @end
+
+  É equivalente a seguinte fórmula $S = A \cdot B \cdot C \cdot D$.
+
+* Circuitos reais e as suas propriedades
+
+  Os circuitos no mundo real ao contrário dos circuitos idealizados apresentam mais detalhes
+  de operação que é necessário ter em conta quando se trabalha com eles. O primeiro é a questão
+  de como é que se define um valor lógico a partir da eletricidade que passa num circuito?
+
+** Níveis Lógicos
+
+   A representação dos diferentes níveis lógicos que passam num dado circuito é feita através da
+   tensão, 0V ou uma ligação ao /Ground/ corresponde a um valor lógico de 0 ou falso, enquanto que
+   a tensão de alimentação (a tensão a qual um circuito opera ou seja a tensão da sua fonte de
+   alimentação) corresponde a um valor lógico de 1 ou verdadeiro.
+
+   No entanto, um circuito muitas vezes recebe uma tensão que está entre 0V e a fonte de alimentação,
+   pois a tensão é um valor contínuo e durante a operação do circuito existem perdas e pode haver
+   indução, logo cada circuito têm definido um intervalo de tensões onde o valor é 0 e outro onde
+   o valor 1, além destes existe também um intervalo de tensões chamado de *zona proibida* onde o
+   valor lógico é indefinido e o comportamento do circuito muitas vezes também é indefinido.
+
+   @embed image
+   assets/tensions-ranges.png
+   @end
+
+   Estes intervalos são também definidos para as saídas e, caso todos os inputs sejam válidos, representam
+   as tensões que as saídas podem ter dependendo do valor lógico da saída. São utilizadas várias siglas para
+   representar estes intervalos:
+
+   - $V_{DD}$\: Representa o valor da tensão de alimentação.
+   - $\text{GND}$\: Representa a tensão de 0V (a voltagem do /Ground/).
+   - $V_{IH}$\: A tensão mínima para representar um valor lógico de 1 na entrada.
+   - $V_{IL}$\: A tensão máxima para representar um valor lógico de 0 na entrada.
+   - $V_{OH}$\: A tensão mínima que uma saída pode utilizar para representar um valor lógico 1.
+   - $V_{OL}$\: A tensão máxima que uma saída pode utilizar para representar um valor lógico 0.
+
+   @embed image
+   assets/annotated-tensions-ranges.png
+   @end
+
+** Ruído
+
+   Como já referido anteriormente os circuitos podem sofrer degradação na qualidade do sinal,
+   isto pode acontecer por causa da resistência inerente as ligações, imperfeições na fonte de
+   alimentação e indução causada por outros circuitos.
+
+   Para garantir que os sinais são propagados com o valor correto entre circuitos é necessário
+   estudar as suas margem de ruído, estas são a quantidade do desvio de tensão que pode haver
+   num circuito até o valor lógico ser interpretado de maneira diferente. A margem de ruído pode
+   ser calculada como a diferença entre o limite do intervalo de saída e o limite do intervalo
+   de entrada. Logo temos as seguintes quantidades:
+
+   - $\text{NM}_H$\: A margem de ruído para o valor lógico 1, $\text{NM}_H = V_{OH} - V_{IH}$
+   - $\text{NM}_L$\: A margem de ruído para o valor lógico o, $\text{NM}_H = V_{IL} - V_{OL}$
+
+   @embed image
+   assets/noise-margins.png
+   @end
+
+** Especificações temporais
+
+   Outra medida onde os circuitos reais diferem dos circuitos idealizados é que
+   nos circuitos reais as mudanças não são imediatas ao contrário de nos
+   circuitos idealizados, o valor das entradas demora a passar pelo circuito e
+   a chegar a saída.
+
+   Num circuito existe então o conceito de *tempo de propagação* ($t_{pd}$) que
+   é o tempo que demora desde que uma entrada é alterada até que a saída
+   adquire o valor correto. Normalmente um circuito só define uma vez este
+   valor e é o tempo máximo, pois algumas entradas podem ser mais rápidas que
+   outras.
+
+   @embed image
+   assets/propagation-time.png
+   @end
+
+   Em alguns circuitos a mesma entrada passa por vários caminhos diferentes que
+   têm tempos diferentes até chegar a saída, logo estabelece-se outro conceito,
+   o *tempo de contaminação* ($t_{cd}$), este é o tempo minimo desde que a
+   entrada muda até este sinal chegar a saída, o valor da saída a partir deste
+   momento é indefinido até a propagação completa do sinal (dada pelo tempo de
+   propagação).
+
+   @embed image
+   assets/contamination-time.png
+   @end
+
+   Dentro do intervalo de tempo entre o tempo de contaminação e de propagação
+   pode ocorrer que a mudança na entrada cause a saída mude mais do que uma vez
+   de valor, isto chama-se de *Glitch*.
+
+   Estas quantidades dentro de um circuito dependem não só dos tempos das portas
+   e sub circuitos, mas também do *critical path* que é o caminho mais longo de
+   uma entrada até a saída e do *short path* que é o caminho mais curto da entrada
+   a saída.
+
+   @embed image
+   assets/circuit-paths.png
+   @end
