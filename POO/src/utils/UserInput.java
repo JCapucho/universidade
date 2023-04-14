@@ -299,7 +299,8 @@ public final class UserInput {
      * @param maxExclusive controls if the upper limit is exclusive (true) or inclusive (false)
      * @return the number inserted by the user
      */
-    public static double promptDoubleRange(String prompt, double min, boolean minExclusive, double max, boolean maxExclusive) {
+    public static double promptDoubleRange(String prompt, double min, boolean minExclusive, double max,
+                                           boolean maxExclusive) {
         InputValidator<Double> validator = InputValidator.rangeValidator(min, max, minExclusive, maxExclusive);
         return promptDoubleValidator(prompt, validator);
     }
@@ -339,6 +340,17 @@ public final class UserInput {
             System.out.println(option);
 
         return UserInput.promptIntRange("Insira a sua seleção: ", 0, options.length - 1);
+    }
+
+    public static <T extends Enum<T>> T enumSelection(Class<T> enumType) {
+        T[] values = enumType.getEnumConstants();
+
+        for (int i = 0; i < values.length; i++)
+            System.out.printf("%d: %s\n", i, values[i].toString());
+
+        int sel = UserInput.promptIntRange("Insira a sua seleção: ", 0, values.length - 1);
+
+        return values[sel];
     }
 
     /**
