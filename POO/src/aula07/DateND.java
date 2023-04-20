@@ -10,6 +10,10 @@ public class DateND extends Date {
 
     public long distance;
 
+    public DateND(long distance) {
+        this.distance = distance;
+    }
+
     private DateYMD toDateYMD() {
         LocalDate localDate = asLocalDate();
         DateYMD date = new DateYMD(localDate.getDayOfMonth(), localDate.getMonthValue(), localDate.getYear());

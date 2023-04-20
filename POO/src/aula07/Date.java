@@ -1,8 +1,8 @@
 package aula07;
 
-import java.time.LocalDate;
+import java.util.Objects;
 
-public abstract class Date {
+public abstract class Date implements Comparable<Date> {
     public static final int MONTHS_IN_YEAR = 12;
     public static final int MAX_DAYS_IN_MONTH = 31;
 
@@ -94,5 +94,38 @@ public abstract class Date {
     @Override
     public String toString() {
         return String.format("%04d-%02d-%02d", getYear(), getMonth(), getDay());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Date date = (Date) o;
+        return this.getDay() == date.getDay() && this.getMonth() == date.getMonth() && this.getYear() == date.getYear();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.getDay(), this.getMonth(), this.getYear());
+    }
+
+    @Override
+    public int compareTo(Date o) {
+        if (this.getYear() > o.getYear())
+            return 1;
+        if (this.getYear() < o.getYear())
+            return -1;
+
+        if (this.getMonth() > o.getMonth())
+            return 1;
+        if (this.getMonth() < o.getMonth())
+            return -1;
+
+        if (this.getDay() > o.getDay())
+            return 1;
+        if (this.getDay() < o.getDay())
+            return -1;
+
+        return 0;
     }
 }

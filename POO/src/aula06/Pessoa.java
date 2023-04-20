@@ -2,6 +2,8 @@ package aula06;
 
 import utils.DateYMD;
 
+import java.util.Objects;
+
 public class Pessoa {
     private String nome;
     private int cc;
@@ -50,5 +52,18 @@ public class Pessoa {
                 this.dataNasc.getMonth(),
                 this.dataNasc.getYear()
         );
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Pessoa pessoa = (Pessoa) o;
+        return cc == pessoa.cc;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(cc);
     }
 }
