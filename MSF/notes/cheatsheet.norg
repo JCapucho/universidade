@@ -273,3 +273,98 @@ Este documento contêm várias fórmulas e bocados de informação utéis.
    - Erro de truncatura local: proporcional a $\delta t^2$
    - Erro de truncatura global: proporcional a
 	 $N\delta t^2 = \left( t_f - t_0 \right) \delta t$, onde $N$ é o número de passos.
+
+* Forças
+** Resistência do ar
+
+   @math
+   \vec{F} = - m D \left\lvert \vec{v} \right\rvert^2 \hat{v}
+   @end
+
+   @code python
+   def forcaResAr(D, v, m):
+	   v_norm = np.linalg.norm(v)
+	   v_hat = v / v_norm
+	   return -m * D * v_norm**2 * v_hat
+   @end
+
+** Força da gravidade de Newton
+
+   @math
+   \vec{F}_\text{grav} = G \frac{m M}{\left\lvert \vec{r} \right\rvert^2} \hat{r}
+   @end
+
+   @code python
+   def forcaGrav(m, M, r):
+	   G = 6.67259 * 10**(-11)
+	   r_norm = np.linalg.norm(r)
+	   r_hat = r / r_norm
+	   return G * m * M / r_norm**2 * r_hat
+   @end
+
+** Peso
+
+   @math
+   \left\lvert \vec{P} \right\rvert = m \left\lvert \vec{g} \right\rvert
+   @end
+
+   @code python
+   def forcaPeso(m, g):
+	   return m * g
+   @end
+
+** Força elétrica (eletrostática)
+
+   @math
+   \vec{F}_\text{elét} = K \frac{q \, Q}{\left\lvert \vec{r} \right\rvert^2} \hat{r}
+   @end
+
+   @code python
+   # Esta função calcula a força elétrica dada as cargas dos corpos e o vetor
+   # distância.
+   def forcaElet(q, Q, r):
+	   # Constante de Coulomb, este valor é dada também por algumas librarias e
+	   # deve ser adaptado dependo do que é pedido
+	   K = 8.987551 * 10**9
+	   # Calcular o comprimento do vetor distância
+	   r_norm = np.linalg.norm(r)
+	   # Calcular o vetor unitário da distância
+	   r_hat = r / r_norm
+	   # Calcular a força elétrica
+	   return K * q * Q / r_norm**2 * r_hat
+   @end
+
+   Força elétrica de uma carga num campo elétrico:
+
+   @math
+   \vec{F}_\text{elét} = q \, \vec{E}_\text{elét}
+   @end
+
+** Força magnética
+
+   @math
+   \vec{F}_\text{mag} = q \, \vec{v} \times \vec{B}_\text{mag}
+   @end
+
+   @code python
+   # Esta função calcula a força magnética dada a carga do corpo, a sua
+   # velocidade e o campo magnético.
+   def forcaMag(q, v, B):
+	   # Calcular a força magnética
+	   return q * np.cross(v, B)
+   @end
+
+** Força de Magnus (para um corpo esférico)
+
+   @math
+   \vec{F}_\text{Magnus} = \frac{1}{2} A \, \rho \, r \, \vec{\omega} \times \vec{v}
+   @end
+
+   @code python
+   # Esta função calcula a força de Magnus para um corpo esférico dada a área
+   # da secção transversal, densidade do fluído, o raio da corpo, a rotação do
+   # corpo e a velocidade do corpo.
+   def forcaMagnus(A, p, r, w, v):
+	   # Calcular a força de magnus
+	   return 1/2 * A * p * r * np.cross(w, v)
+   @end

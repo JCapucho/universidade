@@ -1,0 +1,219 @@
+@document.meta
+title: Forças
+author: João Capucho
+@end
+
+Este documento possui uma breve explicação acerca de forças e depois apresenta
+várias fórmulas para modelar certas forças.
+
+* Introdução
+
+  Uma Força é um vetor normalmente indicado por $\vec{F}$ que representa uma
+  pertubação ao movimento do corpo, aplicando sobre este uma aceleração.
+
+  As forças estão associadas as três leis de Newton, que descrevem factos bases
+  acerca delas e do seu comportamento:
+
+  - 1ª lei de Newton\: Quando a força resultante $\vec{F}$ é nula o corpo mantêm
+	a sua velocidade (se o corpo estava em repouso continua em repouso).
+  - 2ª lei de Newton\: A força resultante é dada por $\vec{F} = m\vec{a}$, onde
+	$m$ é a massa do corpo, isto também implica que
+	$\left\lvert \vec{F} \right\rvert = m \left\lvert \vec{a} \right\rvert$,
+	ou por $\vec{F} = \sum_i \vec{F}_i$, onde $F_i$ são todas as forças
+	aplicadas no corpo.
+  - 3ª lei de Newton\: Quando um corpo aplica uma força sobre outro corpo, uma
+	força com o sentido oposto e intensidade igual é aplicada sobre este, ou
+	seja, se um corpo 1 aplica uma força $\vec{F}_{12}$ sobre um corpo 2, uma
+	força $\vec{F}_{21}$ será aplicada sobre ele, verificando-se a seguinte
+	igualdade $\vec{F}_{12} = - \vec{F}_{21}$.
+
+* Força da resistência do ar
+
+  A força da resistência do ar é uma força não conservativa, que pode ser
+  modelada pela seguinte fórmula:
+
+  @math
+  \vec{F} = - m D \left\lvert \vec{v} \right\rvert^2 \hat{v}
+  @end
+
+  Onde $\vec{v}$ é a velocidade instantânea atual, $\hat{v}$ é o vetor unitário
+  da velocidade instantânea atual, o vetor unitário é aquele que tem o mesmo
+  sentido e intensidade 1, este pode ser calculado da seguinte maneira:
+
+  @math
+  \hat{v} = \frac{\vec{v}}{\left\lvert \vec{v} \right\rvert}
+  @end
+
+  Finalmente temos a constante $D$ que é uma constante determinada
+  experimentalmente para o corpo mas pode ser calculada a partir da velocidade
+  terminal $v_T$:
+
+  @math
+  D = \frac{g}{v_T^2}
+  @end
+
+** Código
+
+   O código seguinte calcula a força de resistência, este pode ser facilmente
+   modificado para calcular a aceleração se a multiplicação pela massa for
+   removida.
+
+   @code python
+   # Esta função calcula a força da resistência do ar dada a velocidade atual,
+   # a constante D e a massa do corpo.
+   def forcaResAr(D, v, m):
+	   # Calcular o comprimento do vetor velocidade
+	   v_norm = np.linalg.norm(v)
+	   # Calcular o vetor unitário da velocidade
+	   v_hat = v / v_norm
+	   # Calcular a força da resistência do ar
+	   return -m * D * v_norm**2 * v_hat
+   @end
+
+* Força da gravidade de Newton
+
+  A força da gravidade é uma força de atração natural sentida entre dois corpos
+  com massa, a lei de Newton serve para modelar esta força na mecânica
+  clássica, a sua fórmula é a seguinte:
+
+  @math
+  \vec{F}_\text{grav} = G \frac{m M}{\left\lvert \vec{r} \right\rvert^2} \hat{r}
+  @end
+
+  Onde $m$ e $M$ são as massas dos corpos, $r$ é o vetor que une os dois corpos
+  com sentido do corpo onde a força está a ser aplicada até o corpo que aplica
+  a força e $G$ é a constante gravitacional universal.
+
+** Código
+
+   O código seguinte calcula a força da gravidade segundo a lei da gravidade de
+   Newton, este pode ser facilmente modificado para calcular a aceleração se a
+   multiplicação pela massa do corpo onde a força está a ser aplicada for
+   removida.
+
+   @code python
+   # Esta função calcula a força da gravidade dada as massas dos corpos e o
+   # vetor distância.
+   def forcaGrav(m, M, r):
+	   # Constante gravitacional, este valor é dada também por algumas
+	   # librarias e deve ser adaptado dependo do que é pedido
+	   G = 6.67259 * 10**(-11)
+	   # Calcular o comprimento do vetor distância
+	   r_norm = np.linalg.norm(r)
+	   # Calcular o vetor unitário da distância
+	   r_hat = r / r_norm
+	   # Calcular a força da gravidade
+	   return G * m * M / r_norm**2 * r_hat
+   @end
+
+* Peso
+
+  A força da gravidade, apesar de ser bastante geral, nem sempre é a maneira
+  mais prática de calcular a força da gravidade entre dois corpos, quando um
+  corpo bastante mais pequeno que outro se encontra na sua superfície ou perto
+  dela (como uma pessoa na terra), podemos utilizar o peso para calcular a
+  força. O peso é dado por
+  $\left\lvert \vec{P} \right\rvert = m \left\lvert \vec{g} \right\rvert$,
+  onde $m$ é a massa do corpo e $g$ é a aceleração da gravidade ($\approx 9.8$,
+  na superfície da terra).
+
+** Código
+
+   @code python
+   # Esta função calcula o peso dada a massa do corpo e a aceleração gravítica.
+   def forcaPeso(m, g):
+	   return m * g
+   @end
+
+* Força elétrica (eletrostática)
+
+  A força elétrica ou eletrostática é a força sentida entre duas cargas
+  elétricas, esta atrai cargas de sinais opostos e repele cargas com o mesmo
+  sinal, a seguinte fórmula modela esta força:
+
+  @math
+  \vec{F}_\text{elét} = K \frac{q \, Q}{\left\lvert \vec{r} \right\rvert^2} \hat{r}
+  @end
+
+  Onde $q$ e $Q$ são as cargas dos corpos, $r$ é o vetor que une os dois corpos
+  com sentido do corpo onde a força está a ser aplicada até o corpo que aplica
+  a força e $K$ é a constante de Coulomb.
+
+  A força elétrica é também aplicada sobre um corpo quando este se encontra num
+  campo elétrico, sendo calculada como:
+
+  @math
+  \vec{F}_\text{elét} = q \, \vec{E}_\text{elét}
+  @end
+
+  Onde $q$ é a carga do corpo e $\vec{E}_\text{elét}$ é o campo elétrico.
+
+** Código
+
+   O código seguinte calcula a força elétrica entre duas cargas.
+
+   @code python
+   # Esta função calcula a força elétrica dada as cargas dos corpos e o vetor
+   # distância.
+   def forcaElet(q, Q, r):
+	   # Constante de Coulomb, este valor é dada também por algumas librarias e
+	   # deve ser adaptado dependo do que é pedido
+	   K = 8.987551 * 10**9
+	   # Calcular o comprimento do vetor distância
+	   r_norm = np.linalg.norm(r)
+	   # Calcular o vetor unitário da distância
+	   r_hat = r / r_norm
+	   # Calcular a força elétrica
+	   return K * q * Q / r_norm**2 * r_hat
+   @end
+
+* Força magnética
+
+  A força magnética é a força aplicada a um corpo quando este passa em
+  movimento por um campo magnético, sendo a força dada pela seguinte fórmula:
+
+  @math
+  \vec{F}_\text{mag} = q \, \vec{v} \times \vec{B}_\text{mag}
+  @end
+
+  Onde $q$ é a carga do corpo, $\vec{B}_\text{mag}$ é o campo magnético e
+  $\vec{v}$ é a velocidade do corpo.
+
+** Código
+
+   O código seguinte calcula a força magnética de um corpo a passar por um campo.
+
+   @code python
+   # Esta função calcula a força magnética dada a carga do corpo, a sua
+   # velocidade e o campo magnético.
+   def forcaMag(q, v, B):
+	   # Calcular a força magnética
+	   return q * np.cross(v, B)
+   @end
+
+* Força de Magnus 
+
+  A força de Magnus é força aplicada por um objeto em rotação quando este passa
+  num fluído (normalmente o ar), esta força quando aplicada a uma esfera como
+  uma bola é dada pela seguinte fórmula:
+
+  @math
+  \vec{F}_\text{Magnus} = \frac{1}{2} A \, \rho \, r \, \vec{\omega} \times \vec{v}
+  @end
+
+  Onde $A$ é a área da secção transversal do corpo, $\rho$ é a densidade do
+  fluído, $r$ é o raio do corpo, $\vec{\omega}$ é a rotação do corpo e
+  $\vec{v}$ é a velocidade do corpo.
+
+** Código
+
+   O código seguinte calcula a força de Magnus de um corpo esférico.
+
+   @code python
+   # Esta função calcula a força de Magnus para um corpo esférico dada a área
+   # da secção transversal, densidade do fluído, o raio da corpo, a rotação do
+   # corpo e a velocidade do corpo.
+   def forcaMagnus(A, p, r, w, v):
+	   # Calcular a força de magnus
+	   return 1/2 * A * p * r * np.cross(w, v)
+   @end
