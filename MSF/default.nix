@@ -5,14 +5,19 @@
 }: let
   entries = [
     {
+      name = "Cheat Sheet";
+      type = "norg";
+      target = "notes/cheatsheet.norg";
+    }
+    {
       name = "Regressão linear";
       type = "norg";
       target = "notes/linreg.norg";
     }
     {
-      name = "Cheat Sheet";
+      name = "Método de Euler";
       type = "norg";
-      target = "notes/cheatsheet.norg";
+      target = "notes/euler.norg";
     }
     {
       name = "Slides teóricos";
