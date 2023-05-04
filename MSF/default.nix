@@ -25,6 +25,11 @@
       target = "notes/forces.norg";
     }
     {
+      name = "Energia e Trabalho";
+      type = "norg";
+      target = "notes/work.norg";
+    }
+    {
       name = "Slides teóricos";
       type = "external";
       target = "https://uapt33090-my.sharepoint.com/:f:/g/personal/jcapucho_ua_pt/EiBQ_4gRz79Mq-MdPpM4stwBCvhJ7tiaxazbuxOObDiK1A?e=ycMBJ5";

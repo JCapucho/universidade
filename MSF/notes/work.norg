@@ -1,0 +1,125 @@
+@document.meta
+title: Energia e Trabalho
+author: João Capucho
+@end
+
+* Introdução
+
+  A equação fundamental da dinâmica (2ª lei de newton) diz que
+  $\vec{F} = m\vec{a}$, também sabemos que a velocidade é o integral da
+  aceleração, logo podemos aplicar o integral a equação para tentar estabelecer
+  uma relação entre a força e a velocidade:
+
+  @math
+  \int_C \; \vec{F} \; d\vec{r} = \int_C \; m \vec{a} \; d\vec{r}
+  \quad , d\vec{r} = dx \hat{i} + dy \hat{j} + dz \hat{k}
+  @end
+
+  Este é o integral ao longo da trajetória $C$, também podemos fazer para
+  apenas uma dimensão:
+
+  @math
+  \int_{x_0}^{x_1} \; F_x \; dx = \int_{x_0}^{x_1} \; m a_x \; dx
+  @end
+
+  Se aplicarmos algumas transformações ao integral da direita vamos obter a
+  seguinte igualdade:
+
+  @math
+  \int_{x_0}^{x_1} \; \vec{F} \; d\vec{r} =
+  \frac{1}{2} m \left\lvert \vec{v_1} \right\rvert^2
+  - \frac{1}{2} m \left\lvert \vec{v_0} \right\rvert^2
+  @end
+
+  $\int_{x_0}^{x_1} \vec{F} \; d\vec{r}$ é a definição de trabalho e se repararmos
+  $\frac{1}{2} m \left\lvert \vec{v} \right\rvert^2$ é a fórmula da energia cinética,
+  logo podemos concluir que o trabalho é igual a variação da energia cinética.
+
+  @math
+  W_{0,1} = \frac{1}{2} m \left\lvert \vec{v_1} \right\rvert^2
+  - \frac{1}{2} m \left\lvert \vec{v_0} \right\rvert^2
+  @end
+
+  Se aplicarmos agora o integral a segunda definição da equação fundamental da
+  dinâmica, a força resultante é a soma de todas as forças
+  $\vec{F} = \sum_i \vec{F}_i$, vamos obter outra definição do trabalho
+
+  @math
+  \int_C \; \vec{F} \; d\vec{r}
+  = \int_C \; \textstyle\sum_i \vec{F}_i \; d\vec{r}
+  = \textstyle\sum_i \int_C \; \vec{F}_i \; d\vec{r}
+  = \textstyle\sum_i W_i
+  @end
+
+  Ou seja o trabalho feito (total) é a soma do trabalho feito por cada força.
+
+* Lei da conservação da Energia mecânica
+
+  A lei da conservação da energia mecânica diz que quando na presença de forças
+  conservativas (ou não dissipativas) a energia total do sistema será sempre
+  igual a soma da energia cinética com a energia potencial.
+
+  @math
+  E = E_c + E_p
+  @end
+
+  Quando esta igualdade se verifica, é também verdade a seguinte igualdade
+  (para movimentos 1D):
+
+  @math
+  F_x = - \frac{d E_p}{dx}
+  @end
+
+  Esta igualdade diz que a força é igual a derivada da energia potencial.
+  Pode-se usar esta igualdade para encontrar os pontos de equilíbrio do sistema
+  (quando a força é nula), podendo-se distinguir dois casos de pontos de equilíbrio:
+
+  - Ponto Estável\: A força e a energia potencial são 0.
+  - Ponto Instável\: A força é 0 mas a energia potencial é não nula, o corpo
+    estar em repouso nesta posição implica que a mínima perturbação fará com
+    este saia de equilíbrio.
+
+* Forças conservativas e não conservativas
+
+  As forças conservativas permitem escrever o trabalho em função da energia
+  potencial, ou seja, mantêm constante a energia mecânica do sistema:
+
+  @math
+  \int_C \; \vec{F}^\text{(conservativas)} \; d\vec{r} = E_{p0} - E_{p1}
+  @end
+
+  As forças não conservativas não mantêm a energia mecânica e como tal, não
+  podem ser calculadas em função da energia potencial.
+
+  Na maior parte dos sistemas existe uma mistura de forças conservativas e não
+  conservativas, sendo a força resultante o resultado da soma destes dois tipos
+  de força;
+
+  @math
+  \vec{F} = \vec{F}^\text{(conservativas)} + \vec{F}^\text{(não conservativas)}
+  @end
+
+  Se utilizarmos agora as definições de trabalho podemos estabelecer a seguinte
+  igualdade:
+
+  @math
+  \frac{1}{2} m \left\lvert \vec{v_1} \right\rvert + E_{p1}
+  = \frac{1}{2} m \left\lvert \vec{v_0} \right\rvert + E_{p0}
+  + W_{0,1}^\text{(não conservativo)}
+  @end
+
+  Temos agora uma fórmula que relaciona a energia cinética e potencial ao
+  trabalho das forças não conservativas, logo se soubermos a energia de um
+  sistema com forças não conservativas e compararmos a um sistema igual sem
+  essas forças (por exemplo uma simulação), podemos calcular o trabalho das
+  forças não conservativas.
+
+* Potência
+
+  Outro conceito importante no estudo da mecânica clássica é a potência, a
+  definição de potência é o trabalho realizado por unidade de tempo, o que
+  pode ser calculado com a seguinte fórmula:
+
+  @math
+  P_0 = \vec{F} \cdot \vec{v}
+  @end

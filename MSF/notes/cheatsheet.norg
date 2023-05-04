@@ -368,3 +368,59 @@ Este documento contêm várias fórmulas e bocados de informação utéis.
 	   # Calcular a força de magnus
 	   return 1/2 * A * p * r * np.cross(w, v)
    @end
+
+* Trabalho
+
+  Trabalho como variação da energia cinética:
+
+  @math
+  W_{0,1} = \int_{x_0}^{x_1} \; \vec{F} \; d\vec{r} =
+  \frac{1}{2} m \left\lvert \vec{v_1} \right\rvert^2
+  - \frac{1}{2} m \left\lvert \vec{v_0} \right\rvert^2
+  @end
+
+  Trabalho como a soma do trabalho feito por cada força
+
+  @math
+  \int_C \; \vec{F} \; d\vec{r} = \textstyle\sum_i W_i
+  @end
+
+* Lei da conservação da Energia mecânica
+
+  Quando apenas atuam forças conservativas as seguintes igualdades
+  verificam-se:
+
+  @math
+  E = E_c + E_p
+  @end
+
+  @math
+  F_x = - \frac{d E_p}{dx}
+  @end
+
+  Pontos de equilíbrio:
+
+  - Ponto Estável\: A força e a energia potencial são 0.
+  - Ponto Instável\: A força é 0 mas a energia potencial é não nula, o corpo
+    estar em repouso nesta posição implica que a mínima perturbação fará com
+    este saia de equilíbrio.
+
+  Para sistemas com forças não conservativas, as seguintes igualdades
+  verificam-se:
+
+  @math
+  \frac{1}{2} m \left\lvert \vec{v_1} \right\rvert + E_{p1}
+  = \frac{1}{2} m \left\lvert \vec{v_0} \right\rvert + E_{p0}
+  + W_{0,1}^\text{(não conservativo)}
+  @end
+
+  @math
+  W_{0,1} = W_{0,1}^\text{(conservativo)} + W_{0,1}^\text{(não conservativo)}
+  = E_{p0} - E_{p1} + W_{0,1}^\text{(não conservativo)}
+  @end
+
+* Potência
+
+  @math
+  P_0 = \vec{F} \cdot \vec{v}
+  @end
