@@ -52,6 +52,13 @@ várias fórmulas para modelar certas forças.
   D = \frac{g}{v_T^2}
   @end
 
+  Também é possível calcular a resistência do ar se o coeficiente de
+  resistência do ar for conhecido:
+
+  @math
+  \vec{F} = - \frac{C_\text{res}}{2} \, A \, \rho_\text{ar} \,  \left\lvert \vec{v} \right\rvert \vec{v}
+  @end
+
 ** Código
 
    O código seguinte calcula a força de resistência, este pode ser facilmente
@@ -68,6 +75,20 @@ várias fórmulas para modelar certas forças.
 	   v_hat = v / v_norm
 	   # Calcular a força da resistência do ar
 	   return -m * D * v_norm**2 * v_hat
+   @end
+
+   Este permite calcular calcular com o coeficiente de resistência do ar.
+
+   @code python
+   # Esta função calcula a força da resistência do ar dado o coeficiente de
+   # resistência do ar, á area do corpo e a velocidade atual.
+   def forcaResAr(C_res, A, v):
+     # Densidade do ar, este valor  deve ser adaptado dependo do que é pedido
+     rho_ar = 1.225
+     # Calcular o comprimento do vetor velocidade
+     v_norm = np.linalg.norm(v)
+     # Calcular a força da resistência do ar
+     return -C_res/2 * A * rho_ar * v_norm * v
    @end
 
 * Força da gravidade de Newton
@@ -216,4 +237,30 @@ várias fórmulas para modelar certas forças.
    def forcaMagnus(A, p, r, w, v):
 	   # Calcular a força de magnus
 	   return 1/2 * A * p * r * np.cross(w, v)
+   @end
+
+* Força do atrito
+
+  A força do atrito é uma força não conservativa, que pode ser modelada pela
+  seguinte fórmula:
+
+  @math
+  \vec{F} = - \mu \, \left\lvert \vec{N} \right\rvert \hat{v}
+  @end
+
+  Onde $\mu$ é o coeficiente de resistência da superfície, $\vec{N}$ é a força
+  normal e $\hat{v}$ é o vetor unitário da velocidade.
+
+** Código
+
+   O código seguinte calcula a força do atrito:
+
+   @code python
+   # Esta função calcula a força do atrito dada a velocidade atual, o
+   # coeficiente de resistência da superfície e a força normal.
+   def forcaAtrito(v, mu, N):
+	   # Calcular o vetor unitário da velocidade
+     v_hat = v / np.linalg.norm(v)
+	   # Calcular a força da resistência do ar
+     return -mu * np.linalg.norm(N) * v_hat
    @end
