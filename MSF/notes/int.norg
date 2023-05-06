@@ -1,0 +1,238 @@
+@document.meta
+title: Integração numérica
+author: João Capucho
+@end
+
+* Introdução
+
+  Quando se está a modelar sistemas físicos algumas propriedades estão
+  associadas a outras através da integração, como é o caso da posição e da
+  velocidade ($x = \int v \; dt$).
+
+  Mas nem sempre é possível calcular diretamente a expressão analítica do
+  integral, logo é necessário utilizar métodos numéricos para calcular o
+  integral da função no intervalo $[a, b]$.
+
+  Estes métodos aproximam o integral e baseiam-se em dividir o intervalo em
+  $n$ fatias de igual espessura, onde a espessura é denotada por
+  $\delta x = x_{i+1} - x_i$, como todas as fatias tem a mesma espessura também
+  podemos a definir como $\delta x = (b - a)/n$.
+
+  Depois de dividir o intervalo podemos aplicar a seguinte igualdade para
+  calcular cada fatia:
+
+  @math
+  \int_a^b f(x) \; dx = \sum_{i=0}^{n-1} \, \int_{x_i}^{x_{i+1}} f(x) \; dx
+  @end
+
+  @math
+  x_i = a + (i - 1) \delta x
+  @end
+
+  Isto ainda requer calcular o integral analiticamente, mas como agora já só
+  estamos a calcular pequenas fatias (assumindo que $\delta x \to 0$), se
+  utilizarmos uma aproximação simples para o integral o erro já será aceitável.
+
+* Aproximação retangular
+
+  A maneira mais simples de aproximar o integral de cada fatia é simplesmente
+  utilizar o valor da função num ponto da fatia e calcular a área do retângulo
+  que este faz com o eixo das abcissas.
+
+  @embed image
+  assets/int_num_retangular.svg
+  @end
+
+  Ou seja:
+
+  @math
+  \int_{x_i}^{x_{i+1}} f(x) \; dx \approx f(x_i) \delta x
+  @end
+
+  O seguinte código python integra um array com $n + 1$ valores de uma função
+  utilizando a aproximação retangular:
+
+  @code python
+  dx = (b - a)/n
+  I = dx * np.sum(f[0:n])
+  @end
+
+* Aproximação trapezoidal
+
+  A aproximação retangular é um método muito simples e nem sempre dá boas
+  aproximações, por isso é mais vezes utilizado o método da aproximação
+  trapezoidal. Neste é calculado a área do trapézio feito entre o eixo das
+  abcissas e o valor da função no inicio e fim da fatia.
+
+  @embed image
+  assets/int_num_trapezoidal.svg
+  @end
+
+  Ou seja:
+
+  @math
+  \int_{x_i}^{x_{i+1}} f(x) \; dx \approx \frac{f(x_{i+1}) + f(x_i)}{2} \delta x
+  @end
+
+  O seguinte código python integra um array com $n + 1$ valores de uma função
+  utilizando a aproximação trapezoidal:
+
+  @code python
+  dx = (b - a)/n
+  I = dx * ((f[0] + f[n]) * 0.5 + np.sum(f[1:n]))
+  @end
+
+** Erro
+
+   Como estamos a falar de uma aproximação existe um erro associado e tal como
+   no método de euler podemos dividir esse erro em duas partes, o erro local e
+   o erro global.
+
+   O erro local é erro que é cometido quando é calculado o integral de uma
+   fatia, este é dado pela seguinte fórmula:
+
+   @math
+   \text{erro} = \left\lvert
+   \int_{x_i}^{x_{i + 1}} f(x) \; dx
+   - \frac{f(x_{i+1}) + f(x_i)}{2} \delta x
+   \right\rvert
+   @end
+
+   Podemos desenvolver $f$ numa série de taylor *com centro $x_i$* para
+   determinar a ordem do erro em relação a espessura da fatia:
+
+   @math
+   f(x) = f(x_i)
+   + \left. (x - x_i) \frac{df}{dx} \right|_{x = x_i}
+   + \left. \frac{(x - x_i)^2}{2} \frac{d^2 f}{dx^2} \right|_{x = x_i}
+   + o((x - x_i)^3)
+   @end
+
+   Se aplicarmos agora o integral da fatia a $f$:
+
+   @math
+   \begin{align*}
+   \int_{x_i}^{x_{i + 1}} f(x) \; dx &=
+   \int_{x_i}^{x_{i + 1}} \left[
+   	f(x_i)
+   	+ \left. (x - x_i) \frac{df}{dx} \right|_{x = x_i}
+   	+ \left. \frac{(x - x_i)^2}{2} \frac{d^2 f}{dx^2} \right|_{x = x_i}
+   	+ o((x - x_i)^3)
+   \right] \; dx \\[4pt]
+   &= f(x_i)(x_{i+1} - x_i)
+   	+ \left. \frac{(x_{i+1} - x_i)^2}{2} \frac{df}{dx} \right|_{x = x_i}
+   	+ \left. \frac{(x_{i+1} - x_i)^3}{6} \frac{d^2 f}{dx^2} \right|_{x = x_i}
+   	+ o((x - x_i)^4)
+   \end{align*}
+   @end
+
+   O integral dos termos pode parecer esquisito, principalmente o facto de as
+   derivadas continuarem a aparecer na expressão, mas se repararmos as
+   derivadas estão a ser avaliadas num ponto $x_i$ (é o que a notação da barra
+   vertical ao lado da derivada significa) logo não são integradas em ordem a
+   $x$.
+
+   Outro ponto que pode parecer esquisito é o facto de $(x - x_i)$ ser
+   integrado como um só termo, mas se analisarmos o integral de um destes
+   termos e utilizarmos o método da substituição de $u$ ficamos com:
+
+   @math
+   \begin{gather*}
+   \int_{x_i}^{x_{i + 1}} \left. (x - x_i) \frac{df}{dx} \right|_{x = x_i} \; dx
+   =\int_{x_i}^{x_{i + 1}} \left. u \, \frac{df}{dx} \right|_{x = x_i} \; du \\[10pt]
+   \left( u = x - x_i \implies u' = 1 \right)
+   \end{gather*}
+   @end
+
+   E se agora calcularmos o integral temos:
+
+   @math
+   \begin{align*}
+   \int_{x_i}^{x_{i + 1}} \left. u \, \frac{df}{dx} \right|_{x = x_i} \; du
+   &=\left[ \left. \frac{(x - x_i)^2}{2} \frac{df}{dx} \right|_{x = x_i} \right]_{x_i}^{x_{i+1}} \\[4pt]
+   &=\left[
+   	\left( \left. \frac{(x_{i+1} - x_i)^2}{2} \frac{df}{dx} \right|_{x = x_i} \right)
+   	- \left( \left. \frac{(x_i - x_i)^2}{2} \frac{df}{dx} \right|_{x = x_i} \right)
+   \right] \\[4pt]
+   &=\left. \frac{(x_{i+1} - x_i)^2}{2} \frac{df}{dx} \right|_{x = x_i}
+   \end{align*}
+   @end
+
+   Voltando ao integral da série de Taylor que calculamos, podemos ainda
+   substituir $x_{i+1} - x_i$ por $\delta x$ visto que são equivalentes:
+
+   @math
+   f(x_i)\delta x
+   + \left. \frac{{\delta x}^2}{2} \frac{df}{dx} \right|_{x = x_i}
+   + \left. \frac{{\delta x}^3}{6} \frac{d^2 f}{dx^2} \right|_{x = x_i}
+   + o({\delta x}^4)
+   @end
+
+   Se agora substituirmos $f(x_{i + 1})$ e $f(x_i)$ pela série de taylor que
+   desenvolvemos podemos comparar as duas séries para descobrir a ordem do erro
+   local:
+
+   @math
+   \begin{align*}
+   f(x_{i + 1}) &= f(x_i)
+   + \left. (x_{i + 1} - x_i) \frac{df}{dx} \right|_{x = x_i}
+   + \left. \frac{(x_{i + 1} - x_i)^2}{2} \frac{d^2 f}{dx^2} \right|_{x = x_i}
+   + o((x - x_i)^3) \\
+   &= f(x_i)
+   + \left. {\delta x} \frac{df}{dx} \right|_{x = x_i}
+   + \left. \frac{{\delta x}^2}{2} \frac{d^2 f}{dx^2} \right|_{x = x_i}
+   + o({\delta x}^3)
+   \end{align*}
+   @end
+
+   Aplicando na fórmula do trapézio:
+
+   @math
+   \frac{f(x_{i + 1}) + f(x_i)}{2}\delta x =
+   f(x_i) \delta x
+   + \left. \frac{{\delta x}^2}{2} \frac{df}{dx} \right|_{x = x_i}
+   + \left. \frac{{\delta x}^3}{4} \frac{d^2 f}{dx^2} \right|_{x = x_i}
+   + o({\delta x}^4)
+   @end
+
+   Agora que já temos ambas as expressões em forma de série podemos calcular a ordem do erro:
+
+   @math
+   \begin{align*}
+   % Line 1
+   \text{erro} &= \left\lvert
+   \int_{x_i}^{x_{i + 1}} f(x) \; dx
+   - \frac{f(x_{i+1}) + f(x_i)}{2} \delta x
+   \right\rvert \\
+   % Line 2
+   &= \left\lvert
+   % Absolute value
+   \left(
+   f(x_i)\delta x
+   + \left. \frac{{\delta x}^2}{2} \frac{df}{dx} \right|_{x = x_i}
+   + \left. \frac{{\delta x}^3}{6} \frac{d^2 f}{dx^2} \right|_{x = x_i}
+   + o({\delta x}^4)
+   \right) \right. \\
+   % Approx value
+   &- \left. \left(
+   f(x_i) \delta x
+   + \left. \frac{{\delta x}^2}{2} \frac{df}{dx} \right|_{x = x_i}
+   + \left. \frac{{\delta x}^3}{4} \frac{d^2 f}{dx^2} \right|_{x = x_i}
+   + o({\delta x}^4)
+   \right)
+   \right\rvert \\
+   &= o({\delta x}^3)
+   \end{align*}
+   @end
+
+   Ou seja o erro local de truncatura é $o(\delta x^3)$, ou seja, é proporcional
+   a $\delta x^3$.
+
+   O erro global é a soma do erro de todas as fatias, como todas as fatias são
+   iguais o erro é dado por:
+
+   @math
+   n \, o(\delta x^3) = \frac{b - a}{\delta x} \, o(\delta x^3) = o(\delta x^2)
+   @end
+
+   Logo o erro global é proporcional a $\delta x^2$.
