@@ -82,6 +82,11 @@
           type = "notebook";
           target = "aula08/guião.ipynb";
         }
+        {
+          name = "Prática 9";
+          type = "notebook";
+          target = "aula09/guião.ipynb";
+        }
       ];
     }
   ];
