@@ -441,3 +441,46 @@ Este documento contêm várias fórmulas e bocados de informação utéis.
   @math
   P_0 = \vec{F} \cdot \vec{v}
   @end
+
+* Integração numérica
+** Aproximação retangular
+
+   @math
+   \int_{x_i}^{x_{i+1}} f(x) \; dx \approx f(x_i) \delta x
+   @end
+
+   @code python
+   dx = (b - a)/n
+   I = dx * np.sum(f[0:n])
+   @end
+
+** Aproximação trapezoidal
+
+   @math
+   \int_{x_i}^{x_{i+1}} f(x) \; dx \approx \frac{f(x_{i+1}) + f(x_i)}{2} \delta x
+   @end
+
+   @code python
+   dx = (b - a)/n
+   I = dx * ((f[0] + f[n]) * 0.5 + np.sum(f[1:n]))
+   @end
+
+* Lei da conservação do momento
+
+  @math
+  \int_{t_0}^{t_1} \vec{F}(t) \; dt = \vec{p_1} - \vec{p_0}
+  @end
+
+  @math
+  \vec{F} = m\vec{a} = m \frac{d\vec{v}}{dt} = \frac{d\vec{p}}{dt}
+  @end
+
+* Colisões
+
+  @math
+  m_a \vec{a_a} = - m_b \vec{a_b}
+  @end
+
+  @math
+  \vec{P} = m_a \vec{v_a} + m_b \vec{v_b}
+  @end

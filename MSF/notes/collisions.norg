@@ -1,0 +1,99 @@
+@document.meta
+title: Momento e colisões
+author: João Capucho
+@end
+
+* Lei da conservação do momento
+
+  A lei da conservação do Momento (para sistemas isolados) diz-nos que:
+
+  @math
+  \int_{t_0}^{t_1} \vec{F}(t) \; dt = \vec{p_1} - \vec{p_0}
+  @end
+
+  Onde $\vec{p}$ é o momento que é definido como  $\vec{p} = m \vec{v}$.
+
+  Esta definição é semelhante a da lei fundamental da dinâmica, logo podemos
+  rescrevê-la em função do momento.
+
+  @math
+  \vec{F} = m\vec{a} = m \frac{d\vec{v}}{dt} = \frac{d\vec{p}}{dt}
+  @end
+
+  A lei da conservação do momento implica também que quando $\vec{F} = 0$ a
+  seguinte igualdade verifica-se $\vec{p_1} = \vec{p_0}$, ou seja, ocorre a
+  conservação do momento.
+
+* Estimativa de uma força
+
+  A lei da conservação do momento permite também fazer a estimativa de uma
+  força sabendo apenas o momento em duas momentos através do cálculo da força
+  média.
+
+  @math
+  \vec{\overline{F}} = \frac{\vec{p_1} - \vec{p_0}}{t_1 - t_0}
+  @end
+
+  Onde $\vec{\overline{F}}$ é a força média. Esta definição permite também
+  calcular o integral de uma força a partir de uma força média.
+
+  @math
+  \begin{align*}
+  &\vec{\overline{F}} = \frac{\vec{p_1} - \vec{p_0}}{t_1 - t_0} \\
+  \Leftrightarrow \; &\vec{\overline{F}}(t_1 - t_0) = \vec{p_1} - \vec{p_0} \\
+  \Leftrightarrow \; &\vec{\overline{F}}(t_1 - t_0) = \int_{t_0}^{t_1} \vec{F}(t) \; dt
+  \end{align*}
+  @end
+
+
+* Sistemas isolados
+
+  A lei da conservação de momento só se aplica a sistemas isolados. Num sistema
+  de corpos podem aplicar-se várias forças, podendo estas ser divididas em duas
+  categorias:
+
+  - Forças internas\: Estas forças são exercidas entre os corpos do sistema
+  - Forças externas\: Estas forças desenvolvem-se entre corpos do sistema e o
+	meio ambiente
+
+  Todas as forças externas causam a variação do momento total, logo a variação
+  deste pode ser dada como a soma das forças externas:
+
+  @math
+  \sum \vec{F}^\text{ext} = \frac{d\vec{P}}{dt}
+  @end
+
+  Um sistema isolado é um sistema onde a soma das forças externas é 0
+  ($\sum \vec{F}^\text{ext} = 0$) ou seja a variação do momento total é nulo,
+  o momento conserva-se.
+
+* Colisões
+
+  A lei da conservação do momento permite estudar o que acontece durante uma
+  colisão. Quando dois corpos colidem, enquanto a colisão estiver a decorrer os
+  dois corpos estão a aplicar uma força no outro, logo, segundo a terceira lei
+  de Newton a força sentida num corpo terá de ser a simétrica da força aplicada
+  no outro corpo $\vec{F_b} = - \vec{F_a}$. Esta igualdade pode ser rescrita
+  como:
+
+  @math
+  \begin{align*}
+  & m_a \vec{a_a} = - m_b \vec{a_b} \\
+  \Leftrightarrow \; & m_a \vec{a_a} + m_b \vec{a_b} = 0
+  \end{align*}
+  @end
+
+  Isto implica que o momento total da colisão será constante (Lei da
+  conservação de momento) e que pode ser calculado como:
+
+  @math
+  \vec{P} = m_a \vec{v_a} + m_b \vec{v_b}
+  @end
+
+  As colisões dividem-se em duas categorias:
+
+  - Colisões Elásticas\: Nestas colisões além da conservação do momento também
+	se verifica a conservação da energia mecânica, estas só acontecem quando
+	apenas forças conservativas atuam sobre os corpos.
+  - Colisões Inelásticas\: Nestas colisões não ocorre a conservação da energia
+	mecânica.
