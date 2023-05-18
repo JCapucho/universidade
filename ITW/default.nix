@@ -1,5 +1,4 @@
 {
-  mkDerivation,
   helpers,
   python3,
   ...
@@ -7,149 +6,159 @@
   entries = [
     {
       name = "Aula 01";
-      target = "wwwroot/Aula01";
+      type = "site";
+      src = ./wwwroot/Aula01;
     }
     {
       name = "Aula 02";
-      target = "wwwroot/Aula02";
+      type = "site";
+      src = ./wwwroot/Aula02;
     }
     {
       name = "Aula 03";
-      target = "wwwroot/Aula03";
-      has_index = false;
+      type = "site";
+      src = ./wwwroot/Aula03;
+      config.this.has_index = false;
       children = [
         {
           name = "Exercício 1";
           type = "link";
-          target = "aula03e01.html";
+          src = "aula03e01.html";
         }
         {
           name = "Exercício 2";
           type = "link";
-          target = "aula03e02.html";
+          src = "aula03e02.html";
         }
         {
           name = "Exercício 3";
           type = "link";
-          target = "aula03e03.html";
+          src = "aula03e03.html";
         }
         {
           name = "Exercício 4";
           type = "link";
-          target = "aula03e04.html";
+          src = "aula03e04.html";
         }
         {
           name = "Exercício 5";
           type = "link";
-          target = "aula03e05.html";
+          src = "aula03e05.html";
         }
       ];
     }
     {
       name = "Aula 04";
-      target = "wwwroot/Aula04";
+      type = "site";
+      src = ./wwwroot/Aula04;
     }
     {
       name = "Aula 05";
-      target = "wwwroot/Aula05";
+      type = "site";
+      src = ./wwwroot/Aula05;
     }
     {
       name = "Aula 06";
-      target = "wwwroot/Aula06";
-      has_index = false;
+      type = "site";
+      src = ./wwwroot/Aula06;
+      config.this.has_index = false;
       children = [
         {
           name = "Calculadora";
           type = "link";
-          target = "index.html";
+          src = "index.html";
         }
         {
           name = "Lâmpada";
           type = "link";
-          target = "lamp.html";
+          src = "lamp.html";
         }
         {
           name = "Jogo";
           type = "link";
-          target = "jogo.html";
+          src = "jogo.html";
         }
       ];
     }
     {
       name = "Aula 07";
-      target = "wwwroot/Aula07";
-      has_index = false;
+      type = "site";
+      src = ./wwwroot/Aula07;
+      config.this.has_index = false;
       children = [
         {
           name = "Calculadora";
           type = "link";
-          target = "ex1.html";
+          src = "ex1.html";
         }
         {
           name = "Formulário";
           type = "link";
-          target = "ex2.html";
+          src = "ex2.html";
         }
         {
           name = "TODO";
           type = "link";
-          target = "ex3.html";
+          src = "ex3.html";
         }
         {
           name = "Totobola";
           type = "link";
-          target = "ex4.html";
+          src = "ex4.html";
         }
       ];
     }
     {
       name = "Aula 09";
-      target = "wwwroot/Aula09";
-      has_index = false;
+      type = "site";
+      src = ./wwwroot/Aula09;
+      config.this.has_index = false;
       children = [
         {
           name = "Exercício 1";
           type = "link";
-          target = "ex1-temperaturas.html";
+          src = "ex1-temperaturas.html";
         }
         {
           name = "Exercício 2";
           type = "link";
-          target = "ex2-concerto.html";
+          src = "ex2-concerto.html";
         }
         {
           name = "Exercício 3";
           type = "link";
-          target = "ex3-concerto.html";
+          src = "ex3-concerto.html";
         }
       ];
     }
     {
       name = "Aula 10";
-      target = "wwwroot/Aula10";
-      has_index = false;
+      type = "site";
+      src = ./wwwroot/Aula10;
+      config.this.has_index = false;
       children = [
         {
           name = "Meteorologia";
           type = "link";
-          target = "index.html";
+          src = "index.html";
         }
         {
           name = "Conferência";
           type = "link";
-          target = "conference.html";
+          src = "conference.html";
         }
       ];
     }
     {
       name = "Teste prático";
-      target = "wwwroot/teste-prático";
-      root = "teste7.html";
+      type = "site";
+      src = ./wwwroot/teste-pratico;
+      config.this.root = "teste7.html";
     }
     {
       name = "Projeto final";
       type = "external";
-      target = "https://github.com/JCapucho/itw-projeto-final";
+      src = "https://github.com/JCapucho/itw-projeto-final";
     }
   ];
 
@@ -158,61 +167,58 @@
       jinja2
       pygments
       beautifulsoup4
+      lxml
     ]);
 
-  mapper = {
-    out,
-    node,
-    ...
-  } @ ctx: let
-    type = node.type or "site";
-  in
-    if type == "external"
-    then helpers.convertExternal ctx
-    else if type == "site"
-    then
-      {
-        buildCommands = ''
-          mkdir -p $out/'${out}'/raw
-          cp -r $src/'${node.target}'/. $out/'${out}'
+  convertSite = {
+    src,
+    name,
+    prefix,
+    config,
+  }:
+    helpers.generateBase {
+      inherit src name prefix config;
 
-          chmod -R +w $out/'${out}'
+      buildPhase = let
+        out = "$out/${prefix}";
+      in ''
+        mkdir -p "${out}/raw"
+        cp -a "${src}/." "${out}/"
 
-          ${python}/bin/python3 ${./build.py} \
-            --template-dir ${helpers.templates} \
-            $out/'${out}' '${node.name}' $src/'${node.target}'
-        '';
-      }
-      // (
-        if node.has_index or true
-        then {meta.href = "${out}/${node.root or "index.html"}";}
-        else {}
-      )
-    else if type == "link"
-    then {
-      meta.href = "${builtins.dirOf out}/${node.target}";
+        chmod -R +w "${out}"
+
+        ${python}/bin/python3 ${./build.py} \
+          --template-dir ${helpers.templates} \
+          "${out}" "${name}" "${src}"
+      '';
     }
-    else builtins.throw "Unknown node type ${type}";
+    // (
+      if config.has_index or true
+      then {meta.href = "${prefix}/${config.root or "index.html"}";}
+      else {}
+    );
 
-  build = helpers.transformRecursive entries mapper;
-in
-  mkDerivation {
-    pname = "ITW";
-    version = "0.1";
-
-    dontInstall = true;
-
-    buildPhase = ''
-      runHook preBuild
-
-      mkdir -p $out
-      cp -r $src/wwwroot/lib $out/lib
-      ${build.buildCommands}
-
-      runHook postBuild
-    '';
-
-    passthru.map = build.map;
-
-    src = ./.;
-  }
+  convertLink = {
+    src,
+    name,
+    prefix,
+    config,
+  }:
+    helpers.generateBase {
+      inherit src name prefix config;
+      meta.href = "${builtins.dirOf prefix}/${src}";
+    };
+in {
+  name = "Introdução as tecnologias web";
+  shorthand = "ITW";
+  map = entries;
+  config = {
+    this = {
+      pre = src: out: ''cp -r "${./wwwroot/lib}" "${out}/lib"'';
+    };
+    extraTypes = {
+      site = convertSite;
+      link = convertLink;
+    };
+  };
+}

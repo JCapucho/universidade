@@ -9,85 +9,27 @@
       pandoc-norg-rs.packages.${system}.default;
   };
   helperCallPackage = pkgs.newScope overrides;
-  helpers = helperCallPackage ./nix {};
-  mapCallPackage = pkgs.newScope (overrides // {helpers = helpers;});
+  helpers = helperCallPackage ./nix {callPackage = helperCallPackage;};
+  mapCallPackage = pkgs.newScope (overrides // {helpers = helpers.builders;});
 
   modules = [
-    rec {
-      name = "Fundamentos da Programação";
-      shorthand = "FP";
-      drv = mapCallPackage ./FP {};
-      map = drv.passthru.map;
-    }
-    rec {
-      name = "Introdução as tecnologias web";
-      shorthand = "ITW";
-      drv = mapCallPackage ./ITW {};
-      map = drv.passthru.map;
-    }
-    {
-      name = "Modelação e análise de sistemas";
-      shorthand = "MAS";
-      map = mapCallPackage ./MAS {};
-    }
-    {
-      name = "Cálculo II";
-      shorthand = "CII";
-      map = mapCallPackage ./nix/CalcII.nix {};
-    }
-    rec {
-      name = "Modelação de Sistemas Físicos";
-      shorthand = "MSF";
-      drv = mapCallPackage ./MSF {};
-      map = drv.passthru.map;
-    }
-    {
-      name = "Matemática Discreta";
-      shorthand = "MD";
-      map = mapCallPackage ./nix/MD.nix {};
-    }
-    rec {
-      name = "Introdução à Arquitetura de Computadores";
-      shorthand = "IAC";
-      drv = mapCallPackage ./IAC {};
-      map = drv.passthru.map;
-    }
+    (mapCallPackage ./FP {})
+    (mapCallPackage ./ITW {})
+    (mapCallPackage ./MAS {})
+    (mapCallPackage ./nix/CalcII.nix {})
+    (mapCallPackage ./nix/MD.nix {})
+    (mapCallPackage ./MSF {})
+    (mapCallPackage ./IAC {})
   ];
 
-  patchModuleMap = prefix: {
-    href ? null,
-    external ? false,
-    children,
-    ...
-  } @ map:
-    map
-    // {
-      children = builtins.map (patchModuleMap prefix) children;
-    }
-    // (
-      if href != null
-      then {
-        href =
-          if external
-          then href
-          else "${prefix}/${href}";
-      }
-      else {}
-    );
-
-  content =
-    builtins.map (module: {
-      name = module.name;
-      children = builtins.map (patchModuleMap module.shorthand) module.map;
-    })
-    modules;
+  moduleDrvs = helpers.buildRoot modules;
 
   map = {
     title = "Resumos Universidade";
     author = "João Capucho";
     description = "Resumos para as unidades curriculares da Licenciatura de Engenharia Informática da universidade de aveiro";
 
-    inherit content;
+    content = builtins.map (module: module.meta.map) moduleDrvs;
   };
 
   python = pkgs.python3.withPackages (pyPkgs:
@@ -111,17 +53,16 @@ in
 
       echo -n '${builtins.toJSON map}' > "$out/map.json"
 
-      ${pkgs.lib.concatMapStringsSep "\n" (module:
-        if module ? drv
-        then "ln -s '${module.drv}' $out/'${module.shorthand}'"
-        else "")
-      modules}
+      ${pkgs.lib.concatMapStringsSep "\n" (
+          module: "ln -s '${module}/${module.meta.map.shorthand}' $out/'${module.meta.map.shorthand}'"
+        )
+        moduleDrvs}
 
       ${python}/bin/python3 ${./nix/build.py} \
         --map "$out/map.json" \
         --build-dir "$out"
 
-      cp ${./nix/robots.txt} $out
+      cp "${./nix/robots.txt}" "$out/robots.txt"
 
       runHook postBuild
     '';

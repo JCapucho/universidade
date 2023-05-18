@@ -1,15 +1,15 @@
 {
   description = "Site para os resumos da universidade";
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs";
     flake-utils.url = "github:numtide/flake-utils";
 
     pandoc-norg-rs.url = "github:JCapucho/pandoc-norg-rs";
     pandoc-norg-rs.inputs.nixpkgs.follows = "nixpkgs";
 
     jupyenv.url = "github:tweag/jupyenv";
-    # jupyenv.inputs.nixpkgs.follows = "nixpkgs";
-    # jupyenv.inputs.flake-utils.follows = "flake-utils";
+    jupyenv.inputs.nixpkgs.follows = "nixpkgs";
+    jupyenv.inputs.flake-utils.follows = "flake-utils";
   };
   outputs = {
     nixpkgs,
