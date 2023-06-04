@@ -53,13 +53,10 @@
       meta.href = "${prefix}/${config.fileName or "index.html"}";
 
       buildPhase = ''
-        ${pandoc-norg-rs}/bin/pandoc-norg-rs "${src}" | ${pandoc}/bin/pandoc \
-          -s --toc \
-          -f 'json' \
-          --metadata lang=pt-PT \
-          --template '${pandocTemplate}' \
-          --mathjax \
-          -o "$out/${prefix}/${config.fileName or "index.html"}"
+        export PANDOC="${pandoc}/bin/pandoc"
+        export PANDOC_NORG_RS="${pandoc-norg-rs}/bin/pandoc-norg-rs"
+
+        ${./norg-builder.sh} "${src}" '${pandocTemplate}' "$out/${prefix}/${config.fileName or "index.html"}"
       '';
     };
 

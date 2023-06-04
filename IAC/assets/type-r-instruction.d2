@@ -1,0 +1,51 @@
+# Specified so that objects are written in column-dominant order
+# The widths are the number of bits in the field multiplied by 15
+grid-columns: 6
+grid-rows: 3
+grid-gap: 0
+
+classes: {
+  control: {
+	style.font-color: red
+  }
+  register: {
+  	width: 75
+	style.font-color: green
+  }
+  data: {
+	style.font-color: blue
+  }
+}
+
+"31:26" { shape: text }
+op {
+	width: 90
+	class: control
+}
+size0: 6 bits { shape: text }
+
+"25:21" { shape: text }
+rs.class: register
+size1: 5 bits { shape: text }
+
+"20:16" { shape: text }
+rt.class: register
+size2: 5 bits { shape: text }
+
+"15:11" { shape: text }
+rd.class: register
+size3: 5 bits { shape: text }
+
+"10:6" { shape: text }
+shamt {
+	width: 75
+	class: data
+}
+size4: 5 bits { shape: text }
+
+"5:0" { shape: text }
+funct {
+	width: 90
+	class: control
+}
+size5: 6 bits { shape: text }

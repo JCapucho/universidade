@@ -1,0 +1,302 @@
+@document.meta
+title: Instruções MIPS
+author: João Capucho
+@end
+
+* Introdução
+
+  Uma instrução é uma operação que o processador consegue executar, as várias
+  instruções suportadas pelo processador chama-se de /instruction set/.
+
+  Como as instruções são desenhadas para ser executadas pelo processador estas
+  são representadas em binário e na arquitetura MIPS todas as instruções têm
+  um tamanho fixo de 32-bits (como é comum em arquiteturas RISC).
+
+  As instruções são codificadas em vários grupo de bits (também chamado de
+  /bitfield/) de maneira a obter uma representação densa e eficiente da
+  instrução.
+
+  @embed image
+  assets/bitfield.png
+  @end
+
+* Tipos de instruções
+
+  Tal como em outros aspetos da arquitetura MIPS, também na codificação de
+  instruções existe regularidade, isto permite simplificar o hardware de
+  descodificação.
+
+  Logo surgem três tipos de instruções, cada tipo tem um formato fixo sendo
+  definidos de modo a balancear a regularidade entre instruções enquanto
+  codificando o máximo possível de informação (para não serem necessárias mais
+  instruções para a mesma operação).
+
+  São então os três tipos de operações os seguintes:
+
+** Tipo-R
+
+   As instruções do tipo-R são assim chamadas, pois estas aceitam dois registos
+   como operandos e possuem a seguinte forma:
+
+   @embed image
+   assets/type-r-instruction.svg
+   @end
+
+   O campo `op` chama-se de /opcode/ e está presente em todos os tipos de
+   instruções, para instruções do tipo-R este campo é sempre 0.
+
+   Os campos `rs`, `rt` e `rd` são seletores de registos, como apenas existem 32
+   registos apenas são precisos 5 bits para selecionar um deles ($log_2 (32) = 5$).
+   O registo `rd` é o registo destino onde o resultado da instrução será
+   guardado, enquanto que `rs` e `rt` são o primeiro e segundo operandos
+   respetivamente.
+
+   O campo `funct` designa-se de /function/ e quando combinado com o /opcode/
+   especifica a operação a executar.
+
+   Finalmente, o campo `shamt` que é exclusivamente usado para instruções de
+   /shift/ e específica quantos bits para deslocar (a direção é especificada
+   por `funct`). Para todas as outras instruções este campo é 0.
+
+*** Conversão de assembly para binário
+
+    A conversão de instruções de tipo-R como `add` ou `sll` é feita da seguinte
+    maneira:
+
+    O campo `op` será 0, logo todos os seus bits (31:26) serão 0.
+
+    A seguir os seletores de registo terão de ser preenchidos, a ordem
+    normalmente é primeiro operando, segundo operando e registo de destino.
+
+	Se os registos tiverem escritos com a notação de índice de registo a
+	codificação é direta. Se tiverem escritos com o nome do registo é
+	necessária uma tabela para converter de nome para índice.
+
+    De seguida preenchemos `shamt` este é 0 exceto para instruções /shift/ que
+	serão explicadas posteriormente.
+
+    Finalmente o campo `funct` é preenchido, este depende da instrução e uma
+	tabela é necessária para converter do nome da instrução para a `funct`.
+
+    Vamos ver o exemplo de converter a instrução `add $t2, $t1, $t0` para
+    assembly. A instrução `add` tem um `funct` de $100000_2$, os registos `t2`,
+    `t1` e `t0` são respetivamente os registo de índice 10, 9 e 8.
+
+    @embed image
+    assets/add-enconding.png
+    @end
+
+    Todas as instruções do tipo-R são codificadas desta maneira com a exceção
+    das instruções /shift/. Estas trocam `rs` com `rt`, tendo `rt` o primeiro
+    operando e `rs` o segundo operando.
+
+    Além disso, existem duas variantes das operações /shift/, as que utilizam
+    dois registos (ex. `sllv`) e as que utilizam um registo e um imediato (ex.
+    `sll`). As que utilizam um imediato utilizam o campo `shamt` e o campo `rs`
+    é ocupado com zeros.
+
+    Temos o exemplo da instrução `sll $t2, $t1, 4`, a `funct` da instrução
+    `sll` é $000000_2$.
+
+    @embed image
+    assets/sll-enconding.png
+    @end
+
+** Tipo-I
+
+   As instruções do tipo-I são todas as que aceitam como operando um imediato
+   (constante), daí a abreviatura. É de notar como já referido anteriormente
+   que as operações /shift/ com um imediato são representadas com instruções do
+   tipo-R em vez de tipo-I
+
+   @embed image
+   assets/type-i-instruction.svg
+   @end
+
+   O `op` mais uma vez representa o /opcode/ e no caso das instruções do tipo-I
+   será diferente de 0, este campo irá determinar exclusivamente a operação a
+   executar.
+
+   Os campos `rs` e `rt` são os seletores de registos, onde `rs` é um operando
+   da operação ou endereço-base para as operações /load-store/. O registo `rt` é
+   onde será guardado o resultado da operação ou no caso das operações store
+   será o registo com o valor a guardar na memória.
+
+   Finalmente o registo `imm16` será uma constante (em complemento para dois,
+   exceto em operações lógicas) que será utilizado nas operações ou no caso das
+   operações /load-store/, será um offset em relação ao endereço base (guardado
+   no registo `rs`).
+
+*** Conversão de assembly para binário
+
+	Existem três casos da conversão de uma instrução do tipo-I de assembly para
+	binário, as operações aritméticas, as operações /load-store/ e as operações
+	de /branching/.
+
+	Em todos os casos, cada instrução de tipo-I identifica a operação a
+	executar exclusivamente pelo campo `op`, sendo necessária uma tabela para
+	converter do nome da instrução para o /opcode/ da instrução.
+
+	A seguir é necessário preencher os seletores de registos e é aqui que a
+	primeira diferença aparece entre os diferentes casos. Vamos começar por
+	analisar o que acontece no caso das operações aritméticas.
+
+	A semelhança das instruções do tipo-R o primeiro seletor corresponde ao
+	primeiro operando, no entanto, o segundo seletor é o registo de destino.
+
+	Finalmente o segundo operando será codificado no imediato, este número tem
+	de estar no intervalo $\left[ -2^{15} , 2^{15}-1 \right]$, caso contrário a
+	operação terá de ser implementada com mais instruções e será transformada
+	numa instrução de tipo-R no final (*Atenção*\: alguns simuladores/assemblers
+	não fazem esta conversão e truncam o número).
+
+	Vejamos o exemplo da instrução `addi $t0, $t1, -4`, o /opcode/ da instrução
+	`addi` é 8 (ou seja $001000_2$), `$t0` e `$t1` são os registos de índice 8
+	e 9 respetivamente.
+
+    @embed image
+	assets/addi-enconding.png
+    @end
+
+	No caso das operações /load-store/ a ordem dos registos mantém-se igual,
+	mas agora o imediato representa um desfasamento (ou /offset/) em relação ao
+	endereço base, sendo este contido no primeiro operando. Além disso, na
+	operação `sw` o primeiro registo não representa o registo de destino, mas
+	sim o de fonte, onde será lido o valor para guardar na memória.
+
+	Vejamos o caso da instrução `sw $t0, 22($t1)`, o /opcode/ da instrução `sw`
+	é 43 ($101011_2$).
+
+    @embed image
+	assets/sw-enconding.png
+    @end
+
+	Finalmente as instruções /branching/, não utilizam o registo `rt` como
+	destino, mas como segundo operando, sendo a ordem dos registos exatamente
+	igual a de assembly.
+
+	Além disso, o imediato serve como um desfasamento (/offset/) em relação ao
+	`PC` após executar a instrução (no endereço da instrução a seguir ao
+	/branch/) e como os endereços das instruções tem de ser sempre alinhados a
+	/word/ (4 bytes) os últimos bits são omitidos do imediato (serão sempre 0).
+
+	Podendo então ser calculado o destino de um branch como
+
+	@code
+	endereço destino = PC + (imediato*4)
+	@end
+
+	Quando convertendo de assembly, o cálculo para obter o imediato será o inverso
+	(considerando aqui `PC` como o endereço da operação /branch/).
+
+	@code
+	imediato = (endereço destino - (PC+4)) / 4
+	@end
+
+	Vejamos o exemplo da instrução `beq $t0, $t1, Exit` no endereço `4` e
+	assumindo que `Exit` está no endereço `12`, o /opcode/ da instrução `beq` é
+	4 ($000100_2$).
+
+    @embed image
+	assets/beq-enconding.png
+    @end
+
+	É de notar que os /branches/ só conseguem saltar para instruções que estejam a
+	uma distância dentro do intervalo $\left[ -2^{15} , 2^{15}-1 \right]$
+	de instruções, mais do que estas distâncias e é necessário reorganizar o código
+	ou criar saltos incondicionais como intermediários.
+
+** Tipo-J
+
+   Em último lugar temos as instruções do tipo-J, estas instruções servem para
+   codificar os saltos incondicionais (jumps, que dá o nome ao tipo de
+   instruções).
+
+   @embed image
+   assets/type-j-instruction.svg
+   @end
+
+   O seu /layout/ é bastante simples, temos o campo `op` como sempre a
+   representar o /opcode/ este só pode ser 2 (`j`, /jump/) ou 3 (`jal`, /jump
+   and link/) para instruções do tipo-J.
+
+   E o outro campo é chamado `addr` que representa o endereço para onde saltar,
+   este tem apenas 26 bits, logo para obter o endereço efetivo, utilizamos os
+   primeiros 4 bits do `pc`, a seguir utilizamos o valor de `addr` e
+   adicionamos mais dois bits 0.
+
+   @embed image
+   assets/j-target-calculation.png
+   @end
+
+   Estes dois bits são sempre 0, pois em MIPS as funções têm que estar sempre
+   alinhadas a uma /word/ (4 bytes) e isto implica que os dois últimos bits são
+   nulos.
+
+*** Conversão de assembly para binário
+
+	A conversão das instruções do tipo-J é bastante fácil, basta escolher o
+	/opcode/ dependendo da instrução 2 para `j` (/jump/) ou 3 para `jal` (/jump
+	and link/)
+
+	O imediato é simplesmente o endereço de destino sem os dois últimos bits
+	(estes serão sempre 0 devido ao alinhamento das instruções a /word/), isto
+	é assumindo que os quatro bits mais significantes são iguais entre o
+	endereço da instrução de destino e os da instrução /jump/.
+
+	Se esta situação não se verificar será necessário usar um /branch/.
+
+	Vejamos o exemplo da instrução `jal Exit` no endereço `4` e assumindo que
+	`Exit` está no endereço `16`, o /opcode/ da instrução `jal` é 3
+	($000011_2$).
+
+    @embed image
+	assets/jal-enconding.png
+    @end
+
+* Instruções em memória
+
+  A arquitetura MIPS como quase todas as arquiteturas modernas guarda as
+  instruções de um programa na mesma memória onde são guardados os dados.
+
+  Isto facilita a implementação do hardware, pois não é necessário nem fazer
+  ligações extra para outra memória onde seria guardado o programa, nem são
+  necessárias instruções extra para ler e alterar esta memória.
+
+  @embed image
+  assets/unified-memory-diff.png
+  @end
+
+* Execução de instruções
+
+  A execução das instruções pode variar de processador para processador, mas
+  segue sempre os seguintes passos base:
+
+  ~ O registo `pc` contém o endereço da primeira instrução a executar, este
+    pode ter sido carregado ou pelo sistema operativo, ou pelo processador no
+    processo de inicialização.
+  ~ O processador lê a memória deste endereço e descodifica a instrução.
+  ~ A seguir a instrução é executada.
+  ~ se a instrução era um salto então o processo é repetido a partir do passo
+    2, com o `pc` a conter o novo endereço depois do salto.
+  ~ Caso contrário o `pc` é incrementado por 4 e o processo repetido a partir
+    do passo 2.
+
+  Este processo continua até o processador encontrar uma exceção ou até o
+  sistema operativo terminar a execução por pedido do programa (`exit()`) ou
+  por outra razão.
+
+* Descodificação de instruções
+
+  As instruções após convertidas para código máquina podem voltar a ser
+  convertidas para assembly, para isso primeiro é necessário saber o tipo de
+  instrução que se está a descodificar.
+
+  Isto é feito observando o campo `op` comum a todos os tipos de instruções:
+
+  - Se este for 0, trata-se de uma instrução de tipo-R
+  - Se este for 2 ou 3, trata-se de uma instrução de tipo-J
+  - Todos os outros valores, representam instruções do tipo-I
+
+  A seguir aplicam-se os passos inversos aos aplicados para converter de
+  assembly para código máquina.

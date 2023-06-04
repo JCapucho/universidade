@@ -25,6 +25,16 @@
       type = "norg";
       src = ./arquitetura-de-computadores.norg;
     }
+    {
+      name = "Arquitetura MIPS";
+      type = "norg";
+      src = ./mips.norg;
+    }
+    {
+      name = "Instruções MIPS";
+      type = "norg";
+      src = ./inst-mips.norg;
+    }
   ];
 in {
   name = "Introdução à Arquitetura de Computadores";

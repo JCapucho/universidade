@@ -1,0 +1,201 @@
+@document.meta
+title: Arquitetura MIPS
+author: João Capucho
+@end
+
+* Introdução
+
+  A arquitetura MIPS é uma arquitetura de computadores desenvolvida inicialmente nos anos 80
+  e que viu sucesso comercialmente em alguns sistemas como consolas de videojogos. Esta é
+  uma boa primeira arquitetura para aprender, pois esta baseia-se na filosofia de design de
+  arquiteturas RISC (Reduced Instruction Set computer), esta filosofia baseia-se em dois
+  grandes pilares:
+
+** A regularidade favorece a simplicidade
+
+   O primeiro pilar é bastante evidente quando observamos código assembly MIPS:
+
+   @code mips
+   # Instrução para adicionar dois números
+   # a = b + c
+   add a, b, c
+   # Instrução para subtrair dois números
+   # a = b - c
+   sub a, b, c
+   @end
+
+   As duas operações acima possuem uma estrutura regular, começamos com uma
+   mnemónica que indica a operação a realizar, esta parte é comum a *todas* as
+   instruções MIPS, a seguir temos o operando de destino onde o valor da
+   operação será guardado, a maioria das operações precisa deste operando e
+   nesse caso aparece sempre a seguir a mnemónica, finalmente ambas as
+   operações têm os operandos fonte a seguir.
+
+   @embed image
+   assets/inst-regularity.png
+   @end
+
+   Nem todas as instruções têm esta forma devido à natureza da sua operação, no entanto,
+   todas as operações do mesmo tipo (neste caso aritmética) seguem um padrão comum. Esta
+   propriedade faz com que o código MIPS seja não só mais fácil de ler e escrever como
+   programador (comparado a uma arquitetura em que cada instrução tem o seu próprio formato)
+   mas também leva a implementações mais simples e eficientes.
+
+** Mais pequeno é mais rápido (Smaller is faster)
+
+   O segundo pilar é menos evidente, para o entender temos de olhar de uma maneira mais geral
+   para a arquitetura MIPS como um todo. Todas as instruções implementam uma operação simples
+   e que é frequentemente precisada e para implementar operações mais complexas é necessárias
+   várias instruções.
+
+   @code mips
+   # a = b + c - d
+   add t, b, c
+   sub a, t, d
+   # Tivemos que utilizador um operando temporário e duas instruções para
+   # realizar a operação mais complexa.
+   @end
+
+   A ideia é que apesar de precisarmos de mais instruções para algumas
+   operações como cada operação definida é simples o hardware que a implementa
+   será mais simples, pequeno e rápido. Desta maneira é compensada o número
+   extra de instruções pela velocidade acrescida a que cada uma executa.
+
+   Outra área onde este princípio entre em efeito é no acesso à memória. Na
+   arquitetura MIPS existem instruções especiais para ler e escrever para a
+   memória (`lw` e `sw`), todas as outras instruções operam sobre registos.
+
+   Isto acontece porque como os registos são mais pequenos podem ser montados
+   diretamente no processador em vez de em circuitos extra como a memória, isto
+   faz com que seja mais rápido aceder aos registos do que a memória e mais uma
+   vez simplifica o hardware necessário para implementar acessos.
+
+* Assembly VS Código máquina
+
+  Até agora vimos código assembly MIPS, no entanto, assembly não é código máquina.
+
+  Apesar de ambas as representações serem específicas a uma arquitetura, assembly
+  não pode ser diretamente executado por um computador, pois é uma representação
+  textual das instruções que é suposta ser lida (e em alguns casos escrita) por
+  humanos.
+
+  @code mips
+  # Código assembly, este dá para entender o que faz apenas lendo e até permite
+  # outras funcionalidades (como este comentário) que não estarão presentes no código
+  add $t0, $t1, $t2
+  @end
+
+  O código máquina pelo outro lado é uma representação altamente densa das
+  instruções própria para consumo do computador, o código máquina seguinte é
+  equivalente ao programa assembly anterior, nota como só ocupa 32 bits (o
+  código está representado em hexadecimal) e como os comentários não se
+  encontram presentes.
+
+  @code
+  0x012a4020
+  @end
+
+  A conversão entre assembly e código máquina é feita por uma ferramenta
+  especial chamada assembler, esta transforma as instruções assembly para as
+  equivalentes em código máquina.
+
+  Além disso, os assemblers muitas vezes implementam algumas instruções comuns
+  que requerem mais do que uma operação em código máquina (chamadas
+  pseudo-instruções).
+
+* MIPS em detalhe
+
+  Agora que vá vimos os princípios regentes da arquitetura MIPS vamos focar-nos
+  nos detalhes desta arquitetura.
+
+  O primeiro detalhe importante da arquitetura MIPS é que esta diz-se ser de 32
+  bits, o que isto significa é que todas as operações se realizam em dados com
+  32 bits (existe uma variação chamada MIPS64 que é de 64 bits, mas esta não nos
+  interessa e em alguns casos é incompatível com MIPS normal).
+
+** Registos
+
+   Outro detalhe que nos é importante é que MIPS tem 32 registos, todos de 32
+   bits como seria de esperar, o primeiro registo é chamado registo 0, pois
+   além de ser o registo de índice 0, este contém sempre o valor 0 e qualquer
+   tentativa de o escrever é ignorada.
+
+   Os outros registos não têm propriedades especiais, mas existem convenções de
+   como este devem ser utilizados.
+
+   @embed image
+   assets/register-usage.svg
+   @end
+
+   Em assembly do MIPS existem dois modos para referenciar um registo, ambos
+   começam com um `$` e depois ou utilizamos o nome do registo ou o seu índice. 
+
+   @code mips
+   # Esta instrução
+   xor $t0, $t7, $zero
+   # É equivalente a esta
+   xor $8, $15, $0
+   @end
+
+   Todas as operações (com as exceções das /load-store/) operam exclusivamente
+   sobre registos, logo é necessário utilizar os registos de forma eficiente de
+   maneira a evitar situações em que os dados necessários não consigam ser
+   guardados todos nos registos.
+
+   No entanto, a situações em que é impossível todos os dados estarem nos
+   registos simultaneamente, logo é preciso manter os dados mais críticos
+   atualmente nos registos e delegar os outros para a memória.
+
+** Memória
+
+   Apesar de os registos serem mais rápidos estes são também bastante pequenos,
+   logo como já vimos é necessário recorrer à memória em algumas situações.
+
+   Na arquitetura MIPS a memória é /byte addressable/ isto significa que
+   podemos aceder a todas as localizações da memória com a granularidade de um
+   byte, ou seja podemos aceder ao byte 0 ou ao byte 1 mas não podemos aceder a
+   um byte a começar 4 bits depois do início da memória ou aceder a apenas 5
+   bits.
+
+   @embed image
+   assets/acess-rules.png
+   @end
+
+   Outra propriedade da memória na arquitetura MIPS é que todos os acessos a
+   uma /word/ (ou palavra, 32 bits) tem que estar alinhados a 4 bytes ou seja o
+   endereço é um múltiplo de 4.
+
+   Finalmente surge a questão de como os bytes de uma /word/ são dispostos em
+   memória existem várias combinações possíveis e outras arquiteturas usam
+   normalmente um de dois esquemas /Big-Endian/ (byte mais significativo
+   primeiro) ou /Little-Endian/ (byte menos significativo primeiro).
+
+   A arquitetura MIPS, no entanto, é /Bi-Endian/ pois não possui um esquema fixo,
+   apenas diz que a seguinte afirmação tem de ser verdadeira:
+
+   > Dada uma /word/ `x`, se a armazenarmos num endereço `addr` e
+   posteriormente acedermos novamente a `addr` o valor do acesso terá de ser
+   também ele `x`
+
+** Imediatos (ou constantes)
+
+   Muitas vezes as operações que queremos realizar utilizam uma constante como
+   operando, por exemplo o seguinte código para incrementar uma variável por 1:
+
+   @code c
+   a = a + 1
+   @end
+
+   Logo, a arquitetura MIPS permite o uso de imediatos em algumas instruções,
+   um imediato é uma constante que está *imediatamente* disponível como
+   operando na instrução, não ocupando nenhum registo nem sendo necessário
+   aceder a memória (exceto o acesso para carregar a instrução em si).
+
+   Em assembly todas as instruções com um operando imediato escrevem-se
+   utilizando a mnemónica da operação regular com um `i` afixado e o imediato é
+   o último operando. Por exemplo, o código para incrementar 1 a uma variável em
+   assembly é:
+
+   @code mips
+   addi $t0, $t0, 1
+   @end

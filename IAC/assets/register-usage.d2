@@ -1,0 +1,62 @@
+# Specified so that objects are written in row-dominant order
+grid-rows: 2
+grid-columns: 3
+grid-gap: 0
+
+classes: {
+  header: {
+    style.underline: true
+  }
+}
+
+Nome.class: header
+Indíce.class: header
+Utilização.class: header
+
+"$zero ou $0"
+0
+Contêm sempre o valor 0
+
+"$at"
+1
+Reservado ao assembler
+
+"$v0-$v1"
+2-3
+Usadas para os valores de retorno de funções
+
+"$a0-$a3"
+4-7
+Usadas para os argumentos de funções
+
+"$t0-$t7"
+8-15
+tblock0: Registos temporários (não preservados entre funções)
+
+"$s0-$s7"
+16-23
+Registos temporários (preservados entre funções)
+
+"$t8-$t9"
+24-25
+tblock1: Registos temporários (não preservados entre funções)
+
+"$k0-$k1"
+26-27
+Reservados ao sistema operativo
+
+"$gp"
+28
+Endereço global (não modificar)
+
+"$sp"
+29
+Endereço da stack
+
+"$fp"
+30
+Endereço da frame da função
+
+"$ra"
+31
+Endereço de retorno

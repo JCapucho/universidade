@@ -71,11 +71,20 @@
 
           # Node
           nodejs
-          nodePackages.serve
+          (nodePackages.live-server.override (oldAttrs: {
+            postInstall =
+              (oldAttrs.postInstall or "")
+              + ''
+                ${dos2unix}/bin/dos2unix $out/lib/node_modules/live-server/index.js
+                patch -d $out/lib/node_modules/live-server -p1 < ${./nix/live-server.patch}
+              '';
+          }))
           nodePackages.typescript-language-server
           nodePackages.vscode-langservers-extracted
 
           jupyterlab
+
+          fswatch
         ];
       };
 
