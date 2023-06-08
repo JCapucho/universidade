@@ -13,4 +13,5 @@ fi
   --metadata lang=pt-PT \
   --template "$2" \
   --mathjax \
+  --highlight-style breezedark \
   -o "$3"

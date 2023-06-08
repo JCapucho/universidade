@@ -35,6 +35,11 @@
       type = "norg";
       src = ./inst-mips.norg;
     }
+    {
+      name = "Converter código para assembly";
+      type = "norg";
+      src = ./writing-assembly.norg;
+    }
   ];
 in {
   name = "Introdução à Arquitetura de Computadores";

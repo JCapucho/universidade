@@ -1,0 +1,1161 @@
+@document.meta
+title: Converter código para assembly
+author: João Capucho
+@end
+
+* Introdução
+
+  Escrever diretamente em assembly é complicado, especialmente com programas
+  mais complexos, como tal as vezes é mais fácil pensar no programa em termo de
+  estruturas de alto nível e depois tentar converter cada uma delas
+  individualmente para assembly.
+
+  Vamos usar /C/ como a linguagem de alto nível, esta é explicada a medida que
+  é necessário. Normalmente /C/ é considerado uma linguagem de baixo nível, no
+  entanto, em relação a assembly é de alto nível, mas sem introduzir abstrações
+  que dificultem a tarefa de traduzir para assembly.
+
+  Quando convertemos de uma linguagem de alto nível para assembly temos sempre
+  que garantir uma coisa\: o comportamento do programa em assembly é o mesmo do
+  código. Além disso, queremos converter de uma maneira que:
+
+  - Use o menor número de instruções possíveis
+  - Evite usar a memória, uma regra simples é que o acesso à memória é uma
+    ordem de magnitude mais lento, logo é preferível 10 instruções a um acesso
+    à memória.
+
+* Carregar dados
+
+  Uma das operações mais elementares é carregar dados para um registo, para já
+  vamos só concentrar-nos em números inteiros, visto que tudo o resto irá ser
+  representado por eles.
+
+  O caso mais simples é carregar um número pequeno, por exemplo:
+
+  @code c
+  int a = 2;
+  @end
+
+  Poderá ser convertido de várias formas, mas a "convenção", é utilizar a
+  instrução `ori` (/OR Immediate/) para fazer um /OR/ entre a constante e o
+  registo 0. O código em cime seria convertido para o seguinte código assembly
+  (assumindo que o destino de registo é `$t1`).
+
+  @code mips
+  ori $t1, $0, 2
+  @end
+
+  Este método é o mais simples e mais "eficiente", no entanto, têm uma
+  limitação, só funciona para números no intervalo $[0, 2^{16}-1]$. Se
+  precisássemos de número negativos poderíamos utilizar a instrução `addi`
+  (/ADD Immediate/):
+
+  @code mips
+  # int a = -2
+  addiu $t1, $0, -2
+  @end
+
+  No entanto, este método é também limitado ao intervalo $[-2^{15}, 2^{15}-1]$.
+  Para carregar números fora deste intervalo é necessário combinar duas
+  instruções.
+
+  A primeira é a instrução `lui` (/Load Upper Immediate/), esta instrução
+  carrega o imediato para os 16 bits mais significantes do registo e os outros
+  16 bits são zerados. A segunda instrução é `ori` desta vez utilizando o
+  registo em si como operando em vez do registo 0 (pois nós queremos preservar
+  os 16 bits que já carregamos).
+
+  Tomando como exemplo o seguinte código:
+
+  @code c
+  int a = 0xF8D1D1;
+  @end
+
+  A sua conversão para assembly seria (assumindo mais uma vez que o registo de
+  destino é `$t1`):
+
+  @code mips
+  lui $t1, 0x00F8
+  ori $t1, $t1, 0xD1D1
+  @end
+
+  Este método já permite carregar qualquer `int` (Em /C/ um `int` é de 32
+  bits). No entanto, é mais lento, pois precisa do dobro das instruções.
+
+  Todos os assemblers modernos possuem uma pseudo-instrução `li` (/Load Immediate/)
+  que carrega uma constante de qualquer tamanho para um registo utilizando o método
+  mais eficiente, esta é mais cómoda do que estar a escolher o método manualmente e
+  escrever tudo cada vez que é necessário carregar um valor.
+
+  @code mips
+  # Equivalente ao código anterior
+  li $t1, 0x00F8D1D1
+  @end
+
+* Operações aritméticas
+
+  As operações aritméticas podem quase todas ser convertidas diretamente para
+  uma instrução assembly equivalente, por exemplo, um /OR/ entre duas variáveis
+  (em /C/ um /OR/ é representado pelo símbolo `|||` barra vertical):
+
+  @code c
+  int c = a | b;
+  @end
+
+  É traduzido diretamente para uma instrução `or` entre dois registos:
+
+  @code mips
+  or $t3, $t2, $t1
+  @end
+
+  Operações com constantes podem utilizar as operações dedicadas a imediatos,
+  por exemplo, o seguinte código que faz /OR/ com um imediato:
+
+  @code c
+  int b = a | 3;
+  @end
+
+  Pode ser convertido em:
+
+  @code mips
+  ori $t2, $t1, 3
+  @end
+
+  No entanto, algumas operações não tem uma instrução imediata equivalente,
+  como a subtração com um imediato:
+
+  @code c
+  int b = a - 3
+  @end
+
+  Mas esta pode ser convertida a mesma para só uma instrução, pois se
+  observarmos a subtração é só a soma com um número negativo, logo podemos
+  converter o código para:
+
+  @code mips
+  addiu $t2, $t1, -3
+  @end
+
+  Quando várias operações são realizadas numa só linha é necessário traduzir
+  cada uma individualmente pela ordem de precedência, por exemplo, o seguinte
+  código:
+
+  @code c
+  int d = a + b * c;
+  // É equivalente a:
+  int d = (a + (b * c));
+  @end
+
+  Seria traduzido para o seguinte código assembly
+
+  @code mips
+  mul $t3, $t1, $t0
+  addu $t3, $t3, $t2
+  @end
+
+** `add` vs `addu`
+
+   No código mostrado anteriormente, foi utilizado `addu` e `addiu` em vez de
+   `add` e `addi`. Esta escolha não é sem razão, em casos normais ambas as
+   escolhas apresentam o mesmo resultado.
+
+   @code mips
+   li $t0, 400
+   addi $t0, $t0, -3
+   # É equivalente a:
+   li $t0, 400
+   addiu $t0, $t0, -3
+   @end
+
+   No entanto, quando a soma entre as duas operações causa um /overflow/ (o
+   resultado é demasiado grande para representar em 32 bits), as instruções
+   `add` e `addi` causam uma exceção, num simulador este caso é normalmente
+   ignorado, mas num processador real isto seria sinalizado ao sistema
+   operativo e o programa iria ser abortado.
+
+   As instruções `addu` e `addiu` não possuem este comportamento, o que as
+   torna mais indicadas para os nossos programas.
+
+   @code mips
+   # Este código causa uma exceção
+   li $t0, 0xFFFFFFFF
+   addi $t0, $t0, 2
+   # Este código não causa uma exceção
+   li $t0, 0xFFFFFFFF
+   addiu $t0, $t0, 2
+   @end
+
+   De qualquer modo ambas as versões estão certas e qualquer uma pode ser
+   utilizada (*NOTA*\: isto só se aplica quando trabalhamos com o `int`, se
+   estivermos a utilizar um `unsigned int` temos que utilizar sempre `addu` e
+   `addiu`).
+
+   Esta distinção só se aplica as instruções de adição e subtração, todas as
+   outras instruções devem utilizar a versão correspondente ao tipo.
+
+** `mul` vs `mult`
+
+   Outra questão que pode aparecer é quanto a utilização da instrução `mul`,
+   visto existir outra instrução com um nome parecido, `mult`, que também
+   multiplica dois registos. Além disso, algumas fontes apontam que `mul` é uma
+   pseudo-instrução.
+
+   A multiplicação entre dois números de 32 bits pode necessitar até 64 bits de
+   espaço para o resultado poder ser guardado sem ser truncado. Este é mais
+   espaço do que um registo de MIPS que apenas têm 32 bits. No entanto, em
+   alguns casos não se pode truncar o resultado.
+
+   Logo a arquitetura MIPS define a instrução `mult` que multiplica os dois
+   operandos com 64 bits de precisão e guarda o resultado em dois registos
+   especiais `hi` (/HIgh/) para os bits mais significativos e `lo` (/LOw/ para
+   os bits menos significativos). Estes registos só podem ser acedidos por
+   instruções especiais que os transferem para registos normais.
+
+   @code mips
+   # Multiplica dois registos
+   mult $t1, $t0
+   # Transfere os 32 bits menos significativos da multiplicação para $t2
+   mflo $t2
+   # Transfere os 32 bits mais significativos da multiplicação para $t3
+   mfhi $t3
+   @end
+
+   No entanto, muitas das vezes não é necessário a precisão de 64 bits e
+   estamos contentes em truncar o resultado em 32 bits. Isto é o que faz a
+   instrução `mul`, esta calcula o resultado em 32 bits e guarda-o diretamente
+   no registo sem necessitar de registos nem instruções especiais.
+
+   @code mips
+   # Multiplica os dois registos e deixa o resultado truncado a 32 bits no registo $t2
+   mul $t2, $t1, $t0
+   @end
+
+   No entanto, `mul` não é uma instrução contemplada na especificação MIPS, daí
+   ser designada como pseudo-instrução, mas no MARS esta aparece como uma
+   instrução elementar, logo, em termos práticos consideramos a como uma
+   instrução.
+
+   Como nós estamos a operar com um `int` a precisão extra não nos interessa
+   por isso usamos `mul`.
+
+* Labels
+
+  Muitas vezes o código que escrevemos não é linear, existem saltos para outras
+  funções, ou condicionais que passam instruções a frente, por essa razão é que
+  existem as instruções de salto condicional (`beq`, `bne`, ...) e
+  incondicional (`j` e `jal`).
+
+  No entanto, passar o endereço para onde queremos saltar diretamente é
+  complicado, pois precisamos de calcular manualmente o endereço de uma dada
+  instrução e teria de ser feito sempre que modificamos o código, pois algumas
+  instruções podem ter mudado de lugar.
+
+  Logo os assemblers fornecem-nos uma abstração para nos ajudar a combater
+  estes problemas. Em vez de usar o endereço absoluto, damos um nome ao sítio
+  que queremos saber o endereço e utilizamos esse nome no lugar do endereço.
+
+  @code mips
+  # Definimos o nome do sítio para onde queremos saltar
+  target:
+    addiu $t0, $t0, 1
+
+    j target # Utilizamos o nome em vez do endereço
+  @end
+
+  A este nome chama-se de /label/ sendo definido antes da linha que queremos
+  saber o endereço utilizando um nome seguido de dois pontos (`:`).
+
+  Uma /label/ pode ser utilizada em qualquer parte do programa para obter o
+  endereço de memória que vem imediatamente a seguir, como veremos isto não se
+  aplica só a instruções mas também a dados.
+
+* Convenção de chamada
+
+  Até agora a escolha de registos que utilizamos nas operações foi mais ou
+  menos arbitrária, no entanto, a arquitetura MIPS define uma convenção de
+  chamada.
+
+  Esta para além de especificar como chamar funções, especifica também como é
+  que os registos devem ser utilizados, normalmente e entre chamadas de
+  funções.
+
+  @embed image
+  assets/register-usage.svg
+  @end
+  
+  Como já sabemos `$0` terá sempre o valor 0, por isso não precisamos de ter
+  nenhuma consideração especial na sua utilização. Outros registos não podem
+  ser utilizados de todo pelo nosso programa\: `$at`, `$k0-$k1` e `$gp`.
+
+  Além destes temos registos com funções específicas logo é necessário
+  utilizá-los em certas ocasiões e não alterá-los em outras:
+
+  - `$v0-$v1` irá conter o valor de retorno da chamada de uma função.
+  - `$a0-$a3` irá conter os argumentos para a chamada de uma função.
+  - `$sp` contêm o endereço da /stack/, este irá ser explicado depois.
+
+  Finalmente é preciso de ter em consideração a preservação de registos entre
+  chamadas de funções. Mas primeiro vamos entender porque é que isto é
+  necessário.
+
+  Todas as instruções precisam de registos para operar, no entanto, quando
+  chamamos uma função não sabemos que alterações é que foram feitas aos
+  registos.
+
+  @code mips
+  # Guardei um valor no registo $s0
+  li $s0, 1
+  # Chamada de função
+  jal function
+  # Qual é o valor de $s0 agora?
+  addiu $s0, $zero, 1
+  @end
+
+  Logo é necessário alguém guardar o valor dos registos entre chamadas, existem
+  então duas opções:
+
+  - A função que faz a chamada (/caller/) guarda os registos todos que
+    necessita depois da chamada na memória, esta abordagem tem o problema de
+    guardar registos que a função chamada (/callee/) pode nem utilizar.
+  - A função que é chamada (/callee/) guarda o valor inicial dos registos antes
+    da chamada e restaura-os antes de retornar para o /caller/, esta solução
+    tem o problema de salvar registos que o /caller/ pode nem precisar.
+
+  Então MIPS define dois tipos de registos\:
+
+  - Temporários (`$tX`), estes dizem-se /caller-saved/ sendo a responsabilidade
+    do /caller/ de guardar o valor do registo se quiser reutilizar o valor depois
+    da chamada de uma função.
+  - Saved (`$sX`), estes dizem-se /callee-saved/ sendo a responsabilidade
+    do /callee/ de restaurar o valor dos registos se os modificar.
+
+  Esta solução é ideal, pois o /callee/ só precisa de restaurar registos `$sX`,
+  ou seja, se não os utilizar não precisa de restaurar nada, e o /caller/ se
+  precisar de preservar dados entre funções basta usar os registos `$sX` sem
+  ter de guardar nada na memória.
+
+  @code mips
+  li $s0, 1 # $s0 = 1
+  li $t0, 3 # $t0 = 3
+  # Chamada de função
+  jal function
+  # O valor de $s0 é garantido de ser preservado
+  addiu $s0, $s0, 1 # $s0 = 2
+  # O valor de $t0 não é preservado, por isso não sabemos o seu valor
+  addiu $t0, $t0, 1 # $t0 = ???
+  @end
+
+* Funções
+
+  Agora que já vimos como utilizar registos vamos falar de funções, as funções
+  em assembly são definidas como código normal precedido de uma /label/, no
+  entanto, as funções tem que obedecer a algumas regras.
+
+  Primeiro, quando uma função quer retornar ao /caller/ tem de o fazer com a
+  instrução `jr $ra` (/Jump Register/), esta instrução salta para o endereço do
+  registo, neste caso `$ra` (/Return Address/) que contêm o endereço de retorno
+  do /caller/.
+
+
+  @code mips
+  function: # void function()
+    jr $ra  #   return;
+  @end
+
+  Para chamar a função usamos a função `jal function` (/Jump And Link/), esta
+  instrução salta para o endereço passado e guarda o endereço de retorno do
+  /caller/ em `$ra`.
+
+  @code mips
+  main:
+    jal function
+
+  function: # void function()
+    jr $ra  #   return;
+  @end
+  
+  Um problema com o código anterior é que tal como todo o código em assembly as
+  instruções são executadas de topo para o fundo, logo após executar a função o
+  processador continuaria a executar a seguir a `jal` e entraria no código da
+  função outra vez.
+
+  Logo é importante adicionarmos condições de saída as nossas funções. Para
+  funções definidas por nós basta retornarmos delas, para a função principal
+  precisamos de terminar o programa, no simulador isto pode ser feito saltando
+  para o fim do programa.
+
+  @code mips
+  main:
+    jal function
+    j exit
+
+  function: # void function()
+    jr $ra  #   return;
+
+  exit: # O simulador vê que não há mais instruções e termina
+  @end
+
+  Em processadores a sério teríamos de chamar a /syscall/ `exit()`, isto será
+  explicado depois.
+
+  (*NOTA*: Em outros assemblers é possível adicionar uma diretiva `.global
+  main` para especificar aonde é que o nosso programa começa a executar, no
+  entanto, o /MARS/ não aceita esta diretiva, logo a nossa função `main` tem
+  que ser definida logo no início do programa)
+
+  Finalmente temos de ter em atenção a convenção de chamada, queremos passar um
+  argumento? Tem que ser feito pelos registos `$aX`:
+
+  @code mips
+  main:
+    li $a0, 1
+    jal function
+    j exit
+
+  function:           # void function(int a)
+    addiu $a0, $a0, 1 #   a = a + 1
+    jr $ra            #   return;
+
+  exit:
+  @end
+
+  Queremos retornar um resultado? Temos de usar os registos `$vX`:
+
+  @code mips
+  main:
+    li $a0, 1
+    jal addOne
+    addiu $t0, $v0, 1 # $t0 = 3
+    j exit
+
+  addOne:             # int addOne(int a)
+    addiu $v0, $a0, 1 #   int b = a + 1
+    jr $ra            #   return b;
+
+  exit:
+  @end
+
+** Preservar registos
+
+   A convenção de chamada diz-nos que precisamos de preservar alguns registos
+   se os utilizarmos. No entanto, como sabemos onde guardá-los em memória?
+
+   Para isto usamos uma região de memória chamada de /stack/, esta região é
+   usada de uma maneira específica\: o registo `$sp` aponta sempre para o final
+   desta região, sempre que queremos guardar um item nesta região reservamos
+   espaço nesta região subtraindo o número de bytes que precisamos de `$sp`
+   e guardamos os dados com as instruções /store/.
+
+   @code mips
+   addiu $sp, $sp, -4 # Reservamos 4 bytes na stack
+   sw $s0, 0($sp)     # Guardamos uma word (4 bytes) na stack
+   @end
+
+   Para depois restaurar os dados guardados na stack, repetimos os passos na
+   ordem inversa\: lemos da memória no endereço de `$sp` com uma instrução
+   /load/ e devolvemos o espaço adicionando a `$sp` o número de bytes que
+   utilizamos.
+
+   @code mips
+   lw $s0, 0($sp)     # Restauramos uma word (4 bytes) da stack
+   addiu $sp, $sp, 4  # Devolvemos 4 bytes a stack
+   @end
+
+   Uma /stack/ muitas vezes diz-se que é /LIFO/ ou /Last-In, First-out/, o que
+   isto significa é que o último elemento a entrar na /stack/ é o primeiro a
+   sair.
+
+   O comportamento da /stack/ pode parecer esquisito, por que é que subtraímos
+   de `$sp` para reservar espaço na stack? Isto é porque a /stack/ cresce para
+   baixo, isto é apenas uma convenção histórica, mas tem que ser usada.
+
+   @embed image
+   assets/stack.png
+   @end
+
+   Voltando então as nossas funções, se quisermos utilizar os registos
+   /callee-saved/ basta guardar primeiro os seus valores e depois restaurar no
+   fim da função:
+
+   @code mips
+   main:
+    li $s0, 1
+    jal function
+    # $s0 é preservada
+    addiu $s0, $s0, 1 # $s0 = 2
+    j exit
+
+   function:            # void function()
+    # Vamos modificar $s0, por isso precisamos de o guardar
+    addiu $sp, $sp, -4  # Reservamos 4 bytes na stack
+    sw $s0, 0($sp)      # Guardamos o valor de $s0 na stack
+    # Modificamos $s0
+    addiu $s0, $s0, 1   #   a = a + 1
+    # Restauramos $s0 antes de voltar ao caller
+    lw $s0, 0($sp)      # Restauramos $s0 da stack
+    addiu $sp, $sp, 4   # Devolvemos 4 bytes a stack
+    jr $ra              #   return;
+
+   exit:
+   @end
+
+** Funções não terminais
+
+   Outro registo que é as vezes necessário preservar é `$ra`, por exemplo,
+   observemos o seguinte código:
+
+   @code mips
+   main:
+    jal first # $ra = endereço da próxima instrução
+    j exit
+
+   first:
+    jal second # $ra = endereço da próxima instrução
+    jr $ra # $ra = endereço de retorno de first
+
+   second:
+    jr $ra # $ra = endereço de retorno de first
+
+   exit:
+   @end
+
+   Este não funcionaria como nós esperamos. Em vez da função `first` retornar
+   para `main` após `second` ter retornado, esta iria retornar para si mesma
+   criando um loop infinito.
+
+   Isto acontece porque `$ra` é efetivamente /callee-saved/, `jal` modifica-o,
+   logo é necessário preservá-lo se a nossa função chama outras funções, a
+   estas funções dá-se o nome de não terminal. Uma versão correta do código
+   seria:
+
+   @code mips
+   main:
+    jal first # $ra = endereço da próxima instrução
+    j exit
+
+   first:
+    # Vamos modificar $ra, por isso precisamos de o guardar
+    addiu $sp, $sp, -4  # Reservamos 4 bytes na stack
+    sw $ra, 0($sp)      # Guardamos o valor de $ra na stack
+    # Modificamos $ra
+    jal second          # $ra = endereço da próxima instrução
+    # Restauramos $ra antes de voltar ao caller
+    lw $ra, 0($sp)      # Restauramos $ra da stack
+    addiu $sp, $sp, 4   # Devolvemos 4 bytes a stack
+    jr $ra              # $ra = endereço de retorno de main
+
+   second:
+    jr $ra # $ra = endereço de retorno de first
+
+   exit:
+   @end
+
+* Syscalls
+
+  Até agora os nossos programas não fazem nada de muito interessante, para
+  conseguir interagir com o exterior vamos precisar de executar /syscalls/. Uma
+  /syscall/ (/SYStem CALL/) invoca uma função especial definida pelo sistema
+  operativo (ou no nosso caso o simulador).
+
+  Estas são específicas ao sistema operativo em que trabalhamos, e alguns nem
+  garantem quais /syscalls/ existem, tendo o programa de realizar estas
+  operações por uma livraria oferecida pelo sistema operativo.
+
+  No entanto, o /MARS/ define /syscalls/ que podemos utilizar, por isso vamos
+  basear os nossos programas nelas.
+
+  Para executar uma /syscall/ precisamos de utilizar a instrução `syscall`,
+  esta função não tem operandos, nem registos de destino. Como tal é necessário
+  passar os argumentos através de registos.
+
+  A função executada pela /syscall/ no /MARS/ é selecionada através do valor no
+  registo `$v0`, a função escolhida determina também quais os argumentos a
+  passar e se a função retorna alguns valores. Aqui também são usados os
+  registos `$aX` para argumentos e `$vX` para valores de retorno.
+
+  @code mips
+  # Esta syscall executa a função `print_int10` que leva um argumento passado
+  # no registo `$a0`
+  li $a0, 2 # Argumento da função
+  li $v0, 1 # Selecionar a função `print_int10` ($v0 = 1)
+  syscall   # Executar syscall
+  @end
+
+  Existem várias /syscalls/, para imprimir valores, trabalhar com ficheiros,
+  etc... Mas uma de particular interesse é a /syscall/ `exit()` que termina o
+  programa (algo que até agora fazíamos por saltar até o final do programa).
+
+  @code mips
+  # Esta syscall executa a função `exit()`
+  li $v0, 1 # Selecionar a função `exit` ($v0 = 10)
+  syscall   # Executar syscall
+  @end
+
+* Estruturas condicionais
+
+  Outras estruturas que surgem regularmente no código, são as estruturas
+  condicionais. Estas executam um dado bloco de instruções, se uma dada
+  condição for verdadeira.
+
+  @code c
+  if (a >= 3) {
+    a += 2;
+  }
+  a += 1;
+  @end
+
+  Existem duas maneiras de converter este código para assembly a primeira e
+  mais intuitiva, é usar uma instrução de /branching/ para saltar para uma
+  /label/ se a condição se verificar e um salto incondicional após esta
+  instrução caso não se verifique a condição.
+
+  @code mips
+  beforeIf:
+    li $t0, 3
+    bge $a0, $t0, if  # if ( a >= 3 ) goto if;
+    j after           # goto after;
+  if: 
+    addiu $a0, $a0, 2 # a += 2;
+  after:
+    addiu $a0, $a0, 1 # a += 1;
+  @end
+
+  No entanto, podemos melhorar esta tradução se em vez assumirmos que o `if`
+  vai ser executado e verificarmos a condição contrária, se esta for verdadeira
+  saltamos o `if` a frente.
+
+  @code mips
+  beforeIf:
+    li $t0, 3
+    blt $a0, $t0, after # if (a < 3) goto after;
+  if: 
+    addiu $a0, $a0, 2   # a += 2;
+  after:
+    addiu $a0, $a0, 1   # a += 1;
+  @end
+
+  Desta maneira conseguimos eliminar um salto incondicional.
+
+  (*NOTA*: Todas as instruções de /branching/ que não `beq` e `bne` são
+  pseudo-instruções)
+
+  Podemos estender esta conversão para também tratar de blocos `else` se
+  adicionarmos um salto incondicional ao bloco `if` para saltar o bloco `else`,
+  e se saltarmos para o `else` se a condição for falsa.
+
+  @code c
+  if (a >= 3) {
+    a += 2;
+  } else {
+    a -= 2;
+  }
+  a += 1;
+  @end
+
+  @code mips
+  beforeIf:
+    li $t0, 3
+    blt $a0, $t0, else # if (a < 3) goto else;
+  if: 
+    addiu $a0, $a0, 2  # a += 2;
+    j after            # goto after
+  else:
+    addiu $a0, $a0, -2 # a -= 2;
+  after:
+    addiu $a0, $a0, 1  # a += 1;
+  @end
+
+* Ciclos iterativos
+
+  Além das condicionais, muitas vezes é necessário executar estruturas cíclicas
+  como no caso do `while` e do `for`.
+
+  @code c
+  while ( a0 < 3 ) {
+    a1 += 3;
+    a0++; // Incrementa `a` por um
+  }
+  @end
+
+  O `while` é uma estrutura que começa por verificar se a condição é
+  verdadeira, terminado o `while` se não for. No final do bloco `while` ele faz
+  um salto incondicional para o ínicio onde se irá repetir a verificação da
+  condição.
+
+  @code mips
+  li $t0, 3
+  while:
+    bge $a0, $t0, done  # if ( a0 >= 3 ) goto done;
+    addiu $a1, $a1, 3   # a1 += 3;
+    addiu $a0, $a0, 1   # a1++;
+    j while             # goto while; // Repeat the loop
+  done:
+  @end
+
+  O `for` é mais complicado, mas o princípio geral é o mesmo. Primeiro vamos
+  ver as partes constituintes de um `for`:
+
+  @code c
+  for (/* inicialização */; /* condição */; /* operação iterativa */) {
+    /* Corpo do for */
+  }
+  @end
+
+  A primeira parte é a /inicizalização/ esta é executada *uma* vez antes de
+  começar o /loop/. A seguir temos a /condição/, esta tal como no `while` é
+  verificado no início de cada iteração do /loop/. Finalmente, antes do corpo
+  do `for`, temos a /operação iterativa/, esta é executada no final de cada
+  iteração do /loop/.
+
+  A estas três partes chama-se o cabeçalho do `for` e qualquer uma delas é
+  opcional (Os ponto e vírgulas, `;`, são obrigatórios estar presentes a
+  mesma).
+
+  Com o que sabemos agora, podemos transformar qualquer `for` num `while`:
+
+  @code c
+  /* inicialização */
+  while (/* condição */) {
+    /* corpo do for */
+    /* operação iterativa */
+  }
+  @end
+
+  Vejamos um exemplo prático, consideremos o seguinte código que queremos
+  converter para assembly:
+
+  @code c
+  int b = 0;
+  for (int a = 0; a < 3; a++) {
+    b += a;
+  }
+  @end
+
+  Começamos por converter este `for` para um `while`.
+
+  @code c
+  int b = 0;
+  int a = 0;
+  while (a < 3) {
+    b += a;
+    a++;
+  }
+  @end
+
+  Podemos agora converter este `while` para assembly usando o mesmo método que
+  utilizamos previamente.
+
+  @code mips
+    li $t0, 0           # int b = 0;
+    li $t1, 0           # int a = 0;
+    li $t2, 3
+  for:
+    bge $t1, $t2, done  # if ( a >= 3 ) goto done;
+    addu $t0, $t0, $t1  # b += a;
+    addiu $t1, $t1, 1   # a ++;
+    j for               # goto for; // Repeat the loop
+  done:
+  @end
+
+* Outros tipos de dados
+
+  Até agora tivemos a trabalhar com inteiros (com ou sem sinal), no entanto,
+  muitas vezes são usados tipos mais complexos para modelar problemas, como
+  listas que agregam vários valores do mesmo tipo, ou strings que servem para
+  representar texto.
+
+** Diretivas assembly
+
+   Antes de explorarmos como trabalhar em assembly com estas estruturas de
+   dados mais complexas, vamos explorar primeiro como podemos reservar espaço
+   em memórias para elas e carregá-las.
+
+   O assembler além de transformar o nosso código assembly em código máquina
+   também gera um programa. Um programa não é só código máquina, este contêm
+   informação de como carregar este e dados extra tal como constantes em
+   memória e pedaços de memória para reservar.
+
+   Nós vamos então utilizar o assembler para reservar espaço na memória e para
+   definir constantes em memória. Estas operações são feitas por diretivas.
+
+   Diretivas são comandos definidos no mesmo ficheiro assembly através da notação
+   `.diretiva`, onde `diretiva` é o nome da diretiva que queremos utilizar, estas
+   podem também levar um número varíavel de argumentos que depende da diretiva.
+
+   As diretivas mais essenciais são as que definem secções. Uma secção define o
+   tipo de informação com que trabalhamos, existe uma secção de código onde
+   estão as nossas instruções, esta secção é implícita se não definirmos mais
+   nenhuma secção.
+
+   @code mips
+   # Todas as estas instruções encontram-se na secção de código (ou text)
+    addiu $t0, $t0, 1
+   repeat:
+    addiu $t1, $t1, -1
+    beq $t0, $t1, repeat
+   @end
+
+   Existe também uma secção de dados que podemos definir se usarmos a diretiva
+   `.data`.
+
+   @code mips
+      .data
+    # Vamos meter dados aqui
+   @end
+
+   No entanto, agora que definimos a secção de dados já não temos a secção de
+   código implícita, precisamos de definir explicitamente onde esta começa
+   agora com a diretiva `.text`.
+
+   @code mips
+      .data
+    # Vamos meter dados aqui
+      .text
+    # O nosso código vem aqui para pode ser executado
+    addiu $t0, $t0, 1
+   repeat:
+    addiu $t1, $t1, -1
+    beq $t0, $t1, repeat
+   @end
+
+*** Reservar memória
+
+    Quando quisermos reservar espaço em memória, podemos usar a diretiva
+    `.space`, esta reserva o número de bytes especificados.
+
+    @code mips
+        .data
+    .space 20 # Reserva 20 bytes
+    @end
+
+    No entanto, não sabemos o endereço deste espaço que foi reservado, mas se
+    adicionarmos uma label antes podemos depois utilizar a pseudo-instrução
+    `la` (/Load Address/) para carregar o endereço base da memória reservada.
+
+    @code mips
+        .data
+    space: .space 20 # Reserva 20 bytes
+        .text
+    la $t0, space # $t0 têm agora o endereço base do
+                  # espaço de 20 bytes que reservamos
+    @end
+
+    É necessário ter em atenção que todos os acessos à memória devem estar
+    alinhados, para facilitar isto existe outra diretiva que permite adicionar
+    espaçamento até o endereço do item seguinte ficar alinhado ao número de
+    bytes especificado. Esta diretiva chama-se `.align`.
+
+    @code mips
+        .data
+            .align 4  # Garante que o espaço reservado
+                      # está alinhado a 4 bytes
+    space:  .space 20 # Reserva 20 bytes
+        .text
+    la $t0, space # $t0 têm agora o endereço base do
+                  # espaço de 20 bytes que reservamos
+    @end
+
+    (*NOTA*: O `.align` tem que preceder a /label/, senão esta apontara para o
+    endereço antes deste estar alinhado)
+
+*** Carregar dados
+
+    Além da possibilidade de reservar memória, existem também diretivas para
+    definir valores em memória, por exemplo, a diretiva `.word` permite definir
+    4 bytes em memória que serão carregados em memória no início do programa.
+
+    @code mips
+        .data
+    data: .word 0xF00FF00F  # Definir 4 bytes em memória
+                            # A label vai guardar o endereço deste valor
+        .text
+    la $t0, space # $t0 têm agora o endereço base da
+                  # word que contêm 0xF00FF00F
+    @end
+
+    Se quisermos definir mais do que uma /word/ consecutivamente podemos
+    definir vários valores separados por vírgulas.
+
+    @code mips
+        .data
+    data: .word 1, 2, 3, 4  # Definir 4 words em memória
+    @end
+
+    Existem ainda duas diretivas para carregar texto para a memória\: `ascii` e
+    `asciiz`
+
+    @code mips
+        .data
+    str0: .ascii "EI"
+    str1: .asciiz "IAC"
+    @end
+
+    A diferença entre estas duas é que `asciiz` adiciona um caráter nulo depois
+    da string, isto porque em /C/ as strings tem um comprimento implícito desde
+    o endereço base até ao primeiro caráter nulo depois desse.
+
+    Se o caráter nulo não tiver presente todas as funções para trabalhar com
+    strings iram funcionar de maneira inesperada e/ou até crashar o programa.
+
+** Arrays
+
+   Um array é uma coleção de elementos todos do mesmo tipo contígua em memória,
+   ou seja, todos os elementos estão posicionados um a seguir ao outro pela sua
+   ordem no array.
+
+   Logo um array é caracterizado por duas propriedades, o tipo base e o tamanho
+   do array. Em /C/ para definir um array de inteiros com 10 elementos,
+   utilizaríamos o seguinte código.
+
+   @code c
+   int array[10];
+   @end
+
+   O tipo base é definido primeiro, seguido pelo nome da variável e finalmente
+   o tamanho do array entre parênteses retos.
+
+   Para converter o código anterior, precisamos de começar por reservar espaço
+   para o array, como cada `int` ocupa 4 bytes e temos 10 elementos, precisamos
+   de $4 \times 10 = 40$ bytes no total.
+
+   @code mips
+      .data
+   array: .space 40
+   @end
+
+   Podemos também definir arrays com valores iniciais, em /C/ isto é feito de
+   seguinte modo:
+
+   @code c
+   int array[5] = { 1, 2, 3, 4, 5 };
+   @end
+
+   Que traduzido para assembly fica:
+
+   @code mips
+      .data
+   array: .word 1, 2, 3, 4, 5
+   @end
+
+   Se quisermos trabalhar com os elementos do array precisamos de os aceder, em
+   /C/ isto é feito utilizando a posição do item (a começar em 0) cercada por
+   parênteses retos. 
+
+   @code c
+   int array[5] = { 1, 2, 3, 4, 5 };
+   array[0] = array[1] + array[2];
+   @end
+
+   Em assembly precisamos de calcular o endereço do item em memória a partir da
+   sua posição e do endereço base do array, isto é feito utilizando a seguinte
+   fórmula:
+
+   @code
+   endereço item = endereço base + (posição item * tamanho item em bytes)
+   @end
+
+   Por exemplo, se tivéssemos um array de inteiros no endereço `0x1000` e
+   quiséssemos aceder ao segundo item (o segundo item têm posição 1):
+
+   @code
+   0x1000 + (1 * 4) = 0x1004
+   @end
+
+   Logo o código /C/ em cima seria traduzido para o seguinte código assembly:
+
+   @code mips
+      .data
+   array: .word 1, 2, 3, 4, 5
+      .text
+   la $t0, array      # Carregar o endereço base do array
+   lw $t1, 4($t0)     # array[1]
+   lw $t2, 8($t0)     # array[2]
+   addu $t3, $t1, $t2 # array[1] + array[2]
+   sw $t3, 0($t0)     # array[0] = array[1] + array[2]
+   @end
+
+   Muitas vezes é também necessário aplicar a mesma operação a todos os
+   elementos do array, em /C/ isto é feito com um `for` por todas as posições
+   do array:
+
+   @code c
+   int array[5] = { 1, 2, 3, 4, 5 };
+   for (int i = 0; i < 5; i++) {
+     array[i] += 1;
+   }
+   @end
+
+   Este código em assembly seria o seguinte:
+
+   @code mips
+      .data
+   array: .word 1, 2, 3, 4, 5
+      .text
+    la $t0, array      # Carregar o endereço base do array
+    li $t1, 0          # int i = 0
+    li $t2, 5          # Número de elementos do array
+    li $t3, 4          # Tamanho em bytes dos elementos do array
+  for:
+    bge $t1, $t2, done # if (i >= 5) break;
+                       # Podíamos utilizar `beq` aqui em vez de
+                       # utizar uma pseudo-instrução
+    mul $t4, $t1, $t3  # Endereço do item relativo ao ínicio do array
+                       # Podíamos ter usado um shift para esquerda de 2 aqui
+    addu $t4, $t4, $t0 # Endereço absoluto do item
+                       # Neste caso podíamos ter guardado num registo o endereço
+                       # do array e somado 4 no final de cada iteração em vez de
+                       # multiplicar sempre a posição pelo tamanho do item
+    lw $t5, 0($t4)     # array[i]
+    addiu $t5, $t5, 1  # array[i] + 1
+    sw $t5, 0($t4)     # array[i] = array[i] + 1 // array[i] += 1
+   
+    addiu $t1, $t1, 1  # i++
+    j for # goto for; // Repeat the loop
+   done:
+   @end
+
+** Strings
+
+   As strings são semelhantes a arrays, mas o seu tipo base é sempre o caráter
+   (`char`) que ocupa apenas um byte. Além disso, as strings são terminadas por
+   um caráter nulo (byte com valor 0).
+
+   @code c
+   char str[] = "IAC"; // O tamanho do array não é dado pois este é implicitamente
+                       // até ao caráter nulo no final da string.
+   @end
+
+   Os mesmo princípios para trabalhar com arrays aplicam-se a strings, mas se
+   quisermos aplicar uma operação a todos os caráteres de uma string, não
+   verificamos se a posição passou o tamanho da string, mas se já encontramos
+   o caráter nulo.
+
+   @code c
+   // Este código conta o número de caráteres
+   // alfabéticos numa string
+   char str[] = "2023-IAC";
+   int contador = 0;
+
+   for (int i = 0; str[i] != '\0'; i++) {
+     if (str[i] >= 'A' && str[i] <= 'z') {
+       contador++;
+     }
+   }
+   @end
+
+   Podemos converter agora este código para assembly.
+
+   @code mips
+      .data
+   str: .asciiz "2023-IAC"
+      .text
+    la $t0, str      # Carregar o endereço base da string
+    li $t1, 0        # int i = 0
+    li $t2, 0        # int contador = 0
+    li $t3, '\0'
+    li $t4, 'A'
+    li $t5, 'z'
+  for:
+    addu $t6, $t0, $t1   # Endereço do caráter
+    
+    lb $t7, 0($t6)       # str[i]
+    
+    beq $t7, $t3, done   # if (str[i] == '\0') break;
+
+    blt $t7, $t4, skipIF # if (str[i] < 'A') goto skipIF;
+    bgt $t7, $t5, skipIF # if (str[i] > 'z') goto skipIF;
+
+    addiu $t2, $t2, 1    # contador++;
+
+   skipIF:
+    addiu $t1, $t1, 1    # i++;
+    j for                # goto for; // Repeat the loop
+   done:
+   @end
+
+** Ponteiros
+
+   Os ponteiros são um tipo de dados que guardam o endereço em memória onde
+   está um valor do tipo base do ponteiro. Vejamos um exemplo simples:
+
+   @code c
+   int x;
+   int* ponteiro = &x;
+   @end
+
+   Em /C/ um ponteiro é definido adicionando um `*` depois do tipo base do
+   ponteiro, para obter o endereço de uma variável adiciona-se um `&` antes,
+   logo este código cria um ponteiro `ponteiro` a apontar para a variável `x`.
+
+   Os ponteiros também podem ser incrementados com `++`, mas invés de adicionar
+   1 ao endereço do ponteiro, esta operação adiciona o tamanho do tipo base ao
+   endereço efetivamente passando ao elemento seguinte (se estes tiverem
+   contíguos em memória).
+
+   Por exemplo, se considerarmos o código anterior e assumirmos que `x` está no
+   endereço `0x1000`, então `ponteiro == 0x1000`, se fizermos `ponteiro++` o
+   ponteiro não será igual a `0x1001` mas a `0x1004`.
+
+   Se quisermos aceder ao valor por de trás do ponteiro temos que
+   /desreferencia-lo/, isto é feito adicionando um `*` antes do nome da
+   variável.
+
+   @code c
+   int x = 2;
+   int* ponteiro = &x;
+
+   if (ponteiro == x) {
+     // Este código não é executado
+   }
+
+   if (*ponteiro == x) {
+     // Este código seria executado
+   }
+   @end
+
+   O uso de ponteiros simplifica o assembly produzido comparado a arrays quando
+   queremos operar sobre todos os elementos. Por exemplo, vamos simplificar o
+   código no final da secção de string com ponteiros.
+
+   @code c
+   char str[] = "2023-IAC";
+   char* p = &str;
+   int contador = 0;
+
+   while (*p != '\0') {
+     if (*p >= 'A' && *p <= 'z') {
+       contador++;
+     }
+     p++;
+   }
+   @end
+
+   Que em assembly ficaria.
+
+   @code mips
+      .data
+   str: .asciiz "2023-IAC"
+      .text
+    la $t0, str      # char* p = &str;
+    li $t2, 0        # int contador = 0
+    li $t3, '\0'
+    li $t4, 'A'
+    li $t5, 'z'
+  for:
+    lb $t7, 0($t0)       # *p
+    
+    beq $t7, $t3, done   # if (*p == '\0') break;
+
+    blt $t7, $t4, skipIF # if (*p < 'A') goto skipIF;
+    bgt $t7, $t5, skipIF # if (*p > 'z') goto skipIF;
+
+    addiu $t2, $t2, 1    # contador++;
+
+   skipIF:
+    addiu $t0, $t0, 1    # p++;
+    j for                # goto for; // Repeat the loop
+   done:
+   @end
+
+   Este código necessita de menos um registo e menos uma instrução para
+   alcançar o mesmo resultado.
