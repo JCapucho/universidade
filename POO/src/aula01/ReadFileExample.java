@@ -8,11 +8,11 @@ import java.nio.file.Paths;
 public class ReadFileExample {
 
 	public static void main(String[] args) {
-		Path fich = Paths.get("major.txt");
+		Path fich = Paths.get("words.txt");
 		try {
 			Files.readAllLines(fich).stream().forEach(System.out::println);
 		} catch (IOException e) {
-			System.out.println("Certifique-se que o ficheiro \"major.txt\" está na raiz da pasta do projeto");
+			System.out.println("Certifique-se que o ficheiro \"words.txt\" está na raiz da pasta do projeto");
 		}
 	}
 	

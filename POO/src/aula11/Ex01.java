@@ -19,7 +19,7 @@ public class Ex01 {
         // Use a TreeMap to make sure the map is always sorted, use the collator
         // as the custom comparator.
         final Map<String, Map<String, Integer>> pairs = new TreeMap<>(collator);
-        final Scanner input = new Scanner(new FileReader("major.txt"));
+        final Scanner input = new Scanner(new FileReader("words.txt"));
 
         input.useDelimiter("[ \\r\\t\\n.,:'‘’;?!\\-*{}=+&/()\\[\\]”“\"]+");
 

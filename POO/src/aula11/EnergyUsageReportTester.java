@@ -34,6 +34,6 @@ public class EnergyUsageReportTester {
         System.out.println("Total energy usage for customer 1003: " + totalEnergyUsage);
 
         // Generate a report of all customers and their total energy usage using the generateReport() method
-        energyReport.generateReport("energy_report.txt");
+        energyReport.generateReport("aula11/energy_report.txt");
     }
 }

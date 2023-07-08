@@ -11,7 +11,7 @@ public class Ex04 {
         // a)
         printReport(voos, System.out);
         // b)
-        final PrintStream InfopublicoFile = new PrintStream("Infopublico.txt");
+        final PrintStream InfopublicoFile = new PrintStream("aula11/Infopublico.txt");
         printReport(voos, InfopublicoFile);
         InfopublicoFile.close();
 
@@ -19,7 +19,7 @@ public class Ex04 {
         printAtrasos(voos, System.out);
 
         // d)
-        final PrintStream cidadesFile = new PrintStream("cidades.txt");
+        final PrintStream cidadesFile = new PrintStream("aula11/cidades.txt");
         printCidades(voos, cidadesFile);
         cidadesFile.close();
     }
@@ -96,8 +96,7 @@ public class Ex04 {
                 companhiaHeader,
                 " ".repeat(companhiaMaxLength - companhiaHeader.length()),
                 origemHeader,
-                " ".repeat(origemMaxLength - origemHeader.length())
-        );
+                " ".repeat(origemMaxLength - origemHeader.length()));
 
         out.println(header);
 
@@ -117,8 +116,7 @@ public class Ex04 {
                     origem,
                     " ".repeat(origemMaxLength - origem.length()),
                     atraso != null ? atraso : "",
-                    atraso != null ? String.format("Previsto: %s", voo.tempoPrevisto()) : ""
-            );
+                    atraso != null ? String.format("Previsto: %s", voo.tempoPrevisto()) : "");
 
             out.println(line);
         }
@@ -140,8 +138,7 @@ public class Ex04 {
         String header = String.format(
                 "%s%s\tVoos",
                 origemHeader,
-                " ".repeat(maxOrigemLength - origemHeader.length())
-        );
+                " ".repeat(maxOrigemLength - origemHeader.length()));
 
         out.println(header);
 
@@ -153,8 +150,7 @@ public class Ex04 {
                     "%s%s\t%s",
                     entry.getKey(),
                     " ".repeat(maxOrigemLength - entry.getKey().length()),
-                    entry.getValue()
-            );
+                    entry.getValue());
 
             out.println(line);
         }
@@ -205,8 +201,7 @@ public class Ex04 {
         String header = String.format(
                 "%s%s\tAtraso Médio",
                 companhiaHeader,
-                " ".repeat(maxCompanhiaLength - companhiaHeader.length())
-        );
+                " ".repeat(maxCompanhiaLength - companhiaHeader.length()));
 
         out.println(header);
 
@@ -218,8 +213,7 @@ public class Ex04 {
                     "%s%s\t%s",
                     entry.getKey(),
                     " ".repeat(maxCompanhiaLength - entry.getKey().length()),
-                    entry.getValue().atrasoMedio()
-            );
+                    entry.getValue().atrasoMedio());
 
             out.println(line);
         }

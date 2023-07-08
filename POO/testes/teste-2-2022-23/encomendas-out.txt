@@ -1,0 +1,36 @@
+SENDER; DESTINATION; WEIGHT; PRICE
+DETI, UA; Aveiro, Portugal; 2.56; 2.56
+DETI, UA; Aveiro, Portugal; 7.48; 14.96
+DETI, UA; Aveiro, Portugal; 7.22; 14.44
+DETI, UA; Aveiro, Portugal; 17.26; 51.79
+DETI, UA; Aveiro, Portugal; 14.76; 44.27
+Lome, Togo; Longjing, China; 23.75; 71.25
+Manila, Philippines; Shenzhen, China; 3.28; 3.28
+Bogota, Colombia; Taipei, Taiwan; 28.87; 86.61
+Munich, Germany; Durban, South Africa; 11.64; 34.92
+Bangkok, Thailand; Stockholm, Sweden; 18.43; 55.29
+Luanda, Angola; Hamburg, Germany; 1.16; 1.16
+Bucharest, Romania; Montreal, Canada; 24.50; 73.50
+Barcelona, Spain; Jakarta, Indonesia; 17.81; 53.43
+Athens, Greece; Dar es Salaam, Tanzania; 10.35; 31.05
+Istanbul, Turkey; Oslo, Norway; 28.21; 84.63
+Colombo, Sri Lanka; Dublin, Ireland; 5.69; 11.38
+Cairo, Egypt; Fukuoka, Japan; 3.11; 3.11
+Nairobi, Kenya; Amsterdam, Netherlands; 4.39; 4.39
+Asuncion, Paraguay; Stuttgart, Germany; 0.12; 0.12
+Santiago, Chile; Brisbane, Australia; 13.62; 40.86
+Guadalajara, Mexico; Tehran, Iran; 15.08; 45.24
+Mumbai, India; Auckland, New Zealand; 7.39; 14.78
+Hanoi, Vietnam; Edmonton, Canada; 25.20; 75.60
+Johannesburg, South Africa; Rome, Italy; 16.67; 50.01
+Casablanca, Morocco; Perth, Australia; 12.03; 36.09
+Kiev, Ukraine; Seoul, South Korea; 2.09; 2.09
+Rio de Janeiro, Brazil; Helsinki, Finland; 27.17; 81.51
+Dhaka, Bangladesh; Vancouver, Canada; 21.72; 65.16
+Moscow, Russia; Calgary, Canada; 26.90; 80.70
+Manila, Philippines; Zurich, Switzerland; 6.85; 13.70
+Lima, Peru; Vienna, Austria; 19.59; 58.77
+Belgrade, Serbia; Sydney, Australia; 9.53; 19.06
+Osaka, Japan; San Francisco, USA; 22.23; 66.69
+Karachi, Pakistan; Madrid, Spain; 14.55; 43.65
+Ho Chi Minh City, Vietnam; Seattle, USA; 0.69; 0.69
