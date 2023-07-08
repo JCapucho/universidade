@@ -1,9 +1,19 @@
 {...}: let
   entries = [
     {
-      name = "Resumos";
+      name = "Folhas exercícios";
       type = "external";
-      src = "https://uapt33090-my.sharepoint.com/:f:/g/personal/jcapucho_ua_pt/EiE_j2HugTNCsoN5Cm7GU_8Bith50SUngwhnHvoXj9p4lg?e=duyLeX";
+      src = "https://uapt33090-my.sharepoint.com/:f:/g/personal/jcapucho_ua_pt/Et0wsLWZYodKkF5vxtq4zpoBU75zhGU1BxSPCu2dMKh1xw?e=LGTHHZ";
+    }
+    {
+      name = "Slides teóricos";
+      type = "external";
+      src = "https://uapt33090-my.sharepoint.com/:f:/g/personal/jcapucho_ua_pt/ElkmbZ-4G9VCvCexm81OBm8BEckFT58ZCrkgiW77F-eNdA?e=DEoBJj";
+    }
+    {
+      name = "Testes";
+      type = "external";
+      src = "https://uapt33090-my.sharepoint.com/:f:/g/personal/jcapucho_ua_pt/EjlIm8Dr9kZEi47Tba9ZdO8BBFntaubCxYVEghZqCe0xCQ?e=hqdhBO";
     }
     {
       name = "Resumos Ruben";
