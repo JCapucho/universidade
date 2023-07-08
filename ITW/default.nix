@@ -176,27 +176,27 @@
     prefix,
     config,
   }:
-    helpers.generateBase {
-      inherit src name prefix config;
+    helpers.generateBase ({
+        inherit src name prefix config;
 
-      buildPhase = let
-        out = "$out/${prefix}";
-      in ''
-        mkdir -p "${out}/raw"
-        cp -a "${src}/." "${out}/"
+        buildPhase = let
+          out = "$out/${prefix}";
+        in ''
+          mkdir -p "${out}/raw"
+          cp -a "${src}/." "${out}/"
 
-        chmod -R +w "${out}"
+          chmod -R +w "${out}"
 
-        ${python}/bin/python3 ${./build.py} \
-          --template-dir ${helpers.templates} \
-          "${out}" "${name}" "${src}"
-      '';
-    }
-    // (
-      if config.has_index or true
-      then {meta.href = "${prefix}/${config.root or "index.html"}";}
-      else {}
-    );
+          ${python}/bin/python3 ${./build.py} \
+            --template-dir ${helpers.templates} \
+            "${out}" "${name}" "${src}"
+        '';
+      }
+      // (
+        if config.has_index or true
+        then {props.href = "${prefix}/${config.root or "index.html"}";}
+        else {}
+      ));
 
   convertLink = {
     src,
@@ -206,7 +206,7 @@
   }:
     helpers.generateBase {
       inherit src name prefix config;
-      meta.href = "${builtins.dirOf prefix}/${src}";
+      props.href = "${builtins.dirOf prefix}/${src}";
     };
 in {
   name = "Introdução as tecnologias web";

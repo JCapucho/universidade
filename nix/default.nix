@@ -66,15 +66,11 @@
       name = node.name;
       paths = [drv] ++ childrenDrvs;
       meta.map =
-        {
+        (drv.meta.props or {})
+        // {
           name = node.name;
           children = builtins.map (child: child.meta.map) childrenDrvs;
-        }
-        // (
-          if drv.meta ? href
-          then {href = drv.meta.href;}
-          else {}
-        );
+        };
     };
 
   moduleBuild = module: let

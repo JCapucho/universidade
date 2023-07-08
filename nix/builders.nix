@@ -16,7 +16,7 @@
     prefix,
     config,
     buildPhase ? "",
-    meta ? {},
+    props ? {},
   }: let
     out = "$out/${prefix}";
     callConfig = config: method:
@@ -25,7 +25,9 @@
       else "";
   in
     mkDerivation {
-      inherit name meta;
+      inherit name;
+
+      meta.props = props;
 
       phases = ["buildPhase"];
 
@@ -50,7 +52,7 @@
     generateBase
     {
       inherit src name prefix config;
-      meta.href = "${prefix}/${config.fileName or "index.html"}";
+      props.href = "${prefix}/${config.fileName or "index.html"}";
 
       buildPhase = ''
         export PANDOC="${pandoc}/bin/pandoc"
@@ -74,7 +76,7 @@
   }:
     generateBase {
       inherit src name prefix config;
-      meta.href = "${prefix}/${config.fileName or "index.html"}";
+      props.href = "${prefix}/${config.fileName or "index.html"}";
 
       buildPhase = ''
         ${codePython}/bin/python3 ${./codeBuilder.py} \
@@ -101,7 +103,7 @@
     generateBase {
       inherit src name prefix config;
 
-      meta.href = "${prefix}/${config.fileName or "index.html"}";
+      props.href = "${prefix}/${config.fileName or "index.html"}";
 
       buildPhase = ''
         ${notebookPython}/bin/jupyter-nbconvert "${src}" \
@@ -125,8 +127,8 @@
     generateBase {
       inherit src name prefix config;
 
-      meta.href = src;
-      meta.external = true;
+      props.href = src;
+      props.external = true;
     };
 
   buildGroup = {
