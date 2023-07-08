@@ -16,8 +16,10 @@
     (mapCallPackage ./FP {})
     (mapCallPackage ./ITW {})
     (mapCallPackage ./MAS {})
-    (mapCallPackage ./nix/CalcII.nix {})
-    (mapCallPackage ./nix/MD.nix {})
+    (mapCallPackage ./maps/ALGA.nix {})
+    (mapCallPackage ./maps/CalcI.nix {})
+    (mapCallPackage ./maps/CalcII.nix {})
+    (mapCallPackage ./maps/MD.nix {})
     (mapCallPackage ./MSF {})
     (mapCallPackage ./IAC {})
   ];

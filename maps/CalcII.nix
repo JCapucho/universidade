@@ -8,6 +8,6 @@
   ];
 in {
   name = "Cálculo II";
-  shorthand = "CII";
+  shorthand = "C-II";
   map = entries;
 }
