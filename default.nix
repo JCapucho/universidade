@@ -18,10 +18,12 @@
     (mapCallPackage ./MAS {})
     (mapCallPackage ./maps/ALGA.nix {})
     (mapCallPackage ./maps/CalcI.nix {})
+
     (mapCallPackage ./maps/CalcII.nix {})
     (mapCallPackage ./maps/MD.nix {})
     (mapCallPackage ./MSF {})
     (mapCallPackage ./IAC {})
+    (mapCallPackage ./POO {})
   ];
 
   moduleDrvs = helpers.buildRoot modules;
