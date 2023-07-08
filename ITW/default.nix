@@ -160,6 +160,16 @@
       type = "external";
       src = "https://github.com/JCapucho/itw-projeto-final";
     }
+    {
+      name = "Slides Teóricos";
+      type = "external";
+      src = "https://uapt33090-my.sharepoint.com/:f:/g/personal/jcapucho_ua_pt/EpThdIHwCi5FnB6SlDNixQAB5_972mgM4e5S2vVKfRNPIw?e=m5Nk9L";
+    }
+    {
+      name = "Guiões Práticos";
+      type = "external";
+      src = "https://uapt33090-my.sharepoint.com/:f:/g/personal/jcapucho_ua_pt/EkNJtYsFY8BNpMldj2Dxl_UBbwtdTq_OKDvpPql9c6Emxw?e=IHyDw0";
+    }
   ];
 
   python = python3.withPackages (pyPkgs:
