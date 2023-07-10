@@ -28,31 +28,16 @@ jobs:
         with:
           lfs: true
 
-      - name: Cache Nix store
-        uses: actions/cache@v3
-        id: nix-cache
-        with:
-          path: /tmp/nixcache
-          key: nix-${{ runner.os }}-${{ hashFiles('flake.lock', 'flake.nix') }}
-
       - name: Install Nix
-        uses: cachix/install-nix-action@v20
-        with:
-          github_access_token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Import Nix store cache
-        if: steps.nix-cache.outputs.cache-hit == 'true'
-        run: nix copy --from /tmp/nixcache .#packages.x86_64-linux.default --no-check-sigs
+        uses: DeterminateSystems/nix-installer-action@main
+      - name: Setup Nix Cache
+        uses: DeterminateSystems/magic-nix-cache-action@main
 
       - name: Build application
         run: nix build --print-build-logs
 
       - name: Copy result
         run: cp --recursive --dereference --no-preserve=mode,ownership result public
-
-      - name: Export Nix store cache
-        if: steps.nix-cache.outputs.cache-hit != 'true'
-        run: nix copy --to /tmp/nixcache .#packages.x86_64-linux.default --no-check-sigs
 
       - name: Setup Pages
         uses: actions/configure-pages@v3
