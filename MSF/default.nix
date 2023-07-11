@@ -98,6 +98,11 @@
           type = "notebook";
           src = ./aula12/guiao.ipynb;
         }
+        {
+          name = "Prática 13";
+          type = "notebook";
+          src = ./aula13/guiao.ipynb;
+        }
       ];
     }
   ];
