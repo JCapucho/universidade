@@ -89,6 +89,11 @@
           src = ./aula09/guiao.ipynb;
         }
         {
+          name = "Prática 10";
+          type = "notebook";
+          src = ./aula10/guiao.ipynb;
+        }
+        {
           name = "Prática 11";
           type = "notebook";
           src = ./aula11/guiao.ipynb;
