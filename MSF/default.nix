@@ -110,6 +110,31 @@
         }
       ];
     }
+    {
+      name = "Testes computacionais";
+      children = [
+        {
+          name = "Teste 1 (2022-2023)";
+          type = "notebook";
+          src = ./teste/resolucao.ipynb;
+        }
+        {
+          name = "Teste 2 (2022-2023)";
+          type = "notebook";
+          src = ./teste2/resolucao.ipynb;
+        }
+        {
+          name = "Teste 3 (2021-2022)";
+          type = "notebook";
+          src = ./teste3-2021/resolucao.ipynb;
+        }
+        {
+          name = "Teste 3 (2022-2023)";
+          type = "notebook";
+          src = ./teste3/resolucao.ipynb;
+        }
+      ];
+    }
   ];
 in {
   name = "Modelação de Sistemas Físicos";
