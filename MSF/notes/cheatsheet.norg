@@ -12,7 +12,7 @@ Este documento contêm várias fórmulas e bocados de informação utéis.
   diretas o valor da incerteza é normalmente obtido de duas maneiras:
 
   - Medições com instrumentos analógicas: A incerteza é igual a metade da menor divisão
-	da escala.
+    da escala.
   - Medições com instrumentos digitais: A incerteza é igual a menor divisão da escala.
 
   Para medições indiretas (calculadas a partir de outras medições) a incerteza é calculada
@@ -151,11 +151,11 @@ Este documento contêm várias fórmulas e bocados de informação utéis.
   y[0] = y0
 
   for i in range(n):
-	  ay[i] = g 
+     ay[i] = g 
 
-	  vy[i + 1] = vy[i] + ay[i] * dt
-	  y[i + 1] = y[i] + vy[i] * dt 
-	  t[i + 1] = t[i] + dt
+     vy[i + 1] = vy[i] + ay[i] * dt
+     y[i + 1] = y[i] + vy[i] * dt 
+     t[i + 1] = t[i] + dt
   @end
 
 ** Integração de Euler-Cromer
@@ -195,11 +195,11 @@ Este documento contêm várias fórmulas e bocados de informação utéis.
    y[0] = y0
 
    for i in range(n):
-	   ay[i] = g 
+      ay[i] = g 
 
-	   vy[i + 1] = vy[i] + ay[i] * dt
-	   y[i + 1] = y[i] + vy[i + 1] * dt 
-	   t[i + 1] = t[i] + dt
+      vy[i + 1] = vy[i] + ay[i] * dt
+      y[i + 1] = y[i] + vy[i + 1] * dt 
+      t[i + 1] = t[i] + dt
    @end
 
 ** Integração de Euler multidimensional
@@ -232,11 +232,11 @@ Este documento contêm várias fórmulas e bocados de informação utéis.
    x[0] = x0
 
    for i in range(n):
-	   a[i + 1] = np.array([0, -9.8, 0])
+      a[i + 1] = np.array([0, -9.8, 0])
 
-	   v[i + 1] = v[i] + a[i] * dt
-	   x[i + 1] = x[i] + v[i] * dt
-	   t[i + 1] = t[i] + dt
+      v[i + 1] = v[i] + a[i] * dt
+      x[i + 1] = x[i] + v[i] * dt
+      t[i + 1] = t[i] + dt
    @end
 
 ** Obter um valor num dado instante
@@ -260,9 +260,9 @@ Este documento contêm várias fórmulas e bocados de informação utéis.
 
    @code python
    for i in range(n):
-     if y[i] == 0 or y[i] * y[i + 1] < 0:
-       idx = i
-       break
+      if y[i] == 0 or y[i] * y[i + 1] < 0:
+         idx = i
+      break
 
    yZero = y[idx]
    tZero = t[idx]
@@ -272,7 +272,7 @@ Este documento contêm várias fórmulas e bocados de informação utéis.
 
    - Erro de truncatura local: proporcional a $\delta t^2$
    - Erro de truncatura global: proporcional a
-	 $N\delta t^2 = \left( t_f - t_0 \right) \delta t$, onde $N$ é o número de passos.
+     $N\delta t^2 = \left( t_f - t_0 \right) \delta t$, onde $N$ é o número de passos.
 
 * Forças
 ** Resistência do ar
@@ -289,9 +289,9 @@ Este documento contêm várias fórmulas e bocados de informação utéis.
 
    @code python
    def forcaResAr(D, v, m):
-	   v_norm = np.linalg.norm(v)
-	   v_hat = v / v_norm
-	   return -m * D * v_norm**2 * v_hat
+      v_norm = np.linalg.norm(v)
+      v_hat = v / v_norm
+      return -m * D * v_norm**2 * v_hat
    @end
 
    (Sabendo o coeficiente de resistência do ar):
@@ -303,7 +303,7 @@ Este documento contêm várias fórmulas e bocados de informação utéis.
    @code python
    def forcaResAr(C_res, A, v):
       rho_ar = 1.225
-	   v_norm = np.linalg.norm(v)
+      v_norm = np.linalg.norm(v)
       return -C_res/2 * A * rho_ar * v_norm * v
    @end
 
@@ -315,10 +315,10 @@ Este documento contêm várias fórmulas e bocados de informação utéis.
 
    @code python
    def forcaGrav(m, M, r):
-	   G = 6.67259 * 10**(-11)
-	   r_norm = np.linalg.norm(r)
-	   r_hat = r / r_norm
-	   return G * m * M / r_norm**2 * r_hat
+      G = 6.67259 * 10**(-11)
+      r_norm = np.linalg.norm(r)
+      r_hat = r / r_norm
+      return G * m * M / r_norm**2 * r_hat
    @end
 
 ** Peso
@@ -329,7 +329,7 @@ Este documento contêm várias fórmulas e bocados de informação utéis.
 
    @code python
    def forcaPeso(m, g):
-	   return m * g
+      return m * g
    @end
 
 ** Força elétrica (eletrostática)
@@ -340,10 +340,10 @@ Este documento contêm várias fórmulas e bocados de informação utéis.
 
    @code python
    def forcaElet(q, Q, r):
-	   K = 8.987551 * 10**9
-	   r_norm = np.linalg.norm(r)
-	   r_hat = r / r_norm
-	   return K * q * Q / r_norm**2 * r_hat
+      K = 8.987551 * 10**9
+      r_norm = np.linalg.norm(r)
+      r_hat = r / r_norm
+      return K * q * Q / r_norm**2 * r_hat
    @end
 
    Força elétrica de uma carga num campo elétrico:
@@ -360,7 +360,7 @@ Este documento contêm várias fórmulas e bocados de informação utéis.
 
    @code python
    def forcaMag(q, v, B):
-	   return q * np.cross(v, B)
+      return q * np.cross(v, B)
    @end
 
 ** Força de Magnus (para um corpo esférico)
@@ -371,7 +371,7 @@ Este documento contêm várias fórmulas e bocados de informação utéis.
 
    @code python
    def forcaMagnus(A, p, r, w, v):
-	   return 1/2 * A * p * r * np.cross(w, v)
+      return 1/2 * A * p * r * np.cross(w, v)
    @end
 
 ** Força do atrito
@@ -382,8 +382,8 @@ Este documento contêm várias fórmulas e bocados de informação utéis.
 
    @code python
    def forcaAtrito(v, mu, N):
-     v_hat = v / np.linalg.norm(v)
-     return -mu * np.linalg.norm(N) * v_hat
+      v_hat = v / np.linalg.norm(v)
+      return -mu * np.linalg.norm(N) * v_hat
    @end
 
 * Trabalho
@@ -483,4 +483,551 @@ Este documento contêm várias fórmulas e bocados de informação utéis.
 
   @math
   \vec{P} = m_a \vec{v_a} + m_b \vec{v_b}
+  @end
+
+* Osciladores (Sistema mola-massa)
+
+  $$ Período $T$
+  O período é o intervalo de tempo até o movimento se repetir.
+
+  O período é proporcional a raiz quadrada da massa $T = C\sqrt{M}$ (aqui $M$ é
+  a massa e $C$ uma constante)
+  $$
+
+  A força da mola é dada pela lei de hooke.
+
+  @math
+  \begin{equation}
+  \begin{cases}
+  F_x = -kx\\
+  F_y = -ky\\
+  F_z = -kz
+  \end{cases}
+  \Leftrightarrow
+  \vec{F} = -k\vec{r}
+  \end{equation}
+  @end
+
+  Onde $x$, $y$ e $z$ são em relação à posição de equilíbrio da mola.
+
+  $$ Constante elasticidade $k$
+  A constante de elasticidade é um valor específico a uma mola que diz com
+  suscetível esta é a deformação.
+
+  Valore mais baixos, significa que é necessário mais força para deformar a
+  mola e valores maiores necessitam de menos força.
+  $$
+
+  Logo a lei do movimento do sistema mola-massa é:
+
+  @math
+  \begin{align}
+  x(t) &= A \cos\left( \sqrt\frac{k}{m}t + \phi \right) \\
+  v_x(t) &= -A \sqrt\frac{k}{m} \sin\left( \sqrt\frac{k}{m}t + \phi \right)
+  \end{align}
+  @end
+
+  $$ Amplitude $A$
+  A amplitude é a mudança da posição num período.
+
+  Esta é medida da posição de equilíbrio até ao máximo do período.
+  $$
+  $$ Fase inicial $\phi$
+  A fase inicial determina a posição inicial da onda sinusoidal
+  $$
+
+  Em osciladores harmónicos como o sistema mola-corpo, a seguinte igualdade
+  verifica-se.
+
+  @math
+  x(t + T) = x(t)
+  @end
+
+  Isto permite-nos definir o período com base na constante de elasticidade e na
+  massa:
+
+  @math
+  T = 2\pi\sqrt\frac{m}{k}
+  @end
+
+  A raiz quadrada da constante de elasticidade e massa é muitas vezes chamada
+  também de frequência angular ($\omega$):
+
+  @math
+  \omega = \sqrt\frac{k}{m} = 2\pi f = \frac{2\pi}{T}
+  @end
+
+  $$ Frequência $f$
+  Número de oscilações por unidade de tempo
+  $$
+  $$ Frequência angular $\omega$
+  A frequência angular é um valor escalar para a velocidade de rotação.
+  $$
+
+  A energia potencial de um oscilador harmónico é dada por:
+
+  @math
+  E_p = \frac{1}{2}kx^2 = \frac{1}{2} m\omega^2x^2 \quad \left( k=m\omega^2 \right)
+  @end
+
+  E a energia mecânica será:
+
+  @math
+  E = \frac{1}{2}m\omega^2A^2
+  @end
+
+  *ATENÇÃO*\: Isto só se aplica a osciladores harmónicos simples
+
+** Oscilador amortecido
+
+   O oscilador amortecido possui além da força da mola, uma força de
+   resistência externa, descrita como:
+
+   @math
+   F_x^\text{resistência} = -bx_x
+   @end
+
+   Onde $b$ é uma constante.
+
+   Distinguem-se três casos quando se fala do amortecimento:
+
+   - Amortecimento fraco ($b < 2m\omega_0$), neste o corpo oscila com amplitude
+     decrescente até voltar ao repouso.
+
+   @math
+   \begin{align}
+   x(t) &= A_a e^{-\frac{b}{2m}t}\cos(\omega t + \phi) \\
+   v_x(t) &= - A_a \omega e^{-\frac{b}{2m}t} \sin(\omega t + \phi)
+   - A_a \frac{b}{2m} e^{-\frac{b}{2m}t} \cos(\omega t + \phi)
+   \end{align}
+   @end
+
+   Onde:
+
+   @math
+   \omega = \sqrt{\frac{k}{m} - \left(\frac{b}{2m}\right)^2} = \sqrt{w_0^2 - \left(\frac{b}{2m}\right)^2}
+   @end
+
+   $\omega_0$, é a frequência de oscilação sem amortecimento, ou seja $\omega_0 = \sqrt{k}{m}$
+
+   @math
+   \phi = \arctan \left( -\frac{ \frac{v_x(0)}{x(0)} + \frac{b}{2m} }{\omega} \right)
+   @end
+
+   @math
+   A_a = \sqrt{x(0)^2 + \left( \frac{v_x(0) + x(0)\frac{b}{2m}}{\omega} \right)^2}
+   @end
+
+   A amplitude ao longo do tempo pode ser calculada com:
+
+   @math
+   A(t) = A_a e^{-\frac{b}{2m}t}
+   @end
+
+   - Amortecimento forte ($b > 2m\omega_0$), neste o corpo não oscila, indo
+     diretamente para a posição equilíbrio.
+
+   @math
+   x(t) = e^{-\frac{b}{2m}t} \left( Ce^{\omega t} + De^{-\omega t} \right)
+   @end
+
+   - Amortecimento crítico ($b = 2m\omega_0$), comporta-se como no
+     amortecimento forte, mas é o que tem o decaimento mais rápido.
+
+   @math
+   x(t) = e^{-\frac{b}{2m}t} \left( C + Dt \right)
+   @end
+
+** Oscilador forçado
+
+   O oscilador forçado é aplicado uma força externa externa sobre o sistema
+   corpo-mola, esta força é descrita por:
+
+   @math
+   F_x^\text{ext} = F_0 \cos \left( \omega_f t \right)
+   @end
+
+   Onde $F_0$ e $\omega_f$ são constantes.
+
+   @math
+   x(t) = A_a e^{-\frac{b}{2m}t}\cos(\omega t + \phi)
+   + A \left( \omega_f \right) \cos \left( \omega_f t + \alpha \right)
+   @end
+
+   O movimento encontra-se dividido em dois regimes. O primeiro chama-se
+   *regime transiente* que corresponde ao oscilador sem força externa (a
+   esquerda da adição).
+
+   @math
+   \omega_a = \sqrt{w_0^2 - \left( \frac{b}{2m} \right)^2}
+   @end
+
+   O segundo regime chama-se *regime estacionário* e é permanente ao longo do
+   tempo, a sua amplitude depende da frequência da força extenra.
+
+   @math
+   A \left( \omega_f \right) = \frac{
+   \frac{F_0}{m}
+   }{
+   \sqrt{\left( \omega_f^2 - \omega_0^2 \right)^2 + \left( \frac{b \omega_f}{m} \right)^2}
+   }
+   @end
+
+   Após o regime transiente o movimento é apenas descrito pelo regime
+   estacionário, sendo o movimento harmónico simples com a frequência da força
+   externa.
+
+** Funções
+
+*** Velocidade angular regime transiente
+
+    A seguinte função calcula a velocidade angular de osciladores harmónicos do
+    regime transiente ($\omega_a$) ou osciladores não forçados.
+
+    @code python
+    def angular_velocity(*, k, m, b):
+        b_2m = b/(2*m)
+        return np.sqrt(k/m - (b_2m)**2)
+    @end
+
+*** Fase do oscilador regime transiente
+
+    Esta função calcula a fase de um oscilador no regime transiente ($\phi$).
+
+    @code python
+    def phase_offset(*, x0, v0, b, m, omega):
+        denom = v0/x0 + b/(2*m)
+        return np.arctan(-denom/omega)
+    @end
+
+*** Amplitude oscilador amortecido
+
+    Esta função calcula a amplitude de um oscilador amortecido ($A_a$).
+
+    @code python
+    def dampened_amplitude(*, x0, v0, b, k, omega):
+        b_2m = b/(2*m)
+        return np.sqrt(x0**2 + ((v0 + x0*b_2m)/omega)**2)
+    @end
+
+*** Amplitude regime estacionário
+
+    Esta função calcula a amplitude do regime estacionário de um oscilador
+    forçado ($A\left(\omega_f\right)$).
+
+    @code python
+    def forced_amplitude(*, F_0, m, omega_f, k, b):
+        denom = F_0/m
+        omega_diff2 = (omega_f**2 - k/m)**2
+        damp = (b*omega_f/m)**2
+        
+        if omega_diff2 == 0 and damp == 0:
+            return 0
+        
+        return denom/np.sqrt(omega_diff2 + damp)
+    @end
+
+*** Fase do oscilador regime estacionário
+
+    Esta função calcula a fase de um oscilador no regime estacionário ($\alpha$).
+
+    @code python
+    def forced_offset(*, b, omega, k, m, omega_f):
+        omega_diff = omega_f**2 - k/m
+        
+        if omega_diff == 0:
+            return np.pi/2
+        
+        return np.arctan((b*omega/m)/omega_diff2)
+    @end
+
+* Interpolação
+
+  A seguinte função calcula a ordenada de um ponto `xinp` numa parábola com
+  base em três pontos de controlo.
+
+  @code python
+  def interpolate(xinp, x0, y0, x1, y1, x2, y2):
+      """Interpolates quadratically using the Lagrange's polynomial
+      
+      Parameters
+      ----------
+      xinp : float
+          The point to interpolate 
+      x0, y0 : float
+          Coordinates of the first point to sample from
+      x1, y1 : float
+          Coordinates of the second point to sample from
+      x2, y2 : float
+          Coordinates of the third point to sample from
+      
+      Returns
+      ----------
+      xinp, yout : float
+          The coordinate of the interpolated point
+      """
+
+      xab = x0 - x1
+      xac = x0 - x2
+      xbc = x1 - x2
+
+      x0 = xinp - x0
+      x1 = xinp - x1
+      x2 = xinp - x2
+      
+      a = x1 * x2/(xab * xac)
+      b = -x0 * x2/(xab * xbc)
+      c = x0 * x1/(xac * xbc)
+
+      yout = a*y0 + b*y1 + c*y2
+      return xinp, yout    
+  @end
+
+** Encontrar extremos
+
+   Esta função encontra o extremo da parábola definida por três pontos.
+
+   @code python
+   def interpolate_extremum(x0, y0, x1, y1, x2, y2):
+       """Calculates a maximum or minimum (extremum) using Lagrange's polynomial
+       
+       Parameters
+       ----------
+       x0, y0 : float
+           Coordinates of the first point to sample from
+       x1, y1 : float
+           Coordinates of the second point to sample from
+       x2, y2 : float
+           Coordinates of the third point to sample from
+       
+       Returns
+       ----------
+       xm: float
+           The coordinate of the extremum
+       ym: float
+           The extremum
+       """
+       xab=x0-x1
+       xac=x0-x2
+       xbc=x1-x2
+       
+       a=y0/(xab*xac)
+       b=-y1/(xab*xbc)
+       c=y2/(xac*xbc)
+       
+       xmla=(b+c)*x0+(a+c)*x1+(a+b)*x2
+       xm=xmla/(2*(a+b+c))
+       
+       xta=xm-x0
+       xtb=xm-x1
+       xtc=xm-x2
+       
+       ymax=a*xtb*xtc+b*xta*xtc+c*xta*xtb
+       return xm, ymax
+   @end
+
+** Interpolação inversa
+
+   A função calcula a abcissa correspondente a uma ordenada `yinp` numa
+   parábola definida por três pontos.
+
+   @code python
+   def inverse_interpolate(yinp, x0, y0, x1, y1, x2, y2):
+       """Calculates the x value of yinp using the Lagrange's polynomial
+       
+       Parameters
+       ----------
+       x0, y0 : float
+           Coordinates of the first point to sample from
+       x1, y1 : float
+           Coordinates of the second point to sample from
+       x2, y2 : float
+           Coordinates of the third point to sample from
+       
+       Returns
+       ----------
+       xout: float
+           The x value of yinp 
+       yout: float
+           The exact y value of x in the interpolation
+       """
+       e = y0/((x0 - x1) * (x0 - x2))
+       f = y1/((x1 - x0) * (x1 - x2))
+       g = y2/((x2 - x0) * (x2 - x1))
+       
+       am=e + f + g
+       bm=e*(x2 + x1) + f*(x2 + x0) + g*(x1 + x0)
+       cm=e*x1*x2 + f*x0*x2 + g*x0*x1 - yinp
+       
+       root = np.sqrt(bm*bm - 4*am*cm)
+       xout=(bm + root)/(2*am)
+       
+       if x2 > x0 and (xout < x0 or xout > x2):
+           xout=(bm - root)/(2*am)
+       if x0 > x2 and (xout < x2 or xout > x0):
+           xout=(bm - root)/(2*am)
+           
+       xta=xout - x0
+       xtb=xout - x1
+       xtc=xout - x2
+       
+       yout=e*xtb*xtc + f*xta*xtc + g*xta*xtb
+       return xout, yout
+   @end
+
+* Runge-Kutta
+
+  Esta função implementa o método de integração numérica de Runge-Kutta de 4a
+  ordem.
+
+  @code python
+  def runge_kutta_4(t, x, vx, acceleration, dt):
+      """Numerical integration for a second order derivative in respect
+      to the motion.
+      
+      Parameters
+      ----------
+      t : float
+          Current time instant
+      x : float
+          Current position of the body
+      vx : float
+          Current velocity of the body
+      acceleration : Callable[[float, float, float], float]
+          The acceleration in function of the time, position and velocity (in that order)
+      dt : float
+          The time step to use in the integration
+      
+      Returns
+      ----------
+      xp : float
+          The next position
+      vxp : float
+          The next velocity
+      """
+      ax1=acceleration(t,x,vx)
+      c1v=ax1*dt
+      c1x=vx*dt
+      
+      ax2=acceleration(t+dt/2.,x+c1x/2.,vx+c1v/2.)
+      c2v=ax2*dt
+      c2x=(vx+c1v/2.)*dt # predicto: vx(t+dt) * dt
+      
+      ax3=acceleration(t+dt/2.,x+c2x/2.,vx+c2v/2.)
+      c3v=ax3*dt
+      c3x=(vx+c2v/2.)*dt
+      
+      ax4=acceleration(t+dt,x+c3x,vx+c3v)
+      c4v=ax4*dt
+      c4x=(vx+c3v)*dt
+      
+      xp=x+(c1x+2.*c2x+2.*c3x+c4x)/6.
+      vxp=vx+(c1v+2.*c2v+2.*c3v+c4v)/6.
+      
+      return xp, vxp
+  @end
+
+* Coeficientes de fourier
+
+  A seguinte função calcula um coeficiente da série discreta de fourier, sendo
+  necessário passar a série de tempo, a série das amplitudes, os índices onde
+  começar e acabar a análise e o indíce do coeficiente a calcular.
+
+  @code python
+  def abfourier(tp, xp, it0, it1, nf):
+      """Computes the fourier series coefficients.
+      
+      The fourier series coefficients are defined by the following integrals:
+      
+                    tp(it1)
+            2      ⌠
+      a   = ─ ⋅    ⌡    xp ⋅ cos(nf ⋅ w) ⋅ dx
+       nf   T   tp(it0)
+       
+                    tp(it1)
+            2      ⌠
+      b   = ─ ⋅    ⌡    xp ⋅ sin(nf ⋅ w) ⋅ dx
+       nf   T   tp(it0)
+
+      This functions operates over a discrete domain, so the integral is replaced
+      with a finite summation and the trapezoidal rule to approximate the integral.
+      
+      Parameters
+      ----------
+      tp : np.NDArray
+          The time series
+      xp : np.NDArray
+          The position series
+      it0 : int
+          The index where the analysis start
+      it1 : int
+          The index where the analysis ends
+      nf : int
+          The number of the coefficient to compute
+      
+      Returns
+      ----------
+      a_f, b_f : float
+          The fourier series coefficients
+      """
+      dt = tp[1] - tp[0] # Time step
+      per = tp[it1] - tp[it0] # Period
+      ome = 2*np.pi / per # Angular Frequency
+      
+      s1 = xp[it0] * np.cos(nf*ome*tp[it0])
+      s2 = xp[it1] * np.cos(nf*ome*tp[it1])
+      st = xp[it0+1:it1] * np.cos(nf*ome*tp[it0+1:it1])
+      soma = np.sum(st)
+      
+      intega = ((s1 + s2)/2 + soma)*dt
+      af = 2/per * intega
+      
+      q1 = xp[it0] * np.sin(nf*ome*tp[it0])
+      q2 = xp[it1] * np.sin(nf*ome*tp[it1])
+      qt = xp[it0+1:it1] * np.sin(nf*ome*tp[it0+1:it1])
+      somq = np.sum(qt)
+      
+      integq = ((q1 + q2)/2 + somq)*dt
+      bf = 2/per * integq
+      return af, bf
+  @end
+
+  A seguinte função calcula vários coeficientes da mesma série, opcionalmente
+  normaliza a série de modo a remover o coeficiente de indíce 0.
+
+  @code python
+  def fourier_transform(t, x, *, n = 20, normalize = False):
+      """Computes the fourier transform and the frequency axis.
+      
+      This function calculates a fourier transform with n coefficients
+      and the frequency domain in radians/sec.
+      
+      Parameters
+      ----------
+      t : np.NDArray
+          The time series
+      x : np.NDArray
+          The value series
+      n : int
+          The number of coefficients to calculate
+      normalize : boolean
+          Whether the value series should be subtracted the mean value
+      
+      Returns
+      ----------
+      freqs : np.NDArray
+          The frequency axis in radians/sec
+      coeffs : np.NDArray
+          The fourier coefficients
+      """
+      N = len(x)
+      d_omega = 2*np.pi/(dt * N)
+      
+      if normalize:
+          x = x - np.mean(x)
+
+      freqs = [d_omega * n for n in range(0, n)]
+      coeffs = [abfourier(t, x, 0, N - 1, n) for n in range(0, n)]
+      
+      return freqs, coeffs
   @end
