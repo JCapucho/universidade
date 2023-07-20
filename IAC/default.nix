@@ -40,6 +40,16 @@
       type = "norg";
       src = ./writing-assembly.norg;
     }
+    {
+      name = "Aulas de assembly";
+      children = [
+        {
+          name = "Prática 6";
+          type = "norg";
+          src = ./aulas/pratica6.norg;
+        }
+      ];
+    }
   ];
 in {
   name = "Introdução à Arquitetura de Computadores";
