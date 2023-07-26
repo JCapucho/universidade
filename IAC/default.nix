@@ -48,6 +48,11 @@
           type = "norg";
           src = ./aulas/pratica6.norg;
         }
+        {
+          name = "Prática 7";
+          type = "norg";
+          src = ./aulas/pratica7.norg;
+        }
       ];
     }
   ];
