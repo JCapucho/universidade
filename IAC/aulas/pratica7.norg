@@ -1,0 +1,416 @@
+@document.meta
+title: Prática 7
+author: João Capucho
+@end
+
+* Exercício 1 \- Estruturas de Controlo de fluxo
+
+** Exercício 1.1
+
+   > Codifique em Assembly o seguinte programa.
+
+   @code c
+   void main(void) {
+     int a;
+     char prompt1[] = "Introduza um numero\n";
+     char strpar[] = "O numero é par\n";
+     char strimp[] = "O numero é impar\n";
+
+     print_str( prompt1 );
+     a = read_int();
+
+     if ((a & 1) == 0) {
+       print_str( strpar );
+     } else {
+       print_str( strimp );
+     }
+
+     exit(); //system call 10
+   }
+   @end
+
+   @code mips
+     .data
+   prompt1:	.asciiz "Introduza um numero\n"
+   strpar:		.asciiz "O numero é par\n"
+   strimp:		.asciiz "O numero é impar\n"
+     .text
+     .globl main
+   main:
+     # print_string(prompt1);
+     li $v0, 4
+     la $a0, prompt1
+     syscall
+	
+     # a = read_int();
+     li $v0, 5
+     syscall
+	
+     # if((a & 1) == 0) par
+     andi $t0, $v0, 1
+     beqz $t0, par
+
+     # else
+     # print_string(strimp);
+     li $v0, 4
+     la $a0, strimp
+     syscall
+     j exit
+	
+   par:
+     # print_string(strpar);
+     li $v0, 4
+     la $a0, strpar
+     syscall
+	
+   exit:
+     # exit();
+     li $v0, 10
+     syscall
+   @end
+
+** Exercício 1.2
+
+   > Codifique em Assembly o seguinte programa.
+
+   @code c
+   void main(void) {
+     int a, i;
+     char prompt1[] = "Introduza um numero\n";
+
+     print_str( prompt1 );
+     a = read_int();
+
+     for(i = 0; i < a; i++) {
+       print_char( '-' );
+     }
+
+     exit(); //system call 10
+   }
+   @end
+
+   @code mips
+     .data
+   prompt1:	.asciiz "Introduza um numero\n"
+     .text
+     .globl main
+   main:
+     # print_string(prompt1);
+     li $v0, 4
+     la $a0, prompt1
+     syscall
+	
+     # a = read_int();
+     li $v0, 5
+     syscall
+     # move $t0, $v0
+     or $t0, $zero, $v0
+		
+   loop:
+     bge $t1, $t0, exit
+     addi $t1, $t1, 1
+     # print_char('-')
+     li $v0, 11
+     li $a0, '-'
+     syscall
+     j loop
+	
+   exit:
+     # exit();
+     li $v0, 10
+     syscall
+   @end
+
+** Exercício 1.3
+
+   > Codifique em Assembly o seguinte programa, e teste-o determinando até que
+     número introduzido funciona corretamente.
+
+   @code c
+   void main(void) {
+     int i, n, f;
+     char prompt1[] = "Introduza um numero\n";
+     char result[] = "O fatorial do numero inserido é: ";
+
+     print_str( prompt1 );
+     n = read_int();
+     f=1;
+
+     for ( i = n; i>0; i--) {
+       f = f*i;
+     }
+
+     print_str( result );
+     print_int10( f );
+
+     exit(); //system call 10
+   }
+   @end
+
+   @code mips
+     .data
+   prompt1:	.asciiz "Introduza um numero\n"
+   result:		.asciiz "O fatorial do numero inserido é: "
+     .text
+     .globl main
+   main:
+     # print_string(prompt1);
+     li $v0, 4
+     la $a0, prompt1
+     syscall
+	
+     # a = read_int();
+     li $v0, 5
+     syscall
+	
+     # f = 1
+     ori $t0, $t0, 1
+			
+   loop:
+     # i > 0
+     blez $v0, exit
+     # f = f * i
+     mul $t0, $t0, $v0
+     # i--
+     addi $v0, $v0, -1
+     j loop
+	
+   exit:
+     # print_string(result);
+     li $v0, 4
+     la $a0, result
+     syscall
+	
+     # print_int10(f);
+     li $v0, 1
+     or $a0, $zero, $t0
+     syscall
+	
+     # exit();
+     li $v0, 10
+     syscall
+   @end
+
+   O programa funciona até 16, a partir de onde começa a dar resultados
+   negativos e overflow, porque os números são demasiado grandes para
+   representar.
+
+* Exercício 2 \- Exercícios Adicionais
+
+** Exercício 2.1
+
+   > Escreva numa linguagem de alto nível (e.g., C) um programa que leia cinco
+     números inteiros (positivos ou negativos) e determine a soma dos números
+     positivos. Nota\: Não precisa de guardar os cinco números introduzidos, apenas
+     a soma.
+
+   @code c
+   void main(void) {
+     int i, a;
+     int soma = 0;
+     char prompt[] = "Introduza um numero: ";
+     char result[] = "A soma dos cinco números é: ";
+
+     for (i = 5; i > 0; i--) {
+       print_str(prompt);
+       a = read_int();
+       soma += a;
+     }
+
+     print_str(result);
+     print_int10(soma);
+     exit(); //system call 10
+   }
+   @end
+
+   > Traduza o programa anterior para Assembly e teste o seu funcionamento.
+
+   @code mips
+     .data
+   prompt:		.asciiz "Introduza um numero: "
+   result:		.asciiz "A soma dos cinco números é: "
+     .text
+     .globl main
+   main:
+     ori $t1, $zero, 5
+     # soma = 0
+     or $t0, $zero, $zero
+   loop:
+     # i > 0
+     blez $t1, exit
+
+     # print_string(prompt);
+     li $v0, 4
+     la $a0, prompt
+     syscall
+     # a = read_int();
+     li $v0, 5
+     syscall
+     # soma += a
+     add $t0, $t0, $v0
+
+     # i--
+     addi $t1, $t1, -1
+     j loop
+
+   exit:
+     # print_string(result);
+     li $v0, 4
+     la $a0, result
+     syscall
+
+     # print_int10(soma);
+     li $v0, 1
+     or $a0, $zero, $t0
+     syscall
+
+     # exit();
+     li $v0, 10
+     syscall
+   @end
+
+** Exercício 2.2
+
+   > A abordagem seguida no programa 4 da aula passada (para imprimir os caracteres
+     hexadecimais de um número presente num registo) resulta num programa ineficiente
+     por ter uma grande repetição de instruções. Uma possível codificação alternativa
+     usando um ciclo for é:
+
+   @code c
+   void main(void) {
+     int n, num;
+     char prompt1[] = "Introduza um numero: ";
+     char result[] = "\n O numero em hexadecimal é: ";
+
+     print_str(prompt1);
+     num = read_int();
+     print_str(result);
+
+     for(n = 0; n < 8; n++) {
+       print_int16((num & 0xF0000000) >> 28);
+       num = num << 4;
+     }
+
+     exit(); //system call 10
+   }
+   @end
+
+   @code mips
+     .data
+   prompt1:		.asciiz "Introduza um numero: "
+   result:		.asciiz "\n O numero em hexadecimal é: "
+     .text
+     .globl main
+   main:
+     # print_string(prompt1);
+     li $v0, 4
+     la $a0, prompt1
+     syscall
+     # num = read_int();
+     li $v0, 5
+     syscall
+     ori $t0, $v0, 0
+     # print_string(result);
+     li $v0, 4
+     la $a0, result
+     syscall
+     # n = 0
+     or $t1, $zero, $zero
+     li $t2, 8
+     li $t3, 0xF0000000
+   loop:
+     # n < 8
+     bge $t1, $t2 exit
+
+     # num & 0xF0000000
+     and $t4, $t0, $t3
+     # (num & 0xF0000000) >> 28
+     srl $a0, $t4, 28
+     # print_int16((num & 0xF0000000) >> 28);
+     li $v0, 34
+     syscall
+
+     # num = num << 4;
+     sll $t0, $t0, 4
+     
+     # n++
+     addi $t1, $t1, 1
+     j loop
+
+   exit:
+     # exit();
+     li $v0, 10
+     syscall
+   @end
+
+** Exercício 2.3
+
+   > Altere o programa anterior de modo a imprimir o número em binário em vez
+     de hexadecimal.
+
+   @code c
+   void main(void) {
+     int n, num;
+     char prompt1[] = "Introduza um numero: ";
+     char result[] = "\n O numero em hexadecimal é: ";
+
+     print_str(prompt1);
+     num = read_int();
+     print_str(result);
+
+     for(n = 0; n < 32; n++) {
+       print_int2((num & 0x80000000) >> 31);
+       num = num << 1;
+     }
+
+     exit(); //system call 10
+   }
+   @end
+
+   @code mips
+     .data
+   prompt1:		.asciiz "Introduza um numero: "
+   result:		.asciiz "\n O numero em hexadecimal é: "
+     .text
+     .globl main
+   main:
+     # print_string(prompt1);
+     li $v0, 4
+     la $a0, prompt1
+     syscall
+     # num = read_int();
+     li $v0, 5
+     syscall
+     ori $t0, $v0, 0
+     # print_string(result);
+     li $v0, 4
+     la $a0, result
+     syscall
+     # n = 0
+     or $t1, $zero, $zero
+     li $t2, 32
+     li $t3, 0x80000000
+   loop:
+     # n < 32
+     bge $t1, $t2 exit
+
+     # num & 0x80000000
+     and $t4, $t0, $t3
+     # (num & 0x80000000) >> 31
+     srl $a0, $t4, 31
+     # print_int2((num & 0x80000000) >> 31);
+     li $v0, 35
+     syscall
+
+     # num = num << 1;
+     sll $t0, $t0, 1
+     
+     # n++
+     addi $t1, $t1, 1
+     j loop
+
+   exit:
+     # exit();
+     li $v0, 10
+     syscall
+   @end
