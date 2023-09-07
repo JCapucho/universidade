@@ -1,0 +1,13 @@
+[children]
+"Representação digital de informação" = "repr-digital.norg"
+"Lógica binária e Circuitos" = "binary-logic.norg"
+"Blocos combinatórios" = "combinatorios.norg"
+"Circuitos sequenciais" = "sequenciais.norg"
+"Arquitetura de computadores" = "arquitetura-de-computadores.norg"
+"Arquitetura MIPS" = "mips.norg"
+"Instruções MIPS" = "inst-mips.norg"
+"Converter código para assembly" = "writing-assembly.norg"
+
+[children."Aulas de assembly".children]
+"Prática 6" = "aulas/pratica6.norg"
+"Prática 7" = "aulas/pratica7.norg"
