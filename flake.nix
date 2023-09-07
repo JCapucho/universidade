@@ -8,8 +8,6 @@
     pandoc-norg-rs.inputs.nixpkgs.follows = "nixpkgs";
 
     jupyenv.url = "github:tweag/jupyenv";
-    jupyenv.inputs.nixpkgs.follows = "nixpkgs";
-    jupyenv.inputs.flake-utils.follows = "flake-utils";
   };
   outputs = {
     nixpkgs,
@@ -48,11 +46,11 @@
             matplotlib
             beautifulsoup4
             pygments
+            ipykernel
+            nbconvert
             snakeviz
           ]);
     in {
-      packages.default = import ./default.nix {inherit pkgs system pandoc-norg-rs;};
-
       devShells.default = pkgs.mkShell {
         buildInputs = with pkgs; [
           pandoc
@@ -74,20 +72,11 @@
 
           # Node
           nodejs
-          (nodePackages.live-server.override (oldAttrs: {
-            postInstall =
-              (oldAttrs.postInstall or "")
-              + ''
-                ${dos2unix}/bin/dos2unix $out/lib/node_modules/live-server/index.js
-                patch -d $out/lib/node_modules/live-server -p1 < ${./nix/live-server.patch}
-              '';
-          }))
+          nodePackages.pnpm
+          nodePackages.prettier
           nodePackages.typescript-language-server
           nodePackages.vscode-langservers-extracted
-
-          jupyterlab
-
-          fswatch
+          nodePackages."@tailwindcss/language-server"
         ];
       };
 

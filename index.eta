@@ -1,0 +1,15 @@
+<html lang="pt-PT">
+
+<head>
+</head>
+
+<body>
+	<% it.map.forEach(async function explorer(node) { %>
+		<%~ include("./hir_node.eta", { node }) %>
+	<% }) %>
+</body>
+
+</html>
+<!--
+vi: ft=embedded_template
+-->

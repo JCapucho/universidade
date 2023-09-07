@@ -3,6 +3,8 @@ dist
 /result
 .jupyter
 .ipynb_checkpoints
+.parcel-cache
+node_modules
 __pycache__
 
 *.bkp
