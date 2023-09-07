@@ -1,0 +1,8 @@
+<% if (it.node.type === "link") { %>
+	<a href="<%= it.node.href %>"><%= it.node.name %></a>
+<% } else if (it.node.type === "group") { %>
+	<%~ include("./group.eta", { group: it.node }) %>
+<% } %>
+<!--
+vi: ft=embedded_template
+-->

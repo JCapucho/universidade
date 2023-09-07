@@ -1,0 +1,13 @@
+<html lang="pt-PT">
+
+<head>
+</head>
+
+<body>
+	<%~ it.content %>
+</body>
+
+</html>
+<!--
+vi: ft=embedded_template
+-->

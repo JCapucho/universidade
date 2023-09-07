@@ -1,0 +1,30 @@
+[children]
+"Cheat Sheet" = "notes/cheatsheet.norg"
+"Regressão linear" = "notes/linreg.norg"
+"Método de Euler" = "notes/euler.norg"
+"Forças" = "notes/forces.norg"
+"Energia e Trabalho" = "notes/work.norg"
+"Integração numérica" = "notes/int.norg"
+"Momento e colisões" = "notes/collisions.norg"
+"Slides teóricos" = "https://uapt33090-my.sharepoint.com/:f:/g/personal/jcapucho_ua_pt/EiBQ_4gRz79Mq-MdPpM4stwBCvhJ7tiaxazbuxOObDiK1A?e=ycMBJ5"
+
+[children."Guiões".children]
+Enunciados = "https://uapt33090-my.sharepoint.com/:f:/g/personal/jcapucho_ua_pt/Etzx87VMIY5Hgc_nZyznkp4Bsr6TBWCkq2nJxRv2VW_sQg?e=e23jka"
+"Prática 2" = "aula02/guiao.ipynb"
+"Prática 3" = "aula03/guiao.ipynb"
+"Prática 4" = "aula04/guiao.ipynb"
+"Prática 5" = "aula05/guiao.ipynb"
+"Prática 6" = "aula06/guiao.ipynb"
+"Prática 7" = "aula07/guiao.ipynb"
+"Prática 8" = "aula08/guiao.ipynb"
+"Prática 9" = "aula09/guiao.ipynb"
+"Prática 10" = "aula10/guiao.ipynb"
+"Prática 11" = "aula11/guiao.ipynb"
+"Prática 12" = "aula12/guiao.ipynb"
+"Prática 13" = "aula13/guiao.ipynb"
+
+[children."Testes computacionais".children]
+"Teste 1 (2022-2023)" = "teste/resolucao.ipynb"
+"Teste 2 (2022-2023)" = "teste2/resolucao.ipynb"
+"Teste 3 (2021-2022)" = "teste3-2021/resolucao.ipynb"
+"Teste 3 (2022-2023)" = "teste3/resolucao.ipynb"

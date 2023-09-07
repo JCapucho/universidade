@@ -1,0 +1,9 @@
+<div>
+	<h1><%= it.group.name %></h1>
+	<% it.group.children.forEach(function(node) { %>
+		<%~ include("./hir_node.eta", { node }) %>
+	<% }) %>
+</div>
+<!--
+vi: ft=embedded_template
+-->

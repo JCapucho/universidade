@@ -1,0 +1,20 @@
+{
+  "type": "module",
+  "scripts": {
+    "run": "node ./cli/main.js",
+    "dev": "node ./cli/main.js dev",
+    "build": "node ./cli/main.js build"
+  },
+  "devDependencies": {
+    "parcel": "^2.9.3"
+  },
+  "dependencies": {
+    "@parcel/config-default": "^2.9.3",
+    "@parcel/core": "^2.9.3",
+    "@parcel/plugin": "^2.9.3",
+    "@parcel/reporter-cli": "^2.9.3",
+    "commander": "^11.0.0",
+    "eta": "^3.1.1",
+    "yargs": "^17.7.2"
+  }
+}
