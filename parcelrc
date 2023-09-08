@@ -1,8 +1,0 @@
-{
-  "extends": "@parcel/config-default",
-  "transformers": {
-    "index.eta": ["./plugins/homepage.js"],
-    "*.norg": ["./plugins/norg.js"],
-    "*.ipynb": ["./plugins/ipynb.js"]
-  }
-}

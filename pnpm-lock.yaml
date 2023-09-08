@@ -28,6 +28,12 @@ dependencies:
     version: 17.7.2
 
 devDependencies:
+  '@parcel/transformer-html':
+    specifier: ^2.9.3
+    version: 2.9.3(@parcel/core@2.9.3)
+  '@parcel/transformer-posthtml':
+    specifier: ^2.9.3
+    version: 2.9.3(@parcel/core@2.9.3)
   parcel:
     specifier: ^2.9.3
     version: 2.9.3
