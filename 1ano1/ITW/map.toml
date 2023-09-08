@@ -1,0 +1,34 @@
+[children]
+"Aula 01" = "embed-iframe:./wwwroot/Aula01/index.html"
+"Aula 02" = "embed-iframe:./wwwroot/Aula02/index.html"
+
+"Aula 03".children."Exercício 1" = "embed-iframe:./wwwroot/Aula03/aula03e01.html"
+"Aula 03".children."Exercício 2" = "embed-iframe:./wwwroot/Aula03/aula03e02.html"
+"Aula 03".children."Exercício 3" = "embed-iframe:./wwwroot/Aula03/aula03e03.html"
+"Aula 03".children."Exercício 4" = "embed-iframe:./wwwroot/Aula03/aula03e04.html"
+"Aula 03".children."Exercício 5" = "embed-iframe:./wwwroot/Aula03/aula03e05.html"
+
+"Aula 04" = "embed-iframe:./wwwroot/Aula04/index.html"
+"Aula 05" = "embed-iframe:./wwwroot/Aula05/index.html"
+
+"Aula 06".children."Calculadora" = "embed-iframe:./wwwroot/Aula06/index.html"
+"Aula 06".children."Lâmpada" = "embed-iframe:./wwwroot/Aula06/lamp.html"
+"Aula 06".children."Jogo" = "embed-iframe:./wwwroot/Aula06/jogo.html"
+
+"Aula 07".children."Calculadora" = "embed-iframe:./wwwroot/Aula07/ex1.html"
+"Aula 07".children."Formulário" = "embed-iframe:./wwwroot/Aula07/ex2.html"
+"Aula 07".children."TODO" = "embed-iframe:./wwwroot/Aula07/ex3.html"
+"Aula 07".children."Totobola" = "embed-iframe:./wwwroot/Aula07/ex4.html"
+
+"Aula 09".children."Exercício 1" = "embed-iframe:./wwwroot/Aula09/ex1-temperaturas.html"
+"Aula 09".children."Exercício 2" = "embed-iframe:./wwwroot/Aula09/ex2-concerto.html"
+"Aula 09".children."Exercício 3" = "embed-iframe:./wwwroot/Aula09/ex3-concerto.html"
+
+"Aula 10".children."Meteorologia" = "embed-iframe:./wwwroot/Aula10/index.html"
+"Aula 10".children."Conferência" = "embed-iframe:./wwwroot/Aula10/conference.html"
+
+"Teste prático" = "embed-iframe:./wwwroot/teste-pratico/teste7.html"
+
+"Projeto final" = "https://github.com/JCapucho/itw-projeto-final"
+"Slides Teóricos" = "https://uapt33090-my.sharepoint.com/:f:/g/personal/jcapucho_ua_pt/EpThdIHwCi5FnB6SlDNixQAB5_972mgM4e5S2vVKfRNPIw?e=m5Nk9L"
+"Guiões Práticos" = "https://uapt33090-my.sharepoint.com/:f:/g/personal/jcapucho_ua_pt/EkNJtYsFY8BNpMldj2Dxl_UBbwtdTq_OKDvpPql9c6Emxw?e=IHyDw0"

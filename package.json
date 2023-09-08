@@ -1,11 +1,12 @@
 {
   "type": "module",
   "scripts": {
-    "run": "node ./cli/main.js",
-    "dev": "node ./cli/main.js dev",
-    "build": "node ./cli/main.js build"
+    "dev": "parcel index.eta",
+    "build": "parcel build index.eta"
   },
   "devDependencies": {
+    "@parcel/transformer-html": "^2.9.3",
+    "@parcel/transformer-posthtml": "^2.9.3",
     "parcel": "^2.9.3"
   },
   "dependencies": {

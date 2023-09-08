@@ -44,7 +44,12 @@ class MapLoader {
 
     try {
       // The link is a valid url do nothing to it
-      new URL(href);
+      const url = new URL(href);
+
+      if (url.protocol === "embed-iframe:") {
+        const pathname = path.join(ctx.prefix, url.pathname);
+        href = `${url.protocol}${pathname}`;
+      }
     } catch (_) {
       // Not a url assume it's a path
       if (path.isAbsolute(href)) {

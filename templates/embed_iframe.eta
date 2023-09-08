@@ -1,0 +1,14 @@
+<html lang="pt-PT">
+
+<head>
+  <link rel="stylesheet" href="/templates/embed_iframe.css" />
+</head>
+
+<body>
+  <iframe src="<%= it.url %>" sandbox></iframe>
+</body>
+
+</html>
+<!--
+vi: ft=embedded_template
+-->

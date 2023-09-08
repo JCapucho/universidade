@@ -1,5 +1,6 @@
 [content]
 "Fundamentos da Programação" = { include = "./1ano1/FP/map.toml" }
+"Introdução as tecnologias web" = { include = "./1ano1/ITW/map.toml" }
 "Modelação e análise de sistemas" = { include = "./1ano1/MAS/map.toml" }
 "Álgebra Linear e Geometria Analítica" = { include = "./1ano1/Alga.toml" }
 "Cálculo I" = { include = "./1ano1/CalcI.toml" }
