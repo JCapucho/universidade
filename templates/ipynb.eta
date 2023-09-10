@@ -1,5 +1,5 @@
 <% layout("./article_layout.eta") %>
-<link href="/templates/styles/pandoc-code.css" rel="stylesheet">
+<link href="/templates/styles/code.css" rel="stylesheet">
 <%~ it.content %>
 <!--
 vi: ft=embedded_template
