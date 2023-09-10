@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+
+<head>
+	<%~ include("./social_head.eta", { title: "Resumos Universidade" ,
+		description: "Resumos para as unidades curriculares da Licenciatura de Engenharia Informática da universidade de aveiro"
+		}) %>
+		<link href="/templates/styles/index.css" rel="stylesheet">
+</head>
+
+<body class="bg-slate-700">
+	<%~ it.body %>
+</body>
+
+</html>
+<!--
+vi: ft=embedded_template
+-->

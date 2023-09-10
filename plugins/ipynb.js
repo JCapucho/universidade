@@ -1,17 +1,22 @@
 import { Transformer } from "@parcel/plugin";
 
-import { readFile } from "node:fs/promises";
-
-import { run, eta } from "./utils.js";
+import { run, createEtaInstance } from "./utils.js";
 
 export default new Transformer({
   async loadConfig({ config }) {
-    const templateFile = "./templates/norg.eta";
-    const template = await readFile(templateFile, { encoding: "utf8" });
+    const loadedTemplate = await config.getConfig(["./templates/ipynb.eta"], {
+      parse: false,
+    });
+    let template = loadedTemplate?.contents;
 
-    config.invalidateOnFileChange(templateFile);
+    const eta = createEtaInstance();
 
-    return { template };
+    if (!template) {
+      logger.error("Failed to load norg template");
+      template = "ERROR LOADING TEMPLATE";
+    }
+
+    return { eta, template };
   },
 
   async transform({ config, asset }) {
@@ -29,7 +34,14 @@ export default new Transformer({
     nbconvert_child.child.stdin?.end(source);
     const { stdout: content } = await nbconvert_child;
 
-    const code = await eta.renderStringAsync(config.template, { content });
+    config.eta.resetTrackers();
+    const code = await config.eta.renderStringAsync(config.template, {
+      content,
+    });
+
+    for (const path of config.eta.includedPaths) {
+      asset.invalidateOnFileChange(path);
+    }
 
     asset.type = "html";
     asset.setCode(code);

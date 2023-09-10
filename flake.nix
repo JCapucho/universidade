@@ -35,49 +35,46 @@
         ];
       });
 
-      python-dev =
-        pkgs.python3.withPackages
-        (pyPkgs:
-          with pyPkgs; [
-            numpy
-            sympy
-            jinja2
-            aiofiles
-            matplotlib
-            beautifulsoup4
-            pygments
-            ipykernel
-            nbconvert
-            snakeviz
-          ]);
+      base-py-pkgs = pyPkgs:
+        with pyPkgs; [
+          numpy
+          sympy
+          matplotlib
+          ipykernel
+          nbconvert
+        ];
+
+      python-dev = pkgs.python3.withPackages base-py-pkgs;
+
+      base-pkgs = with pkgs; [
+        bun
+        nodejs
+        pandoc
+        pandoc-norg-rs.packages.${system}.default
+      ];
     in {
       devShells.default = pkgs.mkShell {
-        buildInputs = with pkgs; [
-          pandoc
-          ghostscript
-          imagemagick
-          pandoc-norg-rs.packages.${system}.default
+        buildInputs = with pkgs;
+          base-pkgs
+          ++ [
+            # Python
+            black
+            python-dev
+            nodePackages.pyright
 
-          # Python
-          black
-          python-dev
-          nodePackages.pyright
+            # Java
+            jdk
+            jdt-language-server
 
-          # Java
-          jdk
-          jdt-language-server
+            # .Net
+            dotnet-sdk
 
-          # .Net
-          dotnet-sdk
-
-          # Node
-          nodejs
-          nodePackages.pnpm
-          nodePackages.prettier
-          nodePackages.typescript-language-server
-          nodePackages.vscode-langservers-extracted
-          nodePackages."@tailwindcss/language-server"
-        ];
+            # Node
+            nodePackages.prettier
+            nodePackages.typescript-language-server
+            nodePackages.vscode-langservers-extracted
+            nodePackages."@tailwindcss/language-server"
+          ];
       };
 
       packages.jupyter = jupyterlab;

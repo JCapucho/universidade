@@ -1,6 +1,6 @@
 import { Transformer } from "@parcel/plugin";
 
-import { eta } from "./utils.js";
+import { createEtaInstance } from "./utils.js";
 import { buildMap } from "./maploader.js";
 
 export default new Transformer({
@@ -9,18 +9,26 @@ export default new Transformer({
 
     if (!rootMap) {
       logger.error("No root map was provided");
-      return;
+      return { map: [] };
     }
 
+    const eta = createEtaInstance();
     const map = await buildMap(rootMap.contents, config, logger);
 
-    return { map };
+    return { eta, map };
   },
   async transform({ asset, config }) {
-    const map = config?.map ?? [];
     const source = await asset.getCode();
 
-    const result = await eta.renderStringAsync(source, { map });
+    config.eta.resetTrackers();
+    const result = await config.eta.renderStringAsync(source, {
+      map: config.map,
+    });
+
+    for (const path of config.eta.includedPaths) {
+      asset.invalidateOnFileChange(path);
+    }
+
     asset.type = "html";
     asset.setCode(result);
 

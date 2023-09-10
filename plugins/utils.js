@@ -14,4 +14,25 @@ export function run(command, args) {
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export const project_root = path.join(__dirname, "..");
 
-export const eta = new Eta({ views: path.join(project_root, "templates") });
+class CustomEta extends Eta {
+  includedPaths = new Set();
+
+  constructor(options) {
+    super(options);
+
+    const oldReadFile = this.readFile;
+
+    this.readFile = function (path) {
+      this.includedPaths.add(path);
+      return oldReadFile(path);
+    };
+  }
+
+  resetTrackers() {
+    this.includedPaths.clear();
+  }
+}
+
+export function createEtaInstance() {
+  return new CustomEta({ views: path.join(project_root, "templates") });
+}
