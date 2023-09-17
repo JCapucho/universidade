@@ -4,8 +4,12 @@
 "Modelação e análise de sistemas" = { include = "./1ano1/MAS/map.toml" }
 "Álgebra Linear e Geometria Analítica" = { include = "./1ano1/Alga.toml" }
 "Cálculo I" = { include = "./1ano1/CalcI.toml" }
+
 "Cálculo II" = { include = "./1ano2/CalcII.toml" }
 "Matemática Discreta" = { include = "./1ano2/MD.toml" }
 "Modelação de Sistemas Físicos" = { include = "./1ano2/MSF/map.toml" }
 "Introdução à Arquitetura de Computadores" = { include = "./1ano2/IAC/map.toml" }
 "Programação Orientada a Objetos" = { include = "./1ano2/POO/map.toml" }
+
+"Algoritmos e Estruturas de Dados" = { include = "./2ano1/AED/map.toml" }
+

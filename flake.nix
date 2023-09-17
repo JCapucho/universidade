@@ -57,6 +57,9 @@
         buildInputs = with pkgs;
           base-pkgs
           ++ [
+            bear
+            clang-tools
+
             # Python
             black
             python-dev
