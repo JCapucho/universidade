@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+gcc -g -Wextra -Wall -Werror -Wpedantic -std=c11 -o main "$@"

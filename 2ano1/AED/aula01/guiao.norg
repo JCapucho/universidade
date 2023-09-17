@@ -1,0 +1,1529 @@
+@document.meta
+title: Aula 01
+description: Introdução a C
+author: João Capucho
+@end
+
+* Introdução
+
+  A linguagem de programação C é uma linguagem de baixo nível, isto significa
+  que ao contrário de linguagens como Python e Java onde muito dos detalhes nos
+  eram escondidos, em C vamos os ter presentes e vamos ter de lidar com eles.
+
+  O detalhe que vai ter mais presença é o da gestão de memória, enquanto outras
+  linguagens costumam optar pela gestão automática da memória, recorrendo a
+  Garbage Collectors e outros mecanismos, em C a gestão é feita de forma manual
+  sendo o programador responsável por decidir onde, quando e quanto alocar e
+  libertar em termos de memória.
+
+  Isto faz com que seja possível construir programas altamente eficientes,
+  visto que existe um controlo maior sobre todas as partes do programa. No
+  entanto, também é mais fácil cometer erros e não existem guias nem mecanismos
+  de segurança, o que significa que os erros são mais difíceis de detetar e
+  carregam com eles perigos maiores (grande parte dos problemas de segurança
+  partem de problemas na gestão de memória).
+
+  Além disto C é uma linguagem antiga tendo sido criada nos anos 70, isto faz
+  com que várias partes da linguagem apresentem bagagem histórica e escolhas
+  que na altura faziam sentido, mas atualmente já não fazem.
+
+** Ferramentas
+
+   C é uma linguagem compilada como tal é preciso instalar um compilador para
+   compilar o código num executável antes de o poder executar.
+
+   O compilador recomendado é o `gcc`, este pode ser facilmente instalado em
+   linux através do package manager da distro. Em Windows é recomendado
+   utilizar WSL (é possível instalar gcc em Windows "diretamente", mas a
+   experiência é bastante pior e algumas livrarias de suporte podem não
+   funcionar).
+
+   O `gcc` pode ser chamado diretamente com o nome do ficheiro que contêm o
+   código C:
+
+   @code sh
+   gcc test.c
+   @end
+
+   Isto irá produzir um executável com o nome `a.out`, isto é devido a razões
+   históricas, apesar de atualmente não ser comum os executáveis terem
+   extensões em sistemas linux.
+
+   Podemos utilizar a opção `-o` para instruir ao `gcc` para produzir um
+   executável com o nome que quisermos:
+
+   @code sh
+   gcc test.c -o main
+   @end
+
+   Existem mais umas opções que serão úteis, entre estas estão algumas opções
+   para ativar mensagens de aviso, devido à maneira como a linguagem C é
+   desenvolvida a introdução de mensagens de aviso (não de erro) é considerada
+   uma mudança que quebra a compatibilidade com versões anteriores, cabendo
+   então ao utilizador ativá-las.
+
+   No entanto, estas opções são bastantes úteis, apanhando muitos erros comuns,
+   e poupando muitas dores de cabeça, o que é crucial numa linguagem como C que
+   está coberta de perigos.
+
+   Estas opções são:
+   - `-Wall` ativa alguns avisos extra
+   - `-Wextra` ativa ainda mais avisos extra do que `-Wall`
+   - `-Wpedantic` ativa ainda mais avisos extra do que `-Wextra`, estes
+     avisos são menos necessários, mas mesmo assim podem mostrar problemas
+     maiores com o programa em geral.
+   - `-Werror` esta opção transforma todas as mensagens de aviso em mensagens
+     de erro, pois as mensagens de aviso maior parte das vezes deviam ser erros.
+
+   Eu juro que não é paródia e todas estas opções existem e fazem coisas
+   diferentes 😭.
+
+   Finalmente a última opção que nos poderá ser útil é a `-g`, esta opção
+   inclui informações de debugging no programa gerado permitindo a utilização
+   de outras ferramentas como debuggers para ajudar na resolução de problemas
+   (que inevitavelmente apareceram).
+
+   Com isto tudo ficamos com o seguinte comando para compilar código:
+
+   @code sh
+   gcc -g -Wextra -Wall -Werror -Wpedantic -o main test.c
+   @end
+
+   Escrever isto tudo de cada vez que for para compilar torna-se excessivo, por
+   isso vamos criar um script para resolver isso `compile`:
+
+   @code bash
+   #!/usr/bin/env bash
+   gcc -g -Wextra -Wall -Werror -Wpedantic -o main "$@"
+   @end
+
+   Este script invoca o `gcc` com as opções discutidas em cima e todos os argumentos
+   que passarmos ao nosso script. Basta agora tornamos o script executável:
+
+   @code sh
+   chmod +x compile
+   @end
+
+   E agora para compilar o código basta utilizar o script:
+
+   @code sh
+   ./compile test.c
+   @end
+
+   E se quisermos compilar e executar o programa podemos utilizar a seguinte
+   linha:
+
+   @code sh
+   ./compile test.c && ./main
+   @end
+
+   E compilar com opções extras:
+
+   @code sh
+   ./compile -std=c11 test.c
+   @end
+
+* Exercício 1
+
+  >  Usando um editor à sua escolha, crie um ficheiro com o programa seguinte (simplest_1.c).
+
+  @code c
+  int main ( void )
+  {
+     // O programa mais simples em C
+  }
+  @end
+
+  > Nota algum pormenor estranho neste programa?
+
+  A declaração de funções em C é muito semelhante à declaração de métodos em
+  Java, por isso a presença do void no lugar dos argumentos da função pode
+  parecer estranho.
+
+  Tal como em Java, em C o tipo `void` representa o tipo vazio e é comum como o
+  tipo de funções que não retornam nada, no entanto, em C quando queremos
+  declarar funções sem argumentos também temos que utilizar `void`, pois as
+  duas funções seguintes não são iguais:
+
+  @code c
+  void test(void) {}
+  void test_no_void() {}
+  @end
+
+  A primeira como já discutimos não aceita argumentos, no entanto, a segunda
+  aceita qualquer número de argumentos.
+
+  @code c
+  void test(void) {}
+  void test_no_void() {}
+
+  int main() {
+     test();          // Funciona
+     test(1);         // Erro
+     test_no_void();  // Funciona
+     test_no_void(1); // Funciona?
+  }
+  @end
+
+  Isto é mais uma decisão histórica e algumas ferramentas avisam contra o seu
+  uso, sugerindo o uso da forma explicita de `...` como argumento. No nosso
+  caso vamos precisar de ter o cuidado de meter  `void` nas funções onde não
+  são esperados argumentos.
+
+  > Use o seu compilador da linguagem C para compilar o ficheiro; analise
+    eventuais mensagens do compilador. Execute o programa de aplicação
+    resultante.
+
+  @code sh
+  ./compile simplest_1.c && ./main
+  @end
+
+  Como é expectável o compilador não retorna nenhuma mensagem e a execução do
+  programa não faz nada.
+
+  > Experimente compilar o ficheiro usando diferentes normas da linguagem:
+    `-std=c17`, `-std=c11`, `-std=c99` ou `-std=c90`. Analise eventuais
+    mensagens do compilador.
+
+  A linguagem C é desenvolvida pelo comité ISO C, este define uma especificação
+  ISO C, que define como a linguagem deve funcionar e livrarias comuns a todas
+  as implementações.
+
+  Esta especificação está em constante construção sendo publicada
+  irregularmente na forma de standards a opção `-std` controla a versão do
+  standard que queremos utilizar, `c17` é o standard de 2017 enquanto que `c99`
+  é o standard de 1999.
+
+  Se compilarmos o código dado com `c17`, `c11` ou `c99` este compila e
+  funciona normalmente.
+
+  No entanto, se usarmos `c90` o compilador retorna-nos vários erros:
+
+  @code
+  $ gcc -Wall -std=c90 simplest_1.c
+  simplest_1.c: In function ‘main’:
+  simplest_1.c:3:3: error: C++ style comments are not allowed in ISO C90
+       3 |   // O programa mais simples em C
+         |   ^
+  simplest_1.c:3:3: note: (this will be reported only once per input file)
+  simplest_1.c:4:1: warning: control reaches end of non-void function [-Wreturn-type]
+       4 | }
+         | ^
+  @end
+
+  O primeiro erro é estranho, o compilador fala de comentários a C++, mas de
+  facto até 1999, C só suportava comentários do estilo `/* comment */`, apenas
+  quando C++ popularizou os comentários de linha `// comment` é que estes foram
+  implementados em C.
+
+  O segundo aviso faz sentido sendo estranho que as versões mais recentes não o
+  emitam, o que não é bem verdade porque se definirmos outra função que não
+  `main` que o tipo de retorno não seja `void` e não retornemos nada o mesmo
+  aviso irá aparecer.
+
+  A diferença é que em `c90` todas as funções que deviam retornar, mas não
+  retornam fazem com que o uso do valor retornado (que não foi) seja /Undefined Behavior/
+  (UB), o que significa que tudo pode acontecer desde crashar o programa até
+  corromper memória.
+
+  @code c
+  int test() {} // Doesn't return
+
+  int main() {
+     int a = test(); // UB
+     // O programa pode ou não chegar a este ponto...
+     // Podendo (ou não) ter corrompido a memória toda...
+     // Podendo (ou não) tido causado graves problemas de segurança...
+     return 0;
+  }
+  @end
+
+  Por isso é que o compilador avisa-nos deste problema (o facto de não ser um
+  erro ultrapassa-me), porque há uma bomba relógio no nosso código pronta a
+  explodir.
+
+  Na versão `c99` o comité decidiu cortar uma exceção para a função `main`,
+  esta agora se retornar algo que não seja um `int` (ou se só não retornar de
+  todo) não existe UB, simplesmente o status code do programa é definido pela
+  implementação (compilador/sistema operativo).
+
+  Sendo por isto que as versões mais recentes não mostram o aviso.
+
+  > Modifique o ficheiro de acordo com o exemplo seguinte.
+
+  @code c
+  #include<stdio.h>
+
+  int main ( void )
+  {
+     printf ( "%ld\n", __STDC_VERSION__ );
+     return 0;
+  }
+  @end
+
+  > Compile e execute o programa usando diferentes normas da linguagem. Analise
+    eventuais mensagens do compilador e o resultado do programa.
+
+  @code
+  $ ./compile -std=c90 simplest_1.c && ./main
+  simplest_1.c: In function ‘main’:
+  simplest_1.c:4:19: error: ‘__STDC_VERSION__’ undeclared (first use in this function)
+       4 |   printf("%ld\n", __STDC_VERSION__);
+         |                   ^~~~~~~~~~~~~~~~
+  simplest_1.c:4:19: note: each undeclared identifier is reported only once for each function it appears in
+  @end
+
+  Esta diretiva não foi introduzida até a versão `c99`.
+
+  @code
+  $ ./compile -std=c99 simplest_1.c && ./main
+  199901
+  @end
+
+  @code
+  $ ./compile -std=c11 simplest_1.c && ./main
+  201112
+  @end
+
+  @code
+  $ ./compile -std=c17 simplest_1.c && ./main
+  201710
+  @end
+
+  > Qual é o tipo da constante __STDC_VERSION__?
+
+  O tipo da constante é `long int`, como podemos deduzir do especificador `%ld`
+  que utilizamos.
+
+  > Qual é o significado do seu valor?
+
+  O valor da constante é `yyyymm` onde `y` é o ano e `m` o mês quando foi
+  ratificada a versão do standard que o compilador utiliza, isto pode ser
+  usado, por exemplo, por livrarias para condicionalmente utilizarem funções
+  novas e, em simultâneo, suportar versões antigas através de outros métodos.
+
+  > Qual é a norma que o seu compilador usa por omissão?
+
+  `201710` que é a versão mais recente suportada, existe uma opção `-std=c2x`,
+  mas o suporte para essa versão ainda não é total.
+
+* Exercício 2
+
+  > Crie um ficheiro com o programa seguinte (hello_world.c). Compile e execute o programa.
+
+  @code c
+  #include<stdio.h>
+
+  int main ( void )
+  {
+     puts ( "Hello World!" );
+     return 0;
+  }
+  @end
+
+  @code
+  $ ./compile hello_world.c && ./main
+  Hello World!
+  @end
+
+  > Experimente usar as funções printf() e fputs(). Há diferenças no resultado do programa?
+
+  @code c
+  #include <stdio.h>
+
+  int main(void) {
+     puts("Hello World!");          // Prints to stdout with newline
+     printf("Hello World!");        // Prints to stdout no newline
+     fputs("Hello World!", stdout); // Prints to a File no newline
+     return 0;
+  }
+  @end
+
+  A função `puts` como já vimos imprime a string para o stdout, com uma linha
+  nova no final. A função `fputs` é uma versão mais genérica de `puts` que
+  permite escolher qualquer ficheiro para escrever (incluindo stdout) e não
+  adiciona a linha nova.
+
+  A função `printf` imprime para o stdout e sem a linha nova, mas tal como a
+  função `printf` em Java, a primeira string é uma string de formatação podendo
+  utilizar-se sequências especiais para formatar números e outras strings.
+
+* Exercício 3
+
+  > Crie um novo programa (hello_X.c) que peça o nome próprio e o apelido do
+    utilizador e escreva, por exemplo, “Hello Joaquim Madeira!”.
+  > Experimente usar as funções gets(), fgets() e scanf(). Analise eventuais
+    mensagens do compilador.
+
+** `gets()`
+
+   Vamos começar por tentar `gets()`, a página do manual tinha avisos grandes a
+   dizer para não a usar... Vamos ignorá-los por agora. A função é definida
+   como:
+
+   @code c
+   char *gets(char *s);
+   @end
+
+   Esta função lê do stdin até uma linha nova ou EOF (/End Of File/), substituindo
+   estes por um byte nulo (`\0`). Além disso, a função retorna `NULL` se ocorrer
+   um erro, vamos ter isso em atenção.
+
+   @code c
+   #include <stdio.h>
+
+   int main(void) {
+      char name[5];
+
+      // So heavily deprecated the stdio.h header doesn't include a definition by
+      // default, unless we compile with `-std=c99` which means we are using the
+      // ISO C version from 1999.
+      //
+      // Really DON'T USE THIS, it's so broken beyond repair even the linker
+      // throws warning messages.
+      if (gets(name) == NULL)
+        return 1;
+
+      printf("Hello %s\n", name);
+      return 0;
+   }
+   @end
+
+   Ignoremos os comentários de aviso que meti para aquelas pessoas que copiam
+   sem ler tudo, nós começamos por alocar um array/string de 5 bytes `name`,
+   destes só 4 serão carateres úteis porque em C as strings não sabem o seu
+   tamanho tendo invés disso um byte nulo (`\0`) no seu final que significa o
+   fim da string.
+
+   A seguir chamamos `gets` que irá ler para `name` e verificamos se o seu
+   resultado é `NULL` sinalizando um erro que retornamos no status code do nosso
+  programa.
+
+   Finalmente formatamos `name` e imprimimos para o stdout com `printf` e
+   o programa termina, vamos experimentar compilar.
+
+   @code
+   $ ./compile code/ex03-gets.c
+   code/ex03-gets.c: In function ‘main’:
+   code/ex03-gets.c:12:7: error: implicit declaration of function ‘gets’; did you mean ‘fgets’? [-Werror=implicit-function-declaration]
+      12 |   if (gets(name) == NULL) {
+         |       ^~~~
+         |       fgets
+   code/ex03-gets.c:12:18: error: comparison between pointer and integer [-Werror]
+      12 |   if (gets(name) == NULL) {
+         |                  ^~
+   cc1: all warnings being treated as errors
+   @end
+
+  Ok, ao que parece `gets` foi removido em `c11`, vamos tentar compilar com `c99`:
+
+   @code
+   $ ./compile -std=c99 code/ex03-gets.c
+   code/ex03-gets.c: In function ‘main’:
+   code/ex03-gets.c:12:3: error: ‘gets’ is deprecated [-Werror=deprecated-declarations]
+      12 |   if (gets(name) == NULL) {
+         |   ^~
+   In file included from /nix/store/p1wjbmik8bzpzcm2ck4yfxr6fnnc76mn-glibc-2.37-8-dev/include/stdio.h:906,
+                    from code/ex03-gets.c:1:
+   /nix/store/p1wjbmik8bzpzcm2ck4yfxr6fnnc76mn-glibc-2.37-8-dev/include/bits/stdio2.h:190:1: note: declared here
+     190 | gets (char *__str)
+         | ^~~~
+   cc1: all warnings being treated as errors
+   @end
+
+   Hmm, vamos só ignorar erros por agora (*bad decision*):
+
+   @code
+   $ gcc -std=c99 code/ex03-gets.c
+   code/ex03-gets.c: In function ‘main’:
+   code/ex03-gets.c:12:3: warning: ‘gets’ is deprecated [-Wdeprecated-declarations]
+      12 |   if (gets(name) == NULL) {
+         |   ^~
+   In file included from /nix/store/p1wjbmik8bzpzcm2ck4yfxr6fnnc76mn-glibc-2.37-8-dev/include/stdio.h:906,
+                    from code/ex03-gets.c:1:
+   /nix/store/p1wjbmik8bzpzcm2ck4yfxr6fnnc76mn-glibc-2.37-8-dev/include/bits/stdio2.h:190:1: note: declared here
+     190 | gets (char *__str)
+         | ^~~~
+   /nix/store/8zxgqm6d879hskwh5g1l4crysl01kdv0-binutils-2.40/bin/ld: /tmp/ccN8TsPq.o: in function `main':
+   ex03-gets.c:(.text.startup+0x23): warning: the `gets' function is dangerous and should not be used.
+   @end
+
+   Finalmente o código compilou, a mensagem de perigo não é bom sinal, mas vamos
+   continuar.
+
+   @code
+   $ ./main
+   cap <-- Inserido pelo utilizador
+   Hello cap
+   @end
+
+   Estranho o programa funcionou apesar de tantos avisos para não usar a função,
+   por que razão será que não a devíamos usar? Bem vamos ignorar esse pensamento
+   por um segundo e vamos tentar outro nome.
+
+   @code
+   $ ./main
+   antonio <-- Inserido pelo utilizador
+   *** buffer overflow detected ***: terminated
+   './main' terminated by signal SIGABRT (Abort)
+   @end
+
+   O programa crashou, isto não é bom sinal, mas por quê? Se voltarmos a olhar
+   para o código notamos que nós apenas temos 5 bytes para o nome, mas
+   `antonio` são 7 bytes (8 com o byte nulo). Isto causa com que o `gets` tente
+   escrever para além da memória alocada, neste caso isto é apanhado por um
+   pouco de código extra que o compilador adicionou ao nosso programa para
+   verificar esta situação. 
+
+   No entanto, este código é algo extra que o compilador adicionou desta vez e
+   conseguiu detetar esta situação, nada garante que ele esteja sempre presente
+   (é uma extensão que não está presente no standard) e pode haver situações
+   mais complexas que ele não consegue detetar (como quando utilizando memória
+   alocada dinamicamente).
+
+   Vamos então consertar este problema no nosso código... É *impossível*! A
+   função `gets` não disponibiliza nenhum tipo de mecanismo para limitar a
+   quantidade lida, o que impossibilita consertar este código é por esta razão
+   que a função foi deprecada e ultimamente removida. É por esta razão que
+   todas as fontes dizem que é perigosa e para não utilizá-la. É por esta razão
+   que o compilador injeta código no nosso programa para prevenir esta
+   catástrofe.
+
+   *NÃO UTILIZEM ESTA FUNÇÃO*
+
+** `fgets()`
+
+   Ok, `gets` foi uma decisão terrível, mas o próximo na lista é `fgets`, o
+   nome parecido pode nos levar a pensar que teremos o mesmo problema, no
+   entanto, a função `fgets` não tem nenhum aviso nem está deprecada.
+
+   Isto faz sentido se olharmos para a definição de `fgets`:
+
+   @code c
+   char *fgets(char *s, int size, FILE *stream);
+   @end
+
+   Tal como `gets` passamos um ponteiro para onde queremos guardar a string
+   inserida, mas também passamos o tamanho da memória alocada para onde o
+   ponteiro aponta. Isto permite-nos limitar a memória escrita. Além disto
+   passamos também o ficheiro de onde queremos ler.
+
+   Tal como `gets`, esta função lê até a linha nova ou EOF e retorna `NULL` em
+   caso de erro, , *mas* ao contrário de `gets` a linha nova não é substituída
+   pelo byte nulo. Vamos então escrever um programa que utilize `fgets`:
+
+   @code c
+   #include <stdio.h>
+
+   int main(void) {
+      char name[5];
+
+      if (fgets(name, 5, stdin) == NULL)
+         return 1;
+
+      printf("Hello %s\n", name);
+      return 0;
+   }
+   @end
+
+   Este programa é idêntico à versão com `gets` com a exceção que especificamos
+   o tamanho da memória alocada e o ficheiro de onde queremos ler, neste caso
+   `stdin` que é onde o utilizador irá escrever.
+
+   @code
+   $ ./compile code/ex03-fgets.c && ./main
+   cap <-- Inserido pelo utilizador
+   Hello cap
+       <-- Linha nova que não foi removida
+   @end
+
+   Como podemos ver a linha nova não foi removida, se quisermos emular o mesmo
+   resultado do programa com `gets`, vamos ter de percorrer a string e remover
+   a linha nova:
+
+   @code c
+   #include <stdio.h>
+
+   int main(void) {
+      char name[5];
+
+      if (fgets(name, 5, stdin) == NULL)
+         return 1;
+
+      // Vamos iterar pela string para remover o carater de
+      // linha nova.
+      for (int i = 0; i < 5; i++) {
+         // Temos que garantir que não processamos dados após
+         // o byte nulo, pois estes não foram inicializados
+         // sendo UB ler esses bytes.
+         if (name[i] == '\0')
+            break;
+
+         // Substituimos a linha nova pelo byte nulo para terminar
+         // a string e terminamos de processar a string.
+         if (name[i] == '\n') {
+            name[i] = '\0';
+            break;
+         }
+      }
+
+      printf("Hello %s\n", name);
+      return 0;
+   }
+   @end
+
+   Se corrermos este programa vamos obter o resultado pretendido:
+
+   @code
+   $ ./compile code/ex03-fgets-v2.c && ./main
+   cap
+   Hello cap
+   @end
+
+   No entanto, o programa agora têm 3 sítios diferentes onde especificamos o
+   tamanho do array, isto pode causar problemas mais tardes se mudarmos o
+   tamanho do array e esquecermo-nos de mudar o tamanho em todos os sítios.
+
+   Para mitigar este problema podemos usar uma variável (ou até uma constante)
+   para guardar o tamanho do array, mas como temos um array de tamanho fixo
+   podemos utilizar outra ferramenta, o operador `sizeof` que diz o tamanho de
+   bytes de uma variável.
+
+   @code c
+   #include <stddef.h>
+   #include <stdio.h>
+
+   int main(void) {
+      char name[5];
+
+      if (fgets(name, sizeof(name), stdin) == NULL)
+         return 1;
+
+      for (size_t i = 0; i < sizeof(name); i++) {
+         if (name[i] == '\0')
+            break;
+
+         if (name[i] == '\n') {
+            name[i] = '\0';
+            break;
+         }
+      }
+
+      printf("Hello %s\n", name);
+      return 0;
+   }
+   @end
+
+   @code
+   $ ./compile code/ex03-fgets-v3.c && ./main
+   cap
+   Hello cap
+   @end
+
+   Basta agora ver se resolvemos o problema de escrever para além da memória:
+
+   @code
+   $ ./compile code/ex03-fgets-v3.c && ./main
+   antonio
+   Hello anto
+   @end
+
+   E está resolvido, o input do utilizador é truncado de maneira a caber na
+   memória alocada, deste modo prevenindo escrita para fora da memória.
+
+** `scanf`
+
+   Já vimos que `fgets` funciona como queremos, basta então vermos a função
+   `scanf`, esta é a versão de leitura de `printf`, permitindo pegar numa linha
+   formatada e extrair certas partes.
+
+   @code c
+   int scanf(const char *format, ...);
+   @end
+
+   Pela definição parece que vamos ter o mesmo problema que tivemos com a
+   função `gets`, no entanto, como veremos depois isto não irá acontecer.
+
+   A função `scanf` vai então processar o input do utilizador segundo a string
+   de formatação, extraindo os valores especificados, o valor de retorno é o
+   número de items formatados, o que implicara verificarmos este valor com o
+   número total de items a formatar.
+
+   Vamos então rescrever o nosso programa com `scanf`:
+
+   @code c
+   #include <stdio.h>
+
+   int main(void) {
+      char name[5];
+
+      if (scanf("%s", name) != 1)
+         return 1;
+
+      printf("Hello %s\n", name);
+      return 0;
+   }
+   @end
+
+   O especificador `%s` formata uma sequência de caracteres que não sejam de
+   "espaço".
+
+   @code
+   ./compile code/ex03-scanf-v1.c && ./main
+   ana
+   Hello ana
+   @end
+
+   O compilador não se queixa como quando utilizamos `gets`, quer isto dizer
+   que `scanf` é seguro? Vamos tentar com uma string maior que o nosso array.
+
+   @code
+   ./compile code/ex03-scanf-v1.c && ./main
+   antonio
+   Hello antonio
+   *** stack smashing detected ***: terminated
+   './main' terminated by signal SIGABRT (Abort)
+   @end
+
+   Não, o programa escreveu para além da memória, o que mais uma vez foi
+   apanhado por uma proteção injetada pelo nosso compilador (estes erros são
+   bastantes comuns em C por isso os compiladores injetam várias proteções para
+   os impedir, mas estas nem sempre estão presentes ou funcionam,
+   principalmente quando trabalharmos com memória dinâmica).
+
+   Como vamos então resolver este problema se não há maneira de especificar o
+   tamanho do array na função? Na verdade, existe uma maneira especificar, mas
+   em vez de ser como um argumento da função, especificamos diretamente no
+   especificador de formatação escrevendo o tamanho do nosso array após o `%`.
+
+   @code c
+   #include <stdio.h>
+
+   int main(void) {
+      char name[5];
+
+      if (scanf("%4s", name) != 1)
+         return 1;
+
+      printf("Hello %s\n", name);
+      return 0;
+   }
+   @end
+
+   O tamanho têm de ser um menos do que o tamanho do array, pois o byte nulo é
+   acrescentado a este.
+
+   @code
+   ./compile code/ex03-scanf-v2.c && ./main
+   antonio
+   Hello anto
+   @end
+
+   Mais uma vez o resultado é truncado para caber no nosso array, prevenindo
+   escrever depois da memória alocada.
+
+   Só resta um problema a resolver, o especificador `%s` lê até encontrar um
+   "espaço", a linha nova conta como um "espaço", mas um espaço normal também
+   conta, o que nos previne de inserir espaços na nossa string.
+
+   @code
+   ./compile code/ex03-scanf-v2.c && ./main
+   l l
+   Hello l
+   @end
+
+   Para resolver isto temos de utilizar outro especificador, neste caso vamos
+   definir que caracteres queremos aceitar utilizando o especificador `%[` que
+   aceita uma lista de caracteres a ler e, se utilizarmos o `^`, a lista de
+   caracteres a não ler, no nosso caso vamos utilizar `%[^\n]` para ler todos
+   os caracteres menos a linha nova.
+
+   @code c
+   #include <stdio.h>
+
+   int main(void) {
+      char name[5];
+
+      if (scanf("%4[^\n]", name) != 1)
+         return 1;
+
+      printf("Hello %s\n", name);
+      return 0;
+   }
+   @end
+
+   @code
+   ./compile code/ex03-scanf-v3.c && ./main
+   l l
+   Hello l l
+   @end
+
+** Programa final
+
+   Já vimos três maneiras de como podemos escrever o programa, uma delas não
+   vamos usar de certeza. Eu vou utilizar `scanf` para escrever o programa
+   final.
+
+   @code c
+   #include <stdio.h>
+
+   int main(void) {
+      char nome[20];
+      char apelido[20];
+
+      printf("Nome: ");
+      if (scanf("%19[^\n]", nome) != 1)
+         return 1;
+
+      // Discard newlines from stdin so that the next `scanf`
+      // doesn't return immediately.
+      while (1) {
+         char c = getchar();
+
+         if (c == '\n' || c == EOF)
+            break;
+      }
+
+      printf("Apelido: ");
+      if (scanf("%19[^\n]", apelido) != 1)
+         return 1;
+
+      printf("Hello %s %s!\n", nome, apelido);
+      return 0;
+   }
+   @end
+
+   Tivemos de limpar linhas novas do stdin entre as duas chamadas a `scanf`,
+   para que a segunda não retornasse instantaneamente.
+
+   @code 
+   ./compile code/ex03.c && ./main
+   Nome: João
+   Apelido: Capucho
+   Hello João Capucho!
+   @end
+
+* Exercício 4
+
+  > Desenvolva um programa que escreva uma tabela com os quadrados e as raízes
+    quadradas dos primeiros números naturais. O utilizador deve indicar quantas
+    linhas tem a tabela.
+  > Formate as colunas da tabela de modo apropriado; as colunas da tabela
+    deverão ter um cabeçalho.
+  > O que é necessário fazer para poder usar a função sqrt()?
+
+** `sqrt`
+
+   A função `sqrt` é definida no header `math.h`, vamos tentar utilizá-la, na
+   página de manual, diz também que é necessário utilizar `-lm` para a linkar no
+   nosso programa.
+
+   Vamos então definir um simples programa de teste para testar a `sqrt`:
+
+   @code c
+   #include <math.h>
+   #include <stdio.h>
+
+   int main(void) {
+      float result = sqrt(4.0);
+      printf("%f\n", result);
+      return 0;
+   }
+   @end
+
+   @code
+   $ ./compile code/ex04-sqrt-no-link.c && ./main
+   2.000000
+   @end
+
+   O código funciona como esperávamos... Com a exceção de que não utilizamos a
+   opção `-lm` que era necessária. Será que afinal está não é necessária? Vamos
+   tentar um programa mais complexo:
+
+   @code c
+   #include <math.h>
+   #include <stdio.h>
+
+   int main(void) {
+      float a;
+
+      if (scanf("%f", &a) != 1)
+         return 1;
+
+      float result = sqrt(a);
+      printf("%f\n", result);
+      return 0;
+   }
+   @end
+
+   @code
+   $ ./compile code/ex04-sqrt-link.c && ./main
+   /nix/store/8zxgqm6d879hskwh5g1l4crysl01kdv0-binutils-2.40/bin/ld: /tmp/ccdze44U.o: in function `main':
+   /home/capucho/universidade/2ano1/AED/aula01/code/ex04-sqrt-link.c:10: undefined reference to `sqrtf'
+   collect2: error: ld returned 1 exit status
+   @end
+
+   Desta vez o programa não compilou apesar de estarmos a utilizar bem a
+   função, o linker queixa-se de que não conhece o símbolo `sqrt`, isto
+   acontece porque não dissemos ao linker para utilizar a libraria de `math`
+   que contêm estes símbolos, é isto que a opção `-lm` faz, e se a utilizarmos
+   o programa compila.
+
+   @code
+   $ ./compile -lm code/ex04-sqrt-link.c && ./main
+   4
+   2.000000
+   @end
+
+   Então por que é que o primeiro programa funciona? O compilador é livre de
+   otimizar várias partes do programa, e como utilizamos uma constante na
+   função `sqrt` o compilador calculou durante a compilação o resultado e
+   trocou a chamada a função pelo resultado, o que faz com que o programa final
+   não contenha o símbolo `sqrt`.
+
+   Isto é um tema recorrente em C, o compilador faz certas transformações que
+   podem esconder, ou pior amplificar, problemas no código que depois tornam-se
+   difíceis de diagnosticar. Por isso temos de ter o dobro do cuidado quando
+   escrevemos C.
+
+** Fazer a tabela
+
+   Agora que já vimos como fazer a raiz quadrada, vamos fazer agora a tabela.
+
+   O seguinte programa gera a tabela que nos é pedida (com um tamanho fixo de 5
+   linhas por agora).
+
+   @code c
+   #include <math.h>
+   #include <stdio.h>
+
+   int main(void) {
+      int linhas = 5;
+
+      printf("Número | Quadrado | Raiz\n");
+
+      for (int i = 1; i <= linhas; i++) {
+         printf("%d | %d | %f\n", i, i * i, sqrt(i));
+      }
+
+      return 0;
+   }
+   @end
+
+   @code
+   $ ./compile -lm code/ex04-table.c && ./main
+   Número | Quadrado | Raiz
+   1 | 1 | 1.000000
+   2 | 4 | 1.414214
+   3 | 9 | 1.732051
+   4 | 16 | 2.000000
+   5 | 25 | 2.236068
+   @end
+   
+   A tabela, apesar de ter o que queremos, está desalinhada, vamos consertar
+   isso. Primeiro precisamos de saber quantos caracteres cada coluna precisa.
+
+   O tamanho da coluna precisa de ser suficiente para conter o cabeçalho e o
+   maior número da coluna. Podemos então calcular o tamanho da coluna como o
+   maior desses dois valores.
+
+   Para saber quantos caracteres são precisos para o maior número vamos utilizar
+   a função `snprintf`:
+
+   @code c
+   int snprintf(char *str, size_t size, const char *format, ...); 
+   @end
+
+   Está função tal como `printf` imprime a string formatada, mas invés de ser
+   para stdout é para outra string e o valor de retorno é o número de
+   caracteres que foram necessários, logo se passarmos que o tamanho da nossa
+   string é `0` não precisamos de alocar memória e conseguimos saber quantos
+   caracteres o número ocupa.
+
+   @code c
+   int width = snprintf(NULL, 0, "%d", 20); // width = 2;
+   @end
+
+   Além deste truque para obter o número de caracteres necessários para um
+   número vamos também utilizar o especificador `%*` no `printf` para definir
+   dinamicamente o tamanho a imprimir.
+
+   Temos então o seguinte programa que deve imprimir a tabela alinhada:
+
+   @code c
+   #include <math.h>
+   #include <stdio.h>
+   #include <string.h>
+
+   int max(int a, int b) { return a >= b ? a : b; }
+
+   int main(void) {
+      int linhas = 5;
+
+      // Cabeçalhos
+      char *number_header = "Número";
+      char *square_header = "Quadrado";
+      char *root_header = "Raiz";
+
+      // Tamanho máximo dos números em cada colunas.
+      //
+      // Todas estas funções são crescentes para números naturais,
+      // logo basta calcular para o maior número.
+      int max_number_width = snprintf(NULL, 0, "%d", linhas);
+      int max_square_width = snprintf(NULL, 0, "%d", linhas * linhas);
+      int max_root_width = snprintf(NULL, 0, "%.5f", sqrt(linhas));
+
+      // Tamanho dos cabeçalhos
+      int number_header_size = strlen(number_header);
+      int square_header_size = strlen(square_header);
+      int root_header_size = strlen(root_header);
+
+      // Tamanho das colunas
+      int first_column_size = max(max_number_width, number_header_size);
+      int second_column_size = max(max_square_width, square_header_size);
+      int third_column_size = max(max_root_width, root_header_size);
+
+      // Imprimir o cabeçalho
+      printf(" %*s | %*s | %*s \n", first_column_size, number_header,
+             second_column_size, square_header, third_column_size, root_header);
+
+      // Imprimir as linhas
+      for (int i = 1; i <= linhas; i++) {
+         printf(" %*d | %*d | %*.5f \n", first_column_size, i, second_column_size,
+                i * i, third_column_size, sqrt(i));
+      }
+
+      return 0;
+   }
+   @end
+
+   @code
+   $ ./compile -lm code/ex04-table-aligned.c && ./main
+    Número | Quadrado |    Raiz
+          1 |        1 | 1.00000
+          2 |        4 | 1.41421
+          3 |        9 | 1.73205
+          4 |       16 | 2.00000
+          5 |       25 | 2.23607
+   @end
+
+   A tabela continua desalinhada por 1, mas o nosso código está correto, por
+   que está a tabela desalinhada? O problema é o cabeçalho `Número`, este tem
+   tamanho *7*...???
+
+   C foi criado num tempo em que a maioria dos computadores eram usados
+   exclusivamente em inglês, como tal todas as strings podiam ser tratadas
+   como um array de bytes porque ASCII só precisava de um byte por caráter.
+
+   No entanto, todos os alfabetos existentes não cabem num byte, como tal hoje
+   em dia usa-se UTF-8 para representar strings, neste a maioria dos caracteres
+   utilizados de maneira comum continuam a ser um byte, exceto que alguns
+   caracteres como o `ú` precisam de mais bytes, neste caso 2.
+
+   Mas em C strings continuam a ser arrays de bytes, por isso quando chamamos
+   `strlen` ele conta o número de bytes, que retorna 7, pois de facto há 7
+   bytes no array.
+
+   Não existe uma maneira simples e correta de consertar isto, por isso o mais
+   fácil para nós é só remover o acento para consertar isto.
+
+** Programa final
+
+   Agora só falta pedir ao utilizador o número de linhas:
+
+   @code c
+   #include <math.h>
+   #include <stdio.h>
+   #include <string.h>
+
+   int max(int a, int b) { return a >= b ? a : b; }
+
+   int main(void) {
+      int linhas;
+
+      printf("Numero de linhas: ");
+      if (scanf("%d", &linhas) != 1)
+         return 1;
+
+      // Cabeçalhos
+      char *number_header = "Numero";
+      char *square_header = "Quadrado";
+      char *root_header = "Raiz";
+
+      // Tamanho máximo dos números em cada colunas.
+      //
+      // Todas estas funções são crescentes para números naturais,
+      // logo basta calcular para o maior número.
+      int max_number_width = snprintf(NULL, 0, "%d", linhas);
+      int max_square_width = snprintf(NULL, 0, "%d", linhas * linhas);
+      int max_root_width = snprintf(NULL, 0, "%.5f", sqrt(linhas));
+
+      // Tamanho dos cabeçalhos
+      int number_header_size = strlen(number_header);
+      int square_header_size = strlen(square_header);
+      int root_header_size = strlen(root_header);
+
+      // Tamanho das colunas
+      int first_column_size = max(max_number_width, number_header_size);
+      int second_column_size = max(max_square_width, square_header_size);
+      int third_column_size = max(max_root_width, root_header_size);
+
+      // Imprimir o cabeçalho
+      printf(" %*s | %*s | %*s \n", first_column_size, number_header,
+             second_column_size, square_header, third_column_size, root_header);
+
+      // Imprimir as linhas
+      for (int i = 1; i <= linhas; i++) {
+         printf(" %*d | %*d | %*.5f \n", first_column_size, i, second_column_size,
+                i * i, third_column_size, sqrt(i));
+      }
+
+      return 0;
+   }
+   @end
+
+   @code
+   $ ./compile -lm code/ex04.c && ./main
+   Numero de linhas: 7 
+    Numero | Quadrado |    Raiz 
+         1 |        1 | 1.00000 
+         2 |        4 | 1.41421 
+         3 |        9 | 1.73205 
+         4 |       16 | 2.00000 
+         5 |       25 | 2.23607 
+         6 |       36 | 2.44949 
+         7 |       49 | 2.64575
+   @end
+
+* Exercício 5
+
+  > Modifique o programa anterior para que escreva uma tabela com sucessivos
+    valores do seno e do cosseno. O utilizador deve indicar o menor valor e o
+    maior valor do ângulo (em graus), e o espaçamento entre sucessivos valores
+    intermédios. Por exemplo:
+
+  @code
+  ang sin(ang)      cos(ang)
+  --- ------------- -------------
+   0   0.0000000000  1.0000000000
+   5   0.0871557427  0.9961946981
+  10   0.1736481777  0.9848077530
+  15   0.2588190451  0.9659258263
+  20   0.3420201433  0.9396926208
+  @end
+
+  @code c
+  #include <math.h>
+  #include <stdio.h>
+  #include <string.h>
+
+  #define M_PI 3.14159265358979323846
+
+  int max(int a, int b) { return a >= b ? a : b; }
+
+  int main(void) {
+     int angle_precision = 2;
+     int precision = 8;
+
+     float start_angle;
+     float end_angle;
+     float step_angle;
+
+     printf("Angulo inicial: ");
+     if (scanf("%f", &start_angle) != 1)
+        return 1;
+
+     printf("Angulo final: ");
+     if (scanf("%f", &end_angle) != 1)
+        return 1;
+
+     printf("Passo: ");
+     if (scanf("%f", &step_angle) != 1)
+        return 1;
+
+     // Cabeçalhos
+     char *angle_header = "ang";
+     char *sin_header = "sin (ang)";
+     char *cos_header = "cos (ang)";
+
+     // Tamanho máximo dos números nas colunas.
+     int start_angle_width =
+        snprintf(NULL, 0, "%.*f", angle_precision, fabs(start_angle));
+     int end_angle_width =
+        snprintf(NULL, 0, "%.*f", angle_precision, fabs(end_angle));
+     // Mais 1 para o sinal
+     int angle_width = max(start_angle_width, end_angle_width) + 1;
+     // 3 caracteres para a parte inteira e o ponto e o sinal
+     int trig_res_width = 3 + precision;
+
+     // Tamanho das colunas
+     int first_column_size = max(angle_width, strlen(angle_header));
+     int second_column_size = max(trig_res_width, strlen(sin_header));
+     int third_column_size = max(trig_res_width, strlen(cos_header));
+
+     // Imprimir o cabeçalho
+     printf("%-*s %-*s %-*s\n", first_column_size, angle_header,
+            second_column_size, sin_header, third_column_size, cos_header);
+
+     float current_angle = start_angle;
+
+     // Imprimir o separador
+     for (int i = 0; i < first_column_size; i++)
+        putchar('-');
+
+     putchar(' ');
+
+     for (int i = 0; i < second_column_size; i++)
+        putchar('-');
+
+     putchar(' ');
+
+     for (int i = 0; i < third_column_size; i++)
+        putchar('-');
+
+     putchar('\n');
+
+     // Imprimir as linhas
+     while (1) {
+        float angle_radians = current_angle * M_PI / 180;
+
+        printf("%*.*f %*.*f %*.*f\n",
+               /* Angle */
+               first_column_size, angle_precision, current_angle,
+               /* Sine */
+               second_column_size, precision, sin(angle_radians),
+               /* Cossine */
+               third_column_size, precision, cos(angle_radians));
+
+        current_angle += step_angle;
+
+        if (current_angle > end_angle)
+           break;
+     }
+
+     return 0;
+  }
+  @end
+
+  @code
+  $ ./compile -lm code/ex05-v1.c  && ./main
+  Angulo inicial: 20
+  Angulo final: 60
+  Passo: 5
+  ang    sin (ang)   cos (ang)  
+  ------ ----------- -----------
+   20.00  0.34202013  0.93969262
+   25.00  0.42261826  0.90630779
+   30.00  0.50000001  0.86602540
+   35.00  0.57357643  0.81915205
+   40.00  0.64278759  0.76604446
+   45.00  0.70710680  0.70710677
+   50.00  0.76604445  0.64278761
+   55.00  0.81915204  0.57357645
+   60.00  0.86602542  0.49999997
+  @end
+
+  > Use um menor número de casas decimais em cada coluna.
+
+  Basta alterar o `angle_precision` e `precision` no início da função, por
+  exemplo:
+
+  @code c
+  /* -- SNIP -- */
+  int angle_precision = 1;
+  int precision = 4;
+  /* -- SNIP -- */
+  @end
+
+  @code
+  $ ./compile -lm code/ex05-v2.c  && ./main
+  Angulo inicial: 20
+  Angulo final: 40
+  Passo: 5
+  ang   sin (ang) cos (ang)
+  ----- --------- ---------
+   20.0    0.3420    0.9397
+   25.0    0.4226    0.9063
+   30.0    0.5000    0.8660
+   35.0    0.5736    0.8192
+   40.0    0.6428    0.7660
+  @end
+
+  > Modifique o programa para que a tabela seja escrita num ficheiro.
+
+  A seguinte versão modificada imprime o resultado para o stdout, mas se um
+  segundo argumento for passado, este é interpretado como o ficheiro para onde
+  escrever a tabela.
+
+  @code c
+  #include <math.h>
+  #include <stdio.h>
+  #include <string.h>
+
+  #define M_PI 3.14159265358979323846
+
+  int max(int a, int b) { return a >= b ? a : b; }
+
+  int main(int argc, char **argv) {
+     int angle_precision = 2;
+     int precision = 8;
+
+     FILE *output = stdout;
+
+     // O segundo argumento é interpretado como um o caminho
+     // do ficheiro para onde escrever.
+     if (argc > 1) {
+        output = fopen(argv[1], "w");
+
+        if (output == NULL) {
+           perror("Error opening file");
+           return 1;
+        }
+     }
+
+     float start_angle;
+     float end_angle;
+     float step_angle;
+
+     printf("Angulo inicial: ");
+     if (scanf("%f", &start_angle) != 1)
+        return 1;
+
+     printf("Angulo final: ");
+     if (scanf("%f", &end_angle) != 1)
+        return 1;
+
+     printf("Passo: ");
+     if (scanf("%f", &step_angle) != 1)
+        return 1;
+
+     // Cabeçalhos
+     char *angle_header = "ang";
+     char *sin_header = "sin (ang)";
+     char *cos_header = "cos (ang)";
+
+     // Tamanho máximo dos números nas colunas.
+     int start_angle_width =
+        snprintf(NULL, 0, "%.*f", angle_precision, fabs(start_angle));
+     int end_angle_width =
+        snprintf(NULL, 0, "%.*f", angle_precision, fabs(end_angle));
+     // Mais 1 para o sinal
+     int angle_width = max(start_angle_width, end_angle_width) + 1;
+     // 3 caracteres para a parte inteira e o ponto e o sinal
+     int trig_res_width = 3 + precision;
+
+     // Tamanho das colunas
+     int first_column_size = max(angle_width, strlen(angle_header));
+     int second_column_size = max(trig_res_width, strlen(sin_header));
+     int third_column_size = max(trig_res_width, strlen(cos_header));
+
+     // Imprimir o cabeçalho
+     fprintf(output, "%-*s %-*s %-*s\n", first_column_size, angle_header,
+             second_column_size, sin_header, third_column_size, cos_header);
+
+     float current_angle = start_angle;
+
+     // Imprimir o separador
+     for (int i = 0; i < first_column_size; i++)
+        fputc('-', output);
+
+     fputc(' ', output);
+
+     for (int i = 0; i < second_column_size; i++)
+        fputc('-', output);
+
+     fputc(' ', output);
+
+     for (int i = 0; i < third_column_size; i++)
+        fputc('-', output);
+
+     fputc('\n', output);
+
+     // Imprimir as linhas
+     while (1) {
+        float angle_radians = current_angle * M_PI / 180;
+
+        fprintf(output, "%*.*f %*.*f %*.*f\n",
+                /* Angle */
+                first_column_size, angle_precision, current_angle,
+                /* Sine */
+                second_column_size, precision, sin(angle_radians),
+                /* Cossine */
+                third_column_size, precision, cos(angle_radians));
+
+        current_angle += step_angle;
+
+        if (current_angle > end_angle)
+           break;
+     }
+
+     if (output != stdout) {
+        if (fclose(output)) {
+           perror("Error closing file");
+           return 1;
+        }
+     }
+
+     return 0;
+  }
+  @end
+
+  @code
+  $ ./compile -lm code/ex05-v3.c  && ./main table
+  Angulo inicial: 20
+  Angulo final: 60
+  Passo: 5
+  $ cat table
+  ang    sin (ang)   cos (ang)  
+  ------ ----------- -----------
+   20.00  0.34202013  0.93969262
+   25.00  0.42261826  0.90630779
+   30.00  0.50000001  0.86602540
+   35.00  0.57357643  0.81915205
+   40.00  0.64278759  0.76604446
+   45.00  0.70710680  0.70710677
+   50.00  0.76604445  0.64278761
+   55.00  0.81915204  0.57357645
+   60.00  0.86602542  0.49999997
+  @end
+
+  A função `fopen` é usada para criar e abrir em modo de escrita (`"w"`) o
+  ficheiro para onde se vai escrever a tabela, após acabarmos de escrever tudo
+  para o ficheiro é necessário fechá-lo com `fclose`, isto garante que todos os
+  dados, que podem estar em memória temporária, são mandados para o sistema
+  operativo onde este depois escreverá para o ficheiro.
+
+  Os ficheiros abertos ocupam memória e recursos, por isso em programas maiores
+  se estes não forem fechados podem causar a exaustão destes recursos e causar
+  erros ou que o sistema operativo termine o programa.
+
+* Exercício 6
+
+  > Desenvolva um programa que liste o número de bytes usados para representar
+    os tipos primitivos da linguagem C, usando a função sizeof().
+
+
+  @code c
+  #include <stdio.h>
+
+  int main(void) {
+     printf("sizeof(void *) ...... %ld\n", sizeof(void *));
+     printf("sizeof(void) ........ %ld\n", sizeof(void));
+     printf("sizeof(char) ........ %ld\n", sizeof(char));
+     printf("sizeof(short) ....... %ld\n", sizeof(short));
+     printf("sizeof(int) ......... %ld\n", sizeof(int));
+     printf("sizeof(long) ........ %ld\n", sizeof(long));
+     printf("sizeof(long long) ... %ld\n", sizeof(long long));
+     printf("sizeof(float) ....... %ld\n", sizeof(float));
+     printf("sizeof(double) ...... %ld\n", sizeof(double));
+     return 0;
+  }
+  @end
+
+  @code
+  ./compile -lm code/ex06.c   && ./main 
+  code/ex06.c: In function ‘main’:
+  code/ex06.c:5:46: error: invalid application of ‘sizeof’ to a void type [-Werror=pointer-arith]
+    5 |   printf("sizeof(void) ........ %ld", sizeof(void));
+      |                                              ^~~~
+  cc1: all warnings being treated as errors
+  @end
+
+  O tamanho do `void` é como a divisão de 0 por 0, `void` representa o tipo
+  vazio, a inexistência de algo, como tal, não têm um tamanho ou qualquer outra
+  propriedade no standard C, mas o `gcc` define uma extensão que define o
+  tamanho de `void` como sendo 1. Para a ativarmos basta desativarmos o
+  `-Wpedantic`.
+
+  @code
+  $ gcc -Wall -Wextra code/ex06.c -o main && ./main
+  sizeof(void *) ...... 8
+  sizeof(void) ........ 1
+  sizeof(char) ........ 1
+  sizeof(short) ....... 2
+  sizeof(int) ......... 4
+  sizeof(long) ........ 8
+  sizeof(long long) ... 8
+  sizeof(float) ....... 4
+  @end
+
+* Exercício 7
+
+  > Considere o programa em Java listado de seguida, que apresenta um simples
+    exemplo de utilização de arrays.
+
+  @code java
+  /*
+  Crie um programa em C equivalente a este em Java.
+  */
+  public class ProgA {
+     public static void main(String[] args) {
+        int[] a = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+        printArray("a", a);
+
+        int[] b = new int[12];
+        cumSum(a, b);
+        printArray("b", b);
+     }
+
+     public static void printArray(String s, int[] a) {
+        System.out.println(s + ":");
+        for (int i = 0; i < a.length; i++) {
+           System.out.print(a[i] + " ");
+        }
+        System.out.println();
+     }
+
+     public static void cumSum(int[] a, int[] b) {
+        int c = 0;
+        for (int i = 0; i < a.length; i++) {
+           c += a[i];
+           b[i] = c;
+        }
+     }
+  }
+  @end
+
+  > Usando a linguagem C, desenvolva um programa equivalente com o mesmo tipo de funções.
+
+  @code c
+  #include <stddef.h>
+  #include <stdio.h>
+
+  void printArray(char *s, int *a, size_t a_length) {
+     printf("%s:\n", s);
+
+     for (size_t i = 0; i < a_length; i++)
+        printf("%d ", a[i]);
+
+     printf("\n");
+  }
+
+  void cumSum(int *a, size_t a_length, int *b) {
+     int c = 0;
+
+     for (size_t i = 0; i < a_length; i++) {
+        c += a[i];
+        b[i] = c;
+     }
+  }
+
+  int main(void) {
+     int a[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+     printArray("a", a, sizeof(a) / sizeof(int));
+
+     int b[12];
+     cumSum(a, sizeof(a) / sizeof(int), b);
+     printArray("b", b, sizeof(b) / sizeof(int));
+
+     return 0;
+  }
+  @end
+
+  @code
+  $ ./compile -lm code/ex07.c   && ./main
+  a:
+  31 28 31 30 31 30 31 31 30 31 30 31 
+  b:
+  31 59 90 120 151 181 212 243 273 304 334 365 
+  @end
