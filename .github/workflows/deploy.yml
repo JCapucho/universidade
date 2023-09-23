@@ -25,26 +25,20 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        with:
-          lfs: true
-
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@main
       - name: Setup Nix Cache
         uses: DeterminateSystems/magic-nix-cache-action@main
 
-      - name: Build application
-        run: nix build --print-build-logs
-
-      - name: Copy result
-        run: cp --recursive --dereference --no-preserve=mode,ownership result public
+      - name: Build the site
+        run: nix develop .#prod --command build-site
 
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: "public"
+          path: "dist"
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1

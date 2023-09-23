@@ -46,17 +46,27 @@
 
       python-dev = pkgs.python3.withPackages base-py-pkgs;
 
+      buildSite = pkgs.writeScriptBin "build-site" ''
+        bun install
+        bun run build
+      '';
+
       base-pkgs = with pkgs; [
         bun
         nodejs
         pandoc
         pandoc-norg-rs.packages.${system}.default
+        (pkgs.python3.withPackages base-py-pkgs)
       ];
     in {
+      devShells.prod = pkgs.mkShell {
+        buildInputs = base-pkgs ++ [buildSite];
+      };
+
       devShells.default = pkgs.mkShell {
-        buildInputs = with pkgs;
+        buildInputs =
           base-pkgs
-          ++ [
+          ++ (with pkgs; [
             bear
             clang-tools
 
@@ -77,7 +87,7 @@
             nodePackages.typescript-language-server
             nodePackages.vscode-langservers-extracted
             nodePackages."@tailwindcss/language-server"
-          ];
+          ]);
       };
 
       packages.jupyter = jupyterlab;
