@@ -31,7 +31,7 @@
 		<%~ it.body %>
 	</div>
 
-	<footer class="w-full my-8 max-w-screen-xl">
+	<footer class="w-full py-8 max-w-screen-xl">
 		<hr class="pb-4 mx-8 border-t border-primary" />
 		<p class="text-center">
 			Feito com ❤️ por <a class="link" href="https://github.com/JCapucho">João Capucho</a>.
