@@ -4,6 +4,9 @@
     "dev": "parcel index.eta",
     "build": "parcel build index.eta"
   },
+  "staticFiles": {
+    "staticPath": "public"
+  },
   "devDependencies": {
     "@parcel/config-default": "^2.9.3",
     "@parcel/core": "^2.9.3",
@@ -13,6 +16,7 @@
     "@parcel/transformer-posthtml": "^2.9.3",
     "eta": "^3.1.1",
     "parcel": "^2.9.3",
+    "parcel-reporter-static-files-copy": "^1.5.3",
     "postcss": "^8.4.29",
     "posthtml": "^0.16.6",
     "posthtml-parser": "^0.11.0",
