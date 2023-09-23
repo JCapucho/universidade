@@ -2,7 +2,6 @@
 	type="button"
 	class="theme-toggle group"
 	aria-label="Toggle Dark Mode"
-	onClick="clickThemeToggle(this)"
 >
 	<svg
 	  id="sun-svg"
@@ -105,10 +104,9 @@ function isDark() {
 
 function initThemeToggle(toggle) {
 	setTheme(toggle, isDark());
-}
-
-function clickThemeToggle(toggle) {
-	setTheme(toggle, !isDark());
+	toggle.addEventListener("click", function() {
+		setTheme(toggle, !isDark());
+	});
 }
 
 document.querySelectorAll(".theme-toggle").forEach((toggle) => {
