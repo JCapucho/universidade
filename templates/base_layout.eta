@@ -1,15 +1,44 @@
 <!DOCTYPE html>
-<html lang="pt-PT">
+<html lang="pt-PT" class="no-js">
 
 <head>
 	<%~ include("./social_head.eta", { title: "Resumos Universidade" ,
 		description: "Resumos para as unidades curriculares da Licenciatura de Engenharia Informática da universidade de aveiro"
 		}) %>
-		<link href="/templates/styles/index.css" rel="stylesheet">
+	<link href="/templates/styles/index.css" rel="stylesheet">
+    <script>
+      document.documentElement.classList.remove("no-js");
+      if (
+        typeof localStorage !== "undefined" &&
+        localStorage.getItem("theme")
+      ) {
+        theme = localStorage.getItem("theme");
+      } else {
+        theme =
+          window.matchMedia("(prefers-color-scheme: dark)").matches !== null
+            ? "dark"
+            : "light";
+      }
+
+      document.documentElement.classList.toggle("dark", theme === "dark");
+    </script>
 </head>
 
-<body class="bg-slate-700">
-	<%~ it.body %>
+<body class="flex flex-col items-center justify-stretch">
+	<%~ include("./components/header.eta", { title: it.title }) %>
+
+	<div class="grow w-full">
+		<%~ it.body %>
+	</div>
+
+	<footer class="w-full my-8 max-w-screen-xl">
+		<hr class="pb-4 mx-8 border-t border-primary" />
+		<p class="text-center">
+			Feito com ❤️ por <a class="link" href="https://github.com/JCapucho">João Capucho</a>.
+			<br />
+			<a class="link" href="https://github.com/JCapucho/universidade">Código disponível no Github</a>
+		</p>
+	</footer>
 </body>
 
 </html>

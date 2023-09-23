@@ -25,6 +25,7 @@ export default new Transformer({
     norg_rs_child.child.stdin?.end(sourcePath);
     const { stdout: pandoc_json } = await norg_rs_child;
 
+    const title = JSON.parse(pandoc_json).meta.title.c;
     const pandoc_child = run("pandoc", [
       "-f",
       "json",
@@ -37,6 +38,7 @@ export default new Transformer({
 
     config.eta.resetTrackers();
     const result = await config.eta.renderStringAsync(config.template, {
+      title,
       content,
     });
 

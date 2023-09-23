@@ -10,9 +10,11 @@ mjx-container[display="true"] {
 	overflow-y: hidden; 
 }
 </style>
-<article class="my-4 mx-auto prose lg:prose-lg prose-invert">
+
+<main class="my-4 mx-auto prose md:prose-lg">
 <%~ it.body %>
-</article>
+</main>
+
 <script>
 MathJax = {
   tex: {

@@ -1,0 +1,24 @@
+<% if (it.title) { %>
+	<header class="article-header">
+		<a href="/" class="text-center md:text-left my-auto text-lg md:text-xl">Resumos Universidade</a>
+
+		<h1 class="text-center text-3xl md:text-4xl my-auto"><%= it.title %></h1>
+
+		<div class="m-auto md:mr-0 hide-nojs">
+			<%~ include("./theme-selector.eta") %>
+		</div>
+	</header>
+<% } else { %>
+	<header class="index-header">
+		<a href="/" class="text-3xl sm:text-4xl col-span-2 md:col-span-1 md:col-start-2 md:text-center">
+			Resumos Universidade
+		</a>
+
+		<div class="my-auto ml-auto hide-nojs">
+			<%~ include("./theme-selector.eta") %>
+		</div>
+	</header>
+<% } %>
+<!--
+vi: ft=embedded_template
+-->

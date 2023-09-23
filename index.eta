@@ -1,7 +1,15 @@
 <% layout("./base_layout.eta") %>
-<% it.map.forEach(async function explorer(node) { %>
-	<%~ include("./hir_node.eta", { node }) %>
-<% }) %>
+
+<div class="mx-auto max-w-screen-xl">
+	<main
+		class="m-4 grid justify-center gap-4"
+		style="grid-template-columns: repeat(auto-fit, minmax(auto, 24rem));"
+	>
+		<% it.map.forEach(function explorer(node) { %>
+			<%~ include("./hir_node.eta", { node }) %>
+		<% }) %>
+	</main>
+</div>
 
 <!--
 vi: ft=embedded_template

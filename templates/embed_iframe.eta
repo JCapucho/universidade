@@ -1,14 +1,7 @@
-<html lang="pt-PT">
+<% layout("./base_layout.eta") %>
+<link rel="stylesheet" href="/templates/styles/embed_iframe.css" />
+<iframe src="<%= it.url %>" sandbox="allow-forms allow-modals allow-popups allow-scripts"></iframe>
 
-<head>
-  <link rel="stylesheet" href="/templates/styles/embed_iframe.css" />
-</head>
-
-<body>
-  <iframe src="<%= it.url %>" sandbox></iframe>
-</body>
-
-</html>
 <!--
 vi: ft=embedded_template
 -->

@@ -1,5 +1,6 @@
-<% layout("./article_layout.eta") %>
-<link href="/templates/styles/code.css" rel="stylesheet">
+<% layout("./article_layout.eta", { title: it.title }) %>
+<link href="/templates/styles/code-theme.css" rel="stylesheet">
+<link href="/templates/styles/pygments-code.css" rel="stylesheet">
 <%~ it.content %>
 <!--
 vi: ft=embedded_template
