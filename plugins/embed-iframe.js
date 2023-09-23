@@ -1,8 +1,9 @@
 import { Transformer } from "@parcel/plugin";
 
 import path from "node:path";
-
 import { createEtaInstance } from "./utils.js";
+import { parser } from "posthtml-parser";
+import Api from "posthtml/lib/api.js";
 
 export default new Transformer({
   async loadConfig({ config }) {
@@ -21,9 +22,22 @@ export default new Transformer({
 
     return { eta, template };
   },
+
   async transform({ asset, config }) {
+    const code = await asset.getCode();
+    const ast = parser(code);
+
+    Api.call(ast);
+
+    let title = undefined;
+    ast.match({ tag: "title" }, (node) => {
+      title = node.content[0];
+      return node;
+    });
+
     config.eta.resetTrackers();
     const result = await config.eta.renderStringAsync(config.template, {
+      title,
       url: path.basename(asset.filePath),
     });
 
