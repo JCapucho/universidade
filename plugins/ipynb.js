@@ -22,6 +22,8 @@ export default new Transformer({
   async transform({ config, asset }) {
     const source = await asset.getCode();
 
+    const title = JSON.parse(source).metadata.title;
+
     const nbconvert_child = run("jupyter-nbconvert", [
       "--stdin",
       "--stdout",
@@ -36,6 +38,7 @@ export default new Transformer({
 
     config.eta.resetTrackers();
     const code = await config.eta.renderStringAsync(config.template, {
+      title,
       content,
     });
 

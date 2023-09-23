@@ -1,9 +1,20 @@
-<div>
-	<h1><%= it.group.name %></h1>
-	<% it.group.children.forEach(function(node) { %>
-		<%~ include("./hir_node.eta", { node }) %>
-	<% }) %>
-</div>
+<details class="group border-2 border-primary p-4 rounded shadow-lg">
+	<summary class="flex items-center list-none [&::-webkit-details-marker]:hidden">
+		<div class="transition group-open:rotate-90 mr-2 w-4 h-4 text-primary" aria-hidden="true">
+			<svg class="w-full h-full" width="512" height="512" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+				<path fill="currentColor" d="M338.752 104.704a64 64 0 0 0 0 90.496l316.8 316.8l-316.8 316.8a64 64 0 0 0 90.496 90.496l362.048-362.048a64 64 0 0 0 0-90.496L429.248 104.704a64 64 0 0 0-90.496 0z"/>
+			</svg>
+        </div>
+		<div class="text-lg sm:text-xl">
+			<%= it.group.name %>
+		</div>
+	</summary>
+	<div class="flex flex-wrap gap-4 mt-4">
+		<% it.group.children.forEach(function(node) { %>
+			<%~ include("./hir_node.eta", { node }) %>
+		<% }) %>
+	</div>
+</details>
 <!--
 vi: ft=embedded_template
 -->

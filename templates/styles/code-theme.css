@@ -1,0 +1,79 @@
+:root {
+  --highlight-error: #a5222f;
+  --highlight-info: #2848a9;
+  --highlight-warn: #ac5402;
+
+  --highlight-comment: #837a72;
+  --highlight-builtin: #7f5152;
+  --highlight-builtin-types: #22676d;
+  --highlight-variable: #352c24;
+
+  --highlight-control-flow: #5e2baf;
+  --highlight-function: #223d90;
+  --highlight-import: #8b369a;
+  --highlight-keyword: #6e33ce;
+  --highlight-operator: #643f61;
+  --highlight-preprocessor: #8b369a;
+
+  --highlight-const: #7f5152;
+  --highlight-number: #955f61;
+  --highlight-string: #396847;
+  --highlight-special: #223d90;
+
+  --highlight-diff-insert: #d0d6cd;
+  --highlight-diff-deleted: #a5222f;
+}
+
+:root.dark {
+  --highlight-error: #ee5396;
+  --highlight-info: #78a9ff;
+  --highlight-warn: #be95ff;
+
+  --highlight-comment: #6e6f70;
+  --highlight-builtin: #ee5396;
+  --highlight-builtin-types: #52bdff;
+  --highlight-variable: #dfdfe0;
+
+  --highlight-control-flow: #c8a5ff;
+  --highlight-function: #8cb6ff;
+  --highlight-import: #ff91c1;
+  --highlight-keyword: #be95ff;
+  --highlight-operator: #b6b8bb;
+  --highlight-preprocessor: #ff91c1;
+
+  --highlight-const: #5ae0df;
+  --highlight-number: #3ddbd9;
+  --highlight-string: #25be6a;
+  --highlight-special: #8cb6ff;
+
+  --highlight-diff-insert: #172b20;
+  --highlight-diff-deleted: #ee5396;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root.no-js {
+    --highlight-error: #ee5396;
+    --highlight-info: #78a9ff;
+    --highlight-warn: #be95ff;
+
+    --highlight-comment: #6e6f70;
+    --highlight-builtin: #ee5396;
+    --highlight-builtin-types: #52bdff;
+    --highlight-variable: #dfdfe0;
+
+    --highlight-control-flow: #c8a5ff;
+    --highlight-function: #8cb6ff;
+    --highlight-import: #ff91c1;
+    --highlight-keyword: #be95ff;
+    --highlight-operator: #b6b8bb;
+    --highlight-preprocessor: #ff91c1;
+
+    --highlight-const: #5ae0df;
+    --highlight-number: #3ddbd9;
+    --highlight-string: #25be6a;
+    --highlight-special: #8cb6ff;
+
+    --highlight-diff-insert: #172b20;
+    --highlight-diff-deleted: #ee5396;
+  }
+}
