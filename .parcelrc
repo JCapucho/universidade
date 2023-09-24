@@ -26,7 +26,9 @@
   },
   "optimizers": {
     // Disable the svgo optimizer since it doesn't support some of the excalidraw svg bits
-    "*.svg": []
+    "*.svg": [],
+    // Don't optimize ITW scripts, since they require global scopes
+    "1ano1/ITW/**/*.js": []
   }
 }
 // vi: ft=jsonc
