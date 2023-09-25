@@ -4,6 +4,8 @@
 	<div class="basis-full">
 		<%~ include("./group.eta", { group: it.node }) %>
 	</div>
+<% } else if (it.node.type === "separator") { %>
+	<p class="text-xl md:text-3xl text-accent border-b border-primary mt-4" style="grid-column: 1 / -1"><%= it.node.name %></p>
 <% } %>
 <!--
 vi: ft=embedded_template

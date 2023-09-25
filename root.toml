@@ -1,4 +1,6 @@
 [content]
+"Primeiro ano" = { separator = true }
+
 "Fundamentos da Programação" = { include = "./1ano1/FP/map.toml" }
 "Introdução as tecnologias web" = { include = "./1ano1/ITW/map.toml" }
 "Modelação e análise de sistemas" = { include = "./1ano1/MAS/map.toml" }
@@ -10,6 +12,8 @@
 "Modelação de Sistemas Físicos" = { include = "./1ano2/MSF/map.toml" }
 "Introdução à Arquitetura de Computadores" = { include = "./1ano2/IAC/map.toml" }
 "Programação Orientada a Objetos" = { include = "./1ano2/POO/map.toml" }
+
+"Segundo ano" = { separator = true }
 
 "Algoritmos e Estruturas de Dados" = { include = "./2ano1/AED/map.toml" }
 

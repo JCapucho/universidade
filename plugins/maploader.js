@@ -9,6 +9,9 @@ function isGroupDirective(obj) {
 function isLinkDirective(obj) {
   return obj.link !== undefined;
 }
+function isSeparatorDirective(obj) {
+  return obj.separator === true;
+}
 
 class MapLoader {
   constructor(config, logger) {
@@ -86,6 +89,11 @@ class MapLoader {
       } else if (isGroupDirective(directive)) {
         const node = await this.buildGroup(name, directive, ctx);
         hirMap.push(node);
+      } else if (isSeparatorDirective(directive)) {
+        hirMap.push({
+          type: "separator",
+          name,
+        });
       }
     }
 
