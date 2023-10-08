@@ -58,6 +58,9 @@ export default {
 
             "h2 code": { fontSize: "1.5rem" },
             "h3 code": { fontSize: "1.25rem" },
+
+            "blockquote p:first-of-type::before": { content: "none" },
+            "blockquote p:first-of-type::after": { content: "none" },
           },
         },
         lg: {

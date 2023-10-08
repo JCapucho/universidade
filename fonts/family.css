@@ -1,0 +1,43 @@
+@font-face {
+  font-family: "Iosevka Aile Resumos";
+  font-weight: 400;
+  font-style: normal;
+  src:
+    local("Iosevka Aile Resumos"),
+    url("iosevka-aile-regular.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Iosevka Aile Resumos";
+  font-weight: 700;
+  font-style: normal;
+  src:
+    local("Iosevka Aile Resumos"),
+    url("iosevka-aile-bold.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Iosevka Aile Resumos";
+  font-weight: 400;
+  font-style: italic;
+  src:
+    local("Iosevka Aile Resumos"),
+    url("iosevka-aile-italic.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Iosevka Aile Resumos";
+  font-weight: 700;
+  font-style: italic;
+  src:
+    local("Iosevka Aile Resumos"),
+    url("iosevka-aile-bolditalic.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Iosevka Curly Resumos";
+  font-weight: 400;
+  src:
+    local("Iosevka Curly Resumos"),
+    url("iosevka-curly-regular.woff2") format("woff2");
+}

@@ -46,7 +46,10 @@
 
       python-dev = pkgs.python3.withPackages base-py-pkgs;
 
+      resumos-fonts = pkgs.callPackage ./fonts/custom-fonts.nix {};
+
       buildSite = pkgs.writeScriptBin "build-site" ''
+        cp ${resumos-fonts}/* fonts/
         bun install
         bun run build
       '';
@@ -59,38 +62,51 @@
         (pkgs.python3.withPackages base-py-pkgs)
       ];
     in {
-      devShells.prod = pkgs.mkShell {
-        buildInputs = base-pkgs ++ [buildSite];
+      packages = {
+        jupyter = jupyterlab;
+        inherit resumos-fonts;
       };
 
-      devShells.default = pkgs.mkShell {
-        buildInputs =
-          base-pkgs
-          ++ (with pkgs; [
-            bear
-            clang-tools
+      devShells = {
+        prod = pkgs.mkShell {
+          buildInputs = base-pkgs ++ [buildSite];
+        };
 
-            # Python
-            black
-            python-dev
-            nodePackages.pyright
+        default = pkgs.mkShell {
+          buildInputs =
+            base-pkgs
+            ++ (with pkgs; [
+              # C
+              gdb
+              bear
+              valgrind
+              clang-tools
 
-            # Java
-            jdk
-            jdt-language-server
+              # Python
+              black
+              python-dev
+              nodePackages.pyright
 
-            # .Net
-            dotnet-sdk
+              # Java
+              jdk
+              jdt-language-server
 
-            # Node
-            nodePackages.prettier
-            nodePackages.typescript-language-server
-            nodePackages.vscode-langservers-extracted
-            nodePackages."@tailwindcss/language-server"
-          ]);
+              # .Net
+              dotnet-sdk
+
+              # Node
+              nodePackages.prettier
+              nodePackages.typescript-language-server
+              nodePackages.vscode-langservers-extracted
+              nodePackages."@tailwindcss/language-server"
+            ]);
+
+          shellHook = ''
+            cp -f ${resumos-fonts}/* fonts/
+          '';
+        };
       };
 
-      packages.jupyter = jupyterlab;
       apps.jupyter.type = "app";
       apps.jupyter.program = "${jupyterlab}/bin/jupyter-lab";
     });
