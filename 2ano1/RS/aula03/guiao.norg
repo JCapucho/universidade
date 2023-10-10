@@ -1,0 +1,679 @@
+@document.meta
+title: Aula 03
+description: Estudo do protocolo 802.1Q.
+author: João Capucho
+@end
+
+* Aviso
+
+  A qualquer ponto do guião as configurações podem ser guardadas correndo o
+  comando `wr`, isto é necessário sempre que os nodes forem desligados, caso
+  contrário *toda a configuração é perdida* até ao último ponto onde foi
+  guardada.
+
+* Exercício 1
+
+** Parte 1
+
+   > Monte a rede especificada na figura e configure os endereços IP em todos
+     os equipamentos.
+
+   A rede especificada apresenta três computadores/clientes conectados a um
+   multilayer switch, ou seja um switch que para além de switching em layer 2
+   oferece também outras funções em layers seguintes.
+
+   No nosso caso vamos utilizar o router 3725 da Cisco com um módulo de
+   etherswitch, vamos usar este modelo pois é o que está disponível no
+   elearning. Um etherswitch é só uma expansão para os routers cisco que
+   adiciona capacidades de switching, criando então um switch de layer 3.
+
+   Os clientes são modelados através de nodes Virtual PC Simulator (VPCS) do
+   GNS3.
+
+   @embed image
+   topologies/ex01_1.png
+   @end
+
+   Para configurar os endereços dos clientes basta conectar as consolas dos
+   VPCSs e correr o seguinte comando (mudando o IP dependendo do VPCS):
+
+   @code
+   PC1> ip 192.1.1.61/24
+   # (Opcional) gravar a configuração
+   PC1> wr
+   @end
+
+   > No switch verifique a configuração da VLANs: `show vlan-switch`
+
+   @code
+   ESW1#show vlan-switch
+
+   VLAN Name                             Status    Ports
+   ---- -------------------------------- --------- -------------------------------
+   1    default                          active    Fa1/0, Fa1/1, Fa1/2, Fa1/3
+                                                   Fa1/4, Fa1/5, Fa1/6, Fa1/7
+                                                   Fa1/8, Fa1/9, Fa1/10, Fa1/11
+                                                   Fa1/12, Fa1/13, Fa1/14, Fa1/15
+   1002 fddi-default                     active    
+   1003 token-ring-default               active    
+   1004 fddinet-default                  active    
+   1005 trnet-default                    active    
+
+   VLAN Type  SAID       MTU   Parent RingNo BridgeNo Stp  BrdgMode Trans1 Trans2
+   ---- ----- ---------- ----- ------ ------ -------- ---- -------- ------ ------
+   1    enet  100001     1500  -      -      -        -    -        1002   1003
+   1002 fddi  101002     1500  -      -      -        -    -        1      1003
+   1003 tr    101003     1500  1005   0      -        -    srb      1      1002
+   1004 fdnet 101004     1500  -      -      1        ibm  -        0      0   
+   1005 trnet 101005     1500  -      -      1        ibm  -        0      0  
+   @end
+
+   Como podemos ver todas as portas do slot 1 estão na mesma VLAN 1, isto é
+   expectável, pois o equipamento acabou de arrancar pela primeira vez e
+   nenhuma vlan foi configurada até agora.
+
+   É de realçar também que as portas do slot 0 (pertencentes ao router em si,
+   `Fa0/0` e `Fa0/1`) não estão presentes nesta listagem, isto acontece porque
+   estas interfaces não têm capacidades de switching logo não suportam VLANs.
+
+   > Crie no switch a VLAN 2 de forma a que as portas f1/0 e f1/1 estejam na
+     VLAN 2 e as restantes portas estejam na VLAN 1.
+
+   Começamos por criar a VLAN 2 (a VLAN 1 já existe por isso não precisamos de
+   a recriar).
+
+   @code
+   ESW1#vlan database ! Entrar no menu de configuração para VLANs
+   ESW1(vlan)#vlan 2  ! Criar uma vlan com id 2
+   VLAN 2 added:
+       Name: VLAN0002
+   ESW1(vlan)#apply   ! Ativar as mudanças feitas
+   APPLY completed.
+   ESW1(vlan)#exit    ! Sair do menu de configurações de VLANs
+   @end
+
+   A seguir precisamos de atribuir as portas `f1/0` e `f1/1` a VLAN 2.
+
+   @code
+   ESW1#configure terminal                        ! Entrar no menu de configuração global
+   ESW1(config)#interface range f1/0 – 1          ! Selecionar as portas no intervalo f1/0 -1 (i.e. f1/0 e f1/1)
+   ESW1(config-if-range)#switchport mode access   ! Definir modo da porta como acesso
+   ESW1(config-if-range)#switchport access vlan 2 ! Definir VLAN da porta com indíce 2
+   ESW1(config-if-range)#end                      ! Sair do menu de configuração
+   @end
+
+   As portas foram configuradas em modo de acesso, isto significa que cada
+   porta só pode ser atribuída uma VLAN, que no nosso caso é o que queremos já
+   que estamos a conectar a clientes. No entanto, se quiséssemos podíamos criar
+   uma porta /trunk/ que permite ter mais de uma VLAN atribuída, isto é útil
+   quando queremos, por exemplo, ligar a outro switch que conecta duas VLANs,
+   assim em vez de duas portas a ligar os dois switches basta ter uma porta
+   trunk.
+
+   Finalmente basta configurar o endereço IP da VLAN 1:
+
+   @code
+   ESW1#configure terminal                            ! Entrar no menu de configuração global
+   ESW1(config)#interface vlan 1                      ! Selecionar a VLAN 1 como uma interface
+   ESW1(config-if)#ip address 192.1.1.1 255.255.255.0 ! Attribuir o enderço 192.1.1.1/24 a VLAN 1
+   ESW1(config-if)#no shutdown                        ! Ativar a interface IP
+   ESW1(config-if)#end                                ! Sair do menu de configuração
+   @end
+
+   Podemos ainda visualizar as VLANs configuradas com `show vlan-switch`:
+
+   @code
+   ESW1#show vlan-switch
+
+   VLAN Name                             Status    Ports
+   ---- -------------------------------- --------- -------------------------------
+   1    default                          active    Fa1/2, Fa1/3, Fa1/4, Fa1/5
+                                                   Fa1/6, Fa1/7, Fa1/8, Fa1/9
+                                                   Fa1/10, Fa1/11, Fa1/12, Fa1/13
+                                                   Fa1/14, Fa1/15
+   2    VLAN0002                         active    Fa1/0, Fa1/1
+   1002 fddi-default                     active    
+   1003 token-ring-default               active    
+   1004 fddinet-default                  active    
+   1005 trnet-default                    active    
+
+   VLAN Type  SAID       MTU   Parent RingNo BridgeNo Stp  BrdgMode Trans1 Trans2
+   ---- ----- ---------- ----- ------ ------ -------- ---- -------- ------ ------
+   1    enet  100001     1500  -      -      -        -    -        1002   1003
+   2    enet  100002     1500  -      -      -        -    -        0      0   
+   1002 fddi  101002     1500  -      -      -        -    -        1      1003
+   1003 tr    101003     1500  1005   0      -        -    srb      1      1002
+   1004 fdnet 101004     1500  -      -      1        ibm  -        0      0   
+   1005 trnet 101005     1500  -      -      1        ibm  -        0      0
+   @end
+
+   Verifica-se então que existem agora 2 VLANs e que as portas `Fa1/0` e
+   `Fa1/1` estão atribuídas a VLAN 2 e todas as outras a VLAN 1.
+
+   > Verifique e registe entre que equipamentos existe conectividade.
+
+   Podemos realizar pings entre as máquinas para verificar a conectividade,
+   primeiro no PC1:
+
+   @code
+   PC1> ping 192.1.1.21
+
+   84 bytes from 192.1.1.21 icmp_seq=1 ttl=64 time=0.216 ms
+   84 bytes from 192.1.1.21 icmp_seq=2 ttl=64 time=0.327 ms
+   84 bytes from 192.1.1.21 icmp_seq=3 ttl=64 time=0.425 ms
+   84 bytes from 192.1.1.21 icmp_seq=4 ttl=64 time=0.354 ms
+   84 bytes from 192.1.1.21 icmp_seq=5 ttl=64 time=0.394 ms
+   @end
+
+   Temos conectividade ao PC2 como é esperado visto que estamos conectados
+   através da mesma VLAN, no entanto, a conexão ao switch e ao PC3 falha.
+
+   @code
+   # Ping ao switch
+   PC1> ping 192.1.1.1
+
+   host (192.1.1.1) not reachable
+
+   # Ping ao PC3
+   PC1> ping 192.1.1.41
+
+   host (192.1.1.41) not reachable
+   @end
+
+   Mais uma vez isto é expetável, pois ambos estes estão noutra VLAN, logo o
+   ARP não consegue descobrir estes endereços.
+
+   Se fizermos a partir do PC3, vamos notar o inverso conseguimos conectar ao
+   endereço do switch, mas não conseguimos contactar o PC1 nem o PC2:
+
+   @code
+   # Ping ao switch
+   PC3> ping 192.1.1.1
+
+   192.1.1.1 icmp_seq=1 timeout
+   84 bytes from 192.1.1.1 icmp_seq=2 ttl=255 time=4.167 ms
+   84 bytes from 192.1.1.1 icmp_seq=3 ttl=255 time=9.745 ms
+   84 bytes from 192.1.1.1 icmp_seq=4 ttl=255 time=6.679 ms
+   84 bytes from 192.1.1.1 icmp_seq=5 ttl=255 time=6.950 ms
+
+   # Ping ao PC2
+   PC3> ping 192.1.1.21
+
+   host (192.1.1.21) not reachable
+
+   # Ping ao PC1
+   PC3> ping 192.1.1.61
+
+   host (192.1.1.61) not reachable
+   @end
+
+** Parte 2
+
+   > Ligue agora os PCs 1 e 2 a duas portas da VLAN 1 e o PC 3 a uma porta da
+     VLAN 2.
+
+   Temos de nos relembrar que as portas `f1/0` e `f1/1` estão atribuídas a VLAN
+   2, logo vamos ter de ligar os PCs 1 e 2 a portas que não sejam estas para os
+   conectar a VLAN 1.
+
+   @embed image
+   topologies/ex01_2.png
+   @end
+
+   > Verifique e registe entre que equipamentos existe conectividade.
+
+   Começando primeiro no PC1, conseguimos aceder ao PC2 e ao switch:
+
+   @code
+   # Ping ao switch
+   PC1> ping 192.1.1.1 
+
+   84 bytes from 192.1.1.1 icmp_seq=1 ttl=255 time=1.129 ms
+   84 bytes from 192.1.1.1 icmp_seq=2 ttl=255 time=6.482 ms
+   84 bytes from 192.1.1.1 icmp_seq=3 ttl=255 time=5.187 ms
+   84 bytes from 192.1.1.1 icmp_seq=4 ttl=255 time=6.606 ms
+   84 bytes from 192.1.1.1 icmp_seq=5 ttl=255 time=6.243 ms
+
+   # Ping ao PC2
+   PC1> ping 192.1.1.21
+
+   84 bytes from 192.1.1.21 icmp_seq=1 ttl=64 time=0.292 ms
+   84 bytes from 192.1.1.21 icmp_seq=2 ttl=64 time=0.333 ms
+   84 bytes from 192.1.1.21 icmp_seq=3 ttl=64 time=0.270 ms
+   84 bytes from 192.1.1.21 icmp_seq=4 ttl=64 time=0.455 ms
+   84 bytes from 192.1.1.21 icmp_seq=5 ttl=64 time=0.427 ms
+   @end
+
+   Isto é expectável visto que agora ambos estes equipamentos estão na mesma
+   VLAN. O PC2 apresenta a mesma conectividade que o PC1.
+
+   Agora no PC3, não existe conectividade a qualquer outro dos equipamentos:
+
+   @code
+   # Ping ao switch
+   PC3> ping 192.1.1.1 
+
+   host (192.1.1.1) not reachable
+
+   # Ping ao PC2
+   PC3> ping 192.1.1.21
+
+   host (192.1.1.21) not reachable
+
+   # Ping ao PC1
+   PC3> ping 192.1.1.61
+
+   host (192.1.1.61) not reachable
+   @end
+
+   Finalmente se verificarmos a conectividade do switch, vemos que conseguimos
+   fazer `ping` ao PC1 e PC2, mas não ao PC3:
+
+   @code
+   ! Ping ao PC1
+   ESW1#ping 192.1.1.61
+
+   Type escape sequence to abort.
+   Sending 5, 100-byte ICMP Echos to 192.1.1.61, timeout is 2 seconds:
+   !!!!!
+   Success rate is 100 percent (5/5), round-trip min/avg/max = 28/41/64 ms
+
+   ! Ping ao PC2
+   ESW1#ping 192.1.1.21
+
+   Type escape sequence to abort.
+   Sending 5, 100-byte ICMP Echos to 192.1.1.21, timeout is 2 seconds:
+   !!!!!
+   Success rate is 100 percent (5/5), round-trip min/avg/max = 60/280/1036 ms
+
+   ! Ping ao PC3
+   ESW1#ping 192.1.1.41
+
+   Type escape sequence to abort.
+   Sending 5, 100-byte ICMP Echos to 192.1.1.41, timeout is 2 seconds:
+   ....
+   Success rate is 0 percent (0/5)
+   @end
+
+   Isto faz sentido, pois apesar de todos estes equipamentos estarem conectados
+   ao switch, apenas a VLAN 1 tem a subnet `192.1.1.0/24` atribuída, logo o
+   switch só vai mandar pings pelas portas da VLAN 1.
+
+   > Com os resultados desta experiência e da anterior, o que pode concluir
+     relativamente a (i) qual o efeito das diferentes VLANs na conectividade
+     entre terminais
+
+   Terminais apenas têm conectividade a equipamentos que estejam na mesma VLAN.
+
+   > \(ii) que terminais conseguem aceder ao switch que implementa as VLANs.
+
+   Apenas conseguem aceder ao switch terminais que estejam numa VLAN onde o
+   switch tenha um endereço atribuído. Na topologia utilizada até agora, o
+   switch só tinha um endereço na VLAN 1, logo apenas terminais na VLAN 1
+   conseguem aceder ao switch.
+
+   No entanto, se também fosse atribuído um endereço ao switch na VLAN 2, esta
+   VLAN também conseguiria contactar o switch.
+
+** Parte 3
+
+   >  Utilizando um filtro “icmp or arp” inicie uma captura e obrigue o PC 2 a
+      fazer um pedido ARP, executando o comando `ping` para um endereço IP
+      inexistente da rede 192.1.1.0/24.
+
+   @code
+   # Ping para um endereço inexistente
+   PC2> ping 192.1.1.217
+
+   host (192.1.1.217) not reachable
+   @end
+
+   @embed image
+   captures/ex01_3_PC2_Capture.png
+   @end
+
+   > Repita a mesma experiência mas obrigando agora o PC 3 a fazer o pedido de
+     ARP.
+
+   @code
+   # Ping para um endereço inexistente
+   PC3> ping 192.1.1.217
+
+   host (192.1.1.217) not reachable
+   @end
+
+   @embed image
+   captures/ex01_3_PC3_Capture.png
+   @end
+
+   > Analisando os resultados de ambas as filtragens, o que pode concluir
+     relativamente à expedição de pacotes de broadcast quando existem
+     diferentes VLANs configuradas?
+
+   Olhando apenas para estas duas capturas não conseguimos deduzir nada sobre a
+   expedição dos pacotes, ambos os PCs enviam pacotes para o endereço MAC de
+   broadcast e ninguém responde, pois ninguém tem o endereço.
+
+   No entanto, se olharmos para a captura de pacotes no PC1 após realizarmos o
+   `ping` nos dois outros PCs, notamos que apenas os pacotes do PC2 chegaram ao
+   PC1.
+
+   @embed image
+   captures/ex01_3_PC1_Capture.png
+   @end
+
+   Isto é expectável porque cada VLAN define um *domínio de broadcast*, ou seja,
+   pacotes de broadcast só se propagam dentro da mesma VLAN e não saltam entres
+   VLANs.
+
+* Exercício 2
+
+  > Reconfigure a rede conforme especificado na figura seguinte. Esta rede
+    ilustra uma forma possível de configurar na mesma VLAN terminais ligados a
+    diferentes switches. 
+
+  @embed image
+  topologies/ex02.png
+  @end
+
+  Começamos por configurar as VLANs nos switches e as portas em modo de
+  /access/, as instruções são indênticas para as switches:
+
+  @code
+  ESW1#vlan database ! Entrar no menu de configuração para VLANs
+  ESW1(vlan)#vlan 2  ! Criar uma vlan com id 2
+  VLAN 2 added:
+      Name: VLAN0002
+  ESW1(vlan)#apply   ! Ativar as mudanças feitas
+  APPLY completed.
+  ESW1(vlan)#exit    ! Sair do menu de configurações de VLANs
+
+  ESW1#configure terminal                  ! Entrar no menu de configuração global
+  ESW1(config-if)#int f1/1                 ! Selecionar a porta f1/1
+  ESW1(config-if)#switchport mode access   ! Definir o modo da porta como de acesso
+  ESW1(config-if)#switchport access vlan 2 ! Atribuir a porta a VLAN com indíce 2
+  ESW1(config-if)#end                      ! Aplicar e sair do menu de configuração
+  @end
+
+  A seguir configuramos o endereço do switch 1 na VLAN 1.
+
+  @code
+  ESW1#configure terminal                         ! Entrar no menu de configuração global
+  ESW1(config)#interface vlan 1                   ! Selecionar a VLAN 1 como uma interface
+  ESW1(config-if)#ip addr 192.1.1.1 255.255.255.0 ! Attribuir o endereço 192.1.1.1/24 a VLAN 1
+  ESW1(config-if)#no shutdown                     ! Ativar a interface IP
+  ESW1(config-if)#end                             ! Aplicar e sair do menu de configuração
+  @end
+
+  Finalmente configuramos os endereços dos PCs:
+
+  @code
+  PC1> ip 192.1.1.21
+  PC2> ip 192.1.1.41
+  PC3> ip 192.1.1.100
+  PC4> ip 192.1.1.200
+  @end
+
+  > Para cada par de equipamentos especificados: (i) inicie uma captura na
+    ligação entre os dois switches filtrando pacotes ARP e ICMP, (ii) execute o
+    comando ping entre eles e (iii) registe a conectividade e o tipo de pacotes
+    capturados. Justifique o que observou.
+
+  Começando por fazer um `ping` entre o PC1 e o PC3:
+
+  @code
+  PC1> ping 192.1.1.100   
+
+  84 bytes from 192.1.1.100 icmp_seq=1 ttl=64 time=0.251 ms
+  84 bytes from 192.1.1.100 icmp_seq=2 ttl=64 time=0.454 ms
+  84 bytes from 192.1.1.100 icmp_seq=3 ttl=64 time=1.631 ms
+  84 bytes from 192.1.1.100 icmp_seq=4 ttl=64 time=0.415 ms
+  84 bytes from 192.1.1.100 icmp_seq=5 ttl=64 time=0.587 ms
+  @end
+
+  @embed image
+  captures/ex02_PC1_PC3_Capture.png
+  @end
+
+  Conseguimos ver que os pacotes de ARP passam entre os switches e os dois PCs
+  conseguem descobrir os endereços um do outro, e a seguir vemos os pacotes de
+  ICMP a passar.
+
+  A seguir tentamos fazer um ping entre o PC1 e o Switch 1:
+
+  @code
+  PC1> ping 192.1.1.1
+
+  84 bytes from 192.1.1.1 icmp_seq=1 ttl=255 time=10.458 ms
+  84 bytes from 192.1.1.1 icmp_seq=2 ttl=255 time=5.545 ms
+  84 bytes from 192.1.1.1 icmp_seq=3 ttl=255 time=5.137 ms
+  84 bytes from 192.1.1.1 icmp_seq=4 ttl=255 time=5.689 ms
+  84 bytes from 192.1.1.1 icmp_seq=5 ttl=255 time=5.713 ms
+  @end
+
+  @embed image
+  captures/ex02_PC1_SW1_Capture.png
+  @end
+
+  O primeiro pacote de ARP passa entre os switches, o que é esperado visto que
+  o pacote tem como destino o endereço de broadcast, mas todos os outros
+  pacotes de ARP e ICMP, não passam, pois os pacotes são endereçados ao Switch
+  1 e já passaram por ele primeiro.
+
+  Finalmente vamos tentar fazer pings entre o PC2, o switch 1 e o PC4:
+
+  @code
+  # Ping ao switch
+  PC2> ping 192.1.1.1  
+
+  host (192.1.1.1) not reachable
+
+  # Ping ao PC4
+  PC2> ping 192.1.1.200
+
+  host (192.1.1.200) not reachable
+  @end
+
+  @embed image
+  captures/ex02_PC2_Capture.png
+  @end
+
+  Não existe conectividade com o switch 1 nem com o PC4, a falta de
+  conectividade ao switch 1 é de esperar visto que o endereço deste está numa
+  VLAN diferente, mas o PC4 está na mesma VLAN, porque é que não há
+  conectividade?
+
+  Apesar de tanto o PC2 e PC4 estarem na mesma VLAN, o único caminho físico
+  entre eles involve a ligação entre o Switch 1 e o Switch 2, no entanto, estes
+  foram configurados nas portas que os ligam como pertencendo a VLAN 1. Logo
+  todo o tráfico que chega destes PCs aos respetivos switches não é passado ao
+  outro switch, efetivamente não existe conectividade entre os PCs.
+
+  : A1 : Pares de equipamentos terminais
+  : A2 : Conectividade
+  : A3 : Tipo de pacotes filtrados
+  : B1 : PC 1 -> Switch 1
+  : B2 : Sim
+  : B3 : ARP
+  : C1 : PC 1 -> PC 3
+  : C2 : Sim
+  : C3 : ARP e ICMP
+  : D1 : PC 1 -> PC 4
+  : D2 : Não
+  : D3 : ARP
+  : E1 : PC 2 -> PC 3
+  : E2 : Não
+  : E3 : Nenhum
+  : F1 : PC 2 -> PC 4
+  : F2 : Não
+  : F3 : Nenhum
+
+* Exercício 3
+
+  > Configure as portas de interligação entre os switches como porta
+    interswitch.
+
+  Uma porta interswitch ou /trunk/, é uma porta que permite a transmissão de
+  pacotes que originam de diferentes VLANs para outro equipamento que também
+  entende VLANs. Isto permite conectar switches que servem várias VLANs, sem
+  necessitar de uma porta para cada VLAN entre switches.
+
+  Para configurar a porta que liga os switches como uma porta interswitch
+  precisamos de mudar o seu modo de acesso para interswitch, alêm disso
+  precisamos ainda de configurar como são identificadas as VLANs.
+
+  @code
+  ESW1#configure terminal                              ! Entrar no menu de configuração global
+  ESW1(config)#interface f1/2                          ! Selecionar a interface f1/2
+  ESW1(config-if)#switchport mode trunk                ! Definir o modo da porta como de interswitch
+  ESW1(config-if)#switchport trunk encapsulation dot1q ! Utilizar pacotes 802.1Q
+  ESW1(config-if)#end                                  ! Aplicar e sair do menu de configuração
+  @end
+
+  Necessitamos de definir o modo de encapsulamento como 802.1Q, pois os
+  switches antigos da cisco suportam outro protocolo de encapsulamento chamado
+  ISL. No entanto este está deprecado e não é standard.
+
+  @embed image
+  topologies/ex03.png
+  @end
+
+  >  Para cada par de equipamentos especificados: (i) inicie uma captura na
+     ligação entre os dois switches, (ii) execute o comando ping entre eles e
+     (iii) registe o tipo de pacotes capturados bem como o seu VLAN ID.
+
+  Primeiro vamos testar a conectividade entre o PC 1 e o switch 1:
+
+  @code
+  PC1> ping 192.1.1.1
+
+  84 bytes from 192.1.1.1 icmp_seq=1 ttl=255 time=9.587 ms
+  84 bytes from 192.1.1.1 icmp_seq=2 ttl=255 time=7.657 ms
+  84 bytes from 192.1.1.1 icmp_seq=3 ttl=255 time=5.633 ms
+  84 bytes from 192.1.1.1 icmp_seq=4 ttl=255 time=6.382 ms
+  84 bytes from 192.1.1.1 icmp_seq=5 ttl=255 time=5.438 mso
+  @end
+
+  @embed image
+  captures/ex03_PC1_SW1_Capture.png
+  @end
+
+  Como no exercício anterior o switch 2 recebe o primeiro pacote de ARP e
+  depois todos os outros pacotes são trocados diretamente entre o PC 1 e o
+  switch 1.
+
+  A seguir, vamos testar a conectividade entre o PC 1 e o PC 3:
+
+  @code
+  PC1> ping 192.1.1.100
+
+  84 bytes from 192.1.1.100 icmp_seq=1 ttl=64 time=0.458 ms
+  84 bytes from 192.1.1.100 icmp_seq=2 ttl=64 time=0.859 ms
+  84 bytes from 192.1.1.100 icmp_seq=3 ttl=64 time=0.845 ms
+  84 bytes from 192.1.1.100 icmp_seq=4 ttl=64 time=3.833 ms
+  84 bytes from 192.1.1.100 icmp_seq=5 ttl=64 time=0.650 ms
+  @end
+
+  @embed image
+  captures/ex03_PC1_PC3_Capture.png
+  @end
+
+  A conectividade com o PC 3 mantêm-se como no exercício anterior, passando
+  todo o trâfico pelo switch 1 e 2.
+
+  Agora testamos entre o PC 1 e o PC 4:
+
+  @code
+  PC1> ping 192.1.1.200
+
+  host (192.1.1.200) not reachable
+  @end
+
+  @embed image
+  captures/ex03_PC1_PC4_Capture.png
+  @end
+
+  Como era expectável os dois computadores não conseguem comunicar um com o
+  outro porque estão em duas VLANs diferentes tal como no exercício anterior, o
+  que essencialmente cria duas redes distintas.
+
+  Passando agora para a VLAN 2 vamos tentar fazer `ping` entre o PC 2 e o PC 3:
+
+  @code
+  PC2> ping 192.1.1.100
+
+  host (192.1.1.100) not reachable
+  @end
+
+  @embed image
+  captures/ex03_PC2_PC3_Capture.png
+  @end
+
+  Mais uma vez não existe comunicação entre duas VLANs distintas. No entanto, se
+  olharmos para a captura de pacotes notamos algo de diferente, os pacotes
+  agora apresentam uma frame de 802.1Q ao contrário de quando estávamos a fazer
+  do PC1 para outros nodes.
+
+  A existência da frame de 802.1Q faz sentido visto que a porta interswitch
+  carrega pacotes de várias VLANs diferentes logo é preciso identificá-las nos
+  pacotes a circular pela porta.
+
+  No entanto, isto levanta a questão de porque é que os pacotes da VLAN 1 não
+  tem está identificação? Entre os switches existe o conceito de VLAN nativa
+  está é uma VLAN que é usada para a transmissão de mensagens de controlo como,
+  por exemplo, as de spanning tree, esta VLAN é configurada nos switches e tem
+  que ser igual nos dois para a mesma ligação interswitch.
+
+  Além disso, por defeito está VLAN têm o indíce 1 e todo o tráfico que passa
+  por esta VLAN não é marcado com frames 802.1Q, pois todos os pacotes sem esta
+  marcação são assumidos vir da VLAN nativa, isto aplica-se não só a pacotes de
+  controlo mas também a pacotes de terminais que tenham o índice dessa VLAN.
+
+  Finalmente testamos a conectividade entre PC 2 e o PC 4:
+
+  @code
+  PC2> ping 192.1.1.200
+
+  84 bytes from 192.1.1.200 icmp_seq=1 ttl=64 time=0.258 ms
+  84 bytes from 192.1.1.200 icmp_seq=2 ttl=64 time=3.626 ms
+  84 bytes from 192.1.1.200 icmp_seq=3 ttl=64 time=0.366 ms
+  84 bytes from 192.1.1.200 icmp_seq=4 ttl=64 time=0.486 ms
+  84 bytes from 192.1.1.200 icmp_seq=5 ttl=64 time=0.336 ms
+  @end
+
+  @embed image
+  captures/ex03_PC2_PC4_Capture.png
+  @end
+
+  Agora invés do exercício anterior, já conseguimos estabelecer conectividade
+  entre o PC 2 e PC 4, pois a ligação entre o switch 1 e 2 já não é exclusiva a
+  VLAN 1 mas consegue transmitir pacotes de várias VLANs.
+
+  : A1 : Pares de equipamentos terminais
+  : A2 : Conectividade
+  : A3 : Tipo de pacotes filtrados
+  : B1 : PC 1 -> Switch 1
+  : B2 : Sim
+  : B3 : ARP
+  : C1 : PC 1 -> PC 3
+  : C2 : Sim
+  : C3 : ARP e ICMP
+  : D1 : PC 1 -> PC 4
+  : D2 : Não
+  : D3 : ARP
+  : E1 : PC 2 -> PC 3
+  : E2 : Não
+  : E3 : ARP
+  : F1 : PC 2 -> PC 4
+  : F2 : Sim
+  : F3 : ARP e ICMP
+
+  > Tire conclusões quanto à forma de funcionamento do protocolo 802.1Q.
+    Comparando esta experiência com a experiência anterior, tire conclusões
+    relativamente ao interesse prático deste protocolo.
+
+  Como já vimos o protocolo 802.1Q encapsula os pacotes com um header indicando
+  a VLAN a qual pertencem, isto permite a comunicações entre switches de várias
+  VLANs sem ser necessário utilizar uma porta para cada VLAN para ligar os
+  switches. Isto tem o benefício de cortar o número de equipamento necessário
+  para ligar vários equipamentos em VLANs diferentes.

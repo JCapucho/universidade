@@ -61,6 +61,7 @@ export default {
 
             "blockquote p:first-of-type::before": { content: "none" },
             "blockquote p:first-of-type::after": { content: "none" },
+            "td > p": { margin: "0 !important" },
           },
         },
         lg: {
