@@ -29,7 +29,7 @@ export default new Transformer({
     const pandoc_child = run("pandoc", [
       "-f",
       "json",
-      "--toc",
+      "--mathjax",
       "--metadata",
       "lang=pt-PT",
     ]);
