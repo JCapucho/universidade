@@ -1,0 +1,478 @@
+@document.meta
+title: Aula 04
+description: VLAN Routing
+author: João Capucho
+@end
+
+* Aviso
+
+  A qualquer ponto do guião as configurações podem ser guardadas correndo o
+  comando `wr`, isto é necessário sempre que os nodes forem desligados, caso
+  contrário *toda a configuração é perdida* até ao último ponto onde foi
+  guardada.
+
+* Exercício 1
+
+  > Assemble the depicted network. Configure 3 VLAN at the switches:
+  > Ports 1-2: VLAN1 (sub-network 10.1.1.0/24, IPv4 C1:10.1.1.11, IPv4 C4: 10.1.1.14)
+  > Ports 3-4: VLAN2 (sub-network 10.2.2.0/24, IPv4 C2:10.2.2.12, IPv4 C5: 10.2.2.15)
+  > Ports 5-6: VLAN3 (sub-network 10.3.3.0/24, IPv4 C3:10.3.3.13, IPv4 C6: 10.3.3.16)
+  > Ports 7-8: Inter-switch/Tagged/802.1Q (dot1q, with native VLAN 1)
+
+  @embed image
+  topologies/ex01.png
+  @end
+
+  Os switches usados nesta rede são os ethernet switches que estão presentes
+  por defeito no GNS3. Estes são configurados através do GUI, para aceder a
+  janela de configuração basta fazer um double-click no switch ou right click e
+  clicar em /"Configure"/.
+
+  Para ajustar uma porta é preciso selecionar a porta na secção de
+  /"Settings"/, mudar os settings necessários e clicar no botão /"Add"/. As
+  portas Inter-switch/trunk são configuradas mudando o /"Type"/ da porta de
+  /access/ para /dot1q/.
+
+  Os switches deverão estar configurados como está apresentado em baixo:
+
+  @embed image
+  assets/Switch_Configuration.png
+  @end
+
+  Finalmente precisamos de configurar os endereços dos PCs:
+
+  @code
+  PC1>ip 10.1.1.11/24
+  PC2>ip 10.2.2.12/24
+  PC3>ip 10.3.3.13/24
+  PC4>ip 10.1.1.14/24
+  PC5>ip 10.2.2.15/24
+  PC6>ip 10.3.3.16/24
+  @end
+
+  > Place hosts in different VLAN and test connectivity.
+
+  @code
+  # Ping ao PC4
+  PC1> ping 10.1.1.14
+
+  84 bytes from 10.1.1.14 icmp_seq=1 ttl=64 time=0.271 ms
+  84 bytes from 10.1.1.14 icmp_seq=2 ttl=64 time=0.285 ms
+  84 bytes from 10.1.1.14 icmp_seq=3 ttl=64 time=0.389 ms
+  84 bytes from 10.1.1.14 icmp_seq=4 ttl=64 time=0.300 ms
+  84 bytes from 10.1.1.14 icmp_seq=5 ttl=64 time=0.348 ms
+
+  # Ping ao PC5
+  PC1> ping 10.2.2.15
+
+  No gateway found
+
+  # Ping ao PC6
+  PC1> ping 10.3.3.16
+
+  No gateway found
+  @end
+
+  Conseguimos contactar o outro PC na mesma VLAN, todos os outros PCs não são
+  contactáveis, não só porque não estão na mesma VLAN mas também porque estão
+  em subnets diferentes e os PCs não sabem rotear para elas.
+
+* Exercício 2
+
+  > Assemble the depicted network by adding a router.
+
+  @embed image
+  topologies/ex02.png
+  @end
+
+  O router que adicionamos é router da cisco, o c7200.
+
+  >  Configure the router to support sub-interfaces and Inter-VLAN (802.1Q)
+	 routing:
+
+  @code
+  ! Entrar no menu de configuração global
+  R1#configure terminal
+  ! Selecionar a interface conectada ao switch
+  R1(config)#interface f0/0
+  ! Ativar a interface
+  R1(config-if)#no shutdown
+
+  ! Criar uma subinterface
+  R1(config-if)#interface f0/0.1
+  ! Definir a subinterface como pertecendo a VLAN 1 (VLAN nativa)
+  R1(config-subif)#encapsulation dot1Q 1 native
+  ! Definir o endereço da subinterface
+  R1(config-subif)#ip address 10.1.1.1 255.255.255.0
+
+  ! Criar outra subinterface
+  R1(config-subif)#interface f0/0.2
+  ! Definir a subinterface como pertecendo a VLAN 2
+  R1(config-subif)#encapsulation dot1Q 2
+  ! Definir o endereço da subinterface
+  R1(config-subif)#ip address 10.2.2.1 255.255.255.0
+
+  ! Criar ainda outra subinterface
+  R1(config-subif)#interface f0/0.3
+  ! Definir a subinterface como pertecendo a VLAN 3
+  R1(config-subif)#encapsulation dot1Q 3
+  ! Definir o endereço da subinterface
+  R1(config-subif)#ip address 10.3.3.1 255.255.255.0
+
+  ! Sair do menu de configuração
+  R1(config-subif)#end
+  @end
+
+  Começamos por configurar o router para ativar a interface que ligamos ao
+  switch, a seguir criamos subinterfaces que aceitam pacotes de VLANs e aceitam
+  os como sendo de uma subnet específica e depois roteiam-os para a VLAN
+  correta conforme o endereço do destino.
+
+* Exercício 3
+
+  > Place hosts in the different VLAN, configure the respective gateways
+	(router sub-interfaces)
+
+  Para configurar os gateways nos PCs precisamos de voltar a correr o comando
+  `ip` com o argumento `gateway`:
+
+  @code
+  PC1>ip 10.1.1.11/24 gateway 10.1.1.1
+  PC2>ip 10.2.2.12/24 gateway 10.2.2.1
+  PC3>ip 10.3.3.13/24 gateway 10.3.3.1
+  PC4>ip 10.1.1.14/24 gateway 10.1.1.1
+  PC5>ip 10.2.2.15/24 gateway 10.2.2.1
+  PC6>ip 10.3.3.16/24 gateway 10.3.3.1
+  @end
+
+  Com os gateways configurados, sempre que um PC precise de mandar pacotes para
+  um endereço que não pertence a subnet, este pode mandar o pacote para o
+  gateway que é o router. O router faz o seu trabalho e seleciona a VLAN certa
+  para onde mandar o pacote com base na configuração que introduzimos.
+
+  > test connectivity. Capture the packets being exchanged between the Router
+    and (right) Switch.
+
+  Começamos por testar a conectividade entre o PC1 e o PC4:
+
+  @code
+  PC1> ping 10.1.1.14
+
+  84 bytes from 10.1.1.14 icmp_seq=1 ttl=64 time=0.397 ms
+  84 bytes from 10.1.1.14 icmp_seq=2 ttl=64 time=0.806 ms
+  84 bytes from 10.1.1.14 icmp_seq=3 ttl=64 time=0.530 ms
+  84 bytes from 10.1.1.14 icmp_seq=4 ttl=64 time=0.478 ms
+  84 bytes from 10.1.1.14 icmp_seq=5 ttl=64 time=0.484 ms
+  @end
+
+  @embed image
+  captures/Ping_PC1_PC4.png
+  @end
+
+  Tal como em exercícios anteriores o PC1 retêm a sua conectividade com o PC4,
+  visto que estão na mesma VLAN, na ligação entre o switch e o router apenas
+  são capturados os pacotes de ARP iniciais.
+
+  A seguir testamos a conectividade entre o PC1 e o PC5:
+
+  @code
+  PC1> ping 10.2.2.15
+
+  84 bytes from 10.2.2.15 icmp_seq=1 ttl=63 time=20.007 ms
+  84 bytes from 10.2.2.15 icmp_seq=2 ttl=63 time=18.331 ms
+  84 bytes from 10.2.2.15 icmp_seq=3 ttl=63 time=19.591 ms
+  84 bytes from 10.2.2.15 icmp_seq=4 ttl=63 time=18.805 ms
+  84 bytes from 10.2.2.15 icmp_seq=5 ttl=63 time=18.271 ms
+  @end
+
+  @embed image
+  captures/Ping_PC1_PC5.png
+  @end
+
+  Agora existe conectividade entre o PC1 e o PC5, se observarmos a captura
+  de pacotes, vemos que o PC1 começa por descobrir o endereço do gateway com
+  ARP, a seguir, o PC1 manda o pacote ICMP com o endereço IP do PC5 como
+  destino, no entanto, o endereço MAC do pacote tem o endereço do router como
+  destino.
+
+  O router, após receber o pacote, encaminha o para a VLAN 2 adicionando uma
+  frame 802.1Q e trocando o endereço MAC do destino para o endereço do PC 5 e
+  o endereço da fonte para o do router. O PC5 para responder ao PC1 manda também
+  o seu pacote para o gateway e o processo repete-se.
+
+  Finalmente testamos a conectividade entre o PC1 e o PC6:
+
+  @code
+  PC1> ping 10.3.3.16
+
+  84 bytes from 10.3.3.16 icmp_seq=1 ttl=63 time=19.806 ms
+  84 bytes from 10.3.3.16 icmp_seq=2 ttl=63 time=15.635 ms
+  84 bytes from 10.3.3.16 icmp_seq=3 ttl=63 time=16.111 ms
+  84 bytes from 10.3.3.16 icmp_seq=4 ttl=63 time=15.255 ms
+  84 bytes from 10.3.3.16 icmp_seq=5 ttl=63 time=15.658 ms
+  @end
+
+  @embed image
+  captures/Ping_PC1_PC6.png
+  @end
+
+  Tal como aconteceu na comunicação com o PC5, todos os pacotes foram
+  encaminhados para o gateway que depois os redireciona para a VLAN correta.
+
+* Exercício 4
+
+  Começamos por montar a rede. Esta apresenta agora um multilayer switch invés
+  de um router, este multilayer switch vai ser conectado aos dois switches
+  existentes para criar uma ligação redundante.
+
+  @embed image
+  topologies/ex04.png
+  @end
+
+  O multilayer switch escolhido foi o router c3725 da Cisco com o módulo
+  etherswitch.
+
+  > Configure 3 VLAN at the L3 Switch (VLAN1, 2 and 3).
+
+  @code
+  ! Entrar no menu de configuração para VLANs
+  ESW1#vlan database 
+  ! Criar uma vlan com id 2
+  ESW1(vlan)#vlan 2
+  VLAN 2 added:
+  Name: VLAN0002
+  ! Criar uma vlan com id 3
+  ESW1(vlan)#vlan 3
+  VLAN 3 added:
+  Name: VLAN0003
+  ! Sair do menu de configurações de VLANs
+  ESW1(vlan)#exit
+  @end
+
+  > Verify the L3 Switch VLANs table: `show vlan-switch`.
+
+  @code
+  ESW1#show vlan-switch brief
+
+  VLAN Name                             Status    Ports
+  ---- -------------------------------- --------- -------------------------------
+  1    default                          active    Fa1/0, Fa1/1, Fa1/2, Fa1/3
+                                                  Fa1/4, Fa1/5, Fa1/6, Fa1/7
+                                                  Fa1/8, Fa1/9, Fa1/10, Fa1/11
+                                                  Fa1/12, Fa1/13, Fa1/14, Fa1/15
+  2    VLAN0002                         active    
+  3    VLAN0003                         active    
+  1002 fddi-default                     active    
+  1003 token-ring-default               active    
+  1004 fddinet-default                  active    
+  1005 trnet-default                    active
+  @end
+
+  > Configure the L3 Switch's L2 ports (fastEthernet slot 1) 
+  > port 0\: VLAN1
+
+  @code
+  ! Selecionar a porta 0 do switch
+  ESW1(config)#interface f1/0
+  ! Definir o modo da porta como acesso
+  ESW1(config-if)#switchport mode access
+  ! Atribuir a porta a VLAN 1
+  ESW1(config-if)#switchport access vlan 1
+  @end
+
+  > ports 1-8\: VLAN2
+
+  @code
+  ! Selecionar as portas 1 até 8 do switch
+  ESW1(config-if)#interface range f1/1 - 8
+  ! Definir o modo das portas como acesso
+  ESW1(config-if-range)#switchport mode access
+  ! Atribuir as portas a VLAN 2
+  ESW1(config-if-range)#switchport access vlan 2
+  @end
+
+  > ports 9-12\: VLAN3
+
+  @code
+  ! Selecionar as portas 9 até 12 do switch
+  ESW1(config-if)#interface range f1/9 - 12
+  ! Definir o modo das portas como acesso
+  ESW1(config-if-range)#switchport mode access
+  ! Atribuir as portas a VLAN 3
+  ESW1(config-if-range)#switchport access vlan 3
+  @end
+
+  > ports 13-15\: Inter-switch/Tagged/802.1Q:
+
+  @code
+  ! Selecionar as portas 13 até 15 do switch
+  ESW1(config-if-range)#interface range f1/13 - 15
+  ! Definir o modo das portas como interswitch
+  ESW1(config-if-range)#switchport mode trunk
+  ! Utilizar pacotes 802.1Q para identificar VLANs
+  ESW1(config-if-range)#switchport trunk encapsulation dot1q
+  ! Aplicar e sair do menu de configuração
+  ESW1#wr
+  @end
+
+  > Configure the Switch L3 virtual (Vlan) interfaces:
+
+  Antes de configurarmos as interfaces L3 temos de ativar as capacidades de
+  routing do switch:
+
+  @code
+  ! Entrar no menu de configuração global
+  ESW1#config terminal
+  ! Ativar roteamento de IPv4
+  ESW1(config)#ip routing
+  @end
+
+  Finalmente podemos atribuir os endereços a todas as VLANs e ativar as
+  interfaces L3:
+  @code
+  ! Escolher a interface virtual da VLAN 1
+  ESW1(config)#interface vlan 1
+  ! Atribuir o endereço a VLAN 1
+  ESW1(config-if)#ip address 10.1.1.1 255.255.255.0
+  ! Ativar a interface virtual
+  ESW1(config-if)#no shutdown
+  ! Desativar a transição automática da interface quando
+  ! os cabos são disconectados.
+  ESW1(config-if)#no autostate
+
+  ! Escolher a interface virtual da VLAN 2
+  ESW1(config)#interface vlan 2
+  ! Atribuir o endereço a VLAN 2
+  ESW1(config-if)#ip address 10.2.2.1 255.255.255.0
+  ! Ativar a interface virtual
+  ESW1(config-if)#no shutdown
+  ! Desativar a transição automática da interface quando
+  ! os cabos são disconectados.
+  ESW1(config-if)#no autostate
+
+  ! Escolher a interface virtual da VLAN 3
+  ESW1(config)#interface vlan 3
+  ! Atribuir o endereço a VLAN 3
+  ESW1(config-if)#ip address 10.3.3.1 255.255.255.0
+  ! Ativar a interface virtual
+  ESW1(config-if)#no shutdown
+  ! Desativar a transição automática da interface quando
+  ! os cabos são disconectados.
+  ESW1(config-if)#no autostate
+
+  ! Sair do menu de configuração
+  ESW1(config-if)#end
+  @end
+
+  > Verify the routing table (sh ip route).
+
+  @code
+  ESW1#sh ip route 
+  Codes: C - connected, S - static, R - RIP, M - mobile, B - BGP
+         D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area 
+         N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+         E1 - OSPF external type 1, E2 - OSPF external type 2
+         i - IS-IS, su - IS-IS summary, L1 - IS-IS level-1, L2 - IS-IS level-2
+         ia - IS-IS inter area, * - candidate default, U - per-user static route
+         o - ODR, P - periodic downloaded static route
+
+  Gateway of last resort is not set
+
+       10.0.0.0/24 is subnetted, 3 subnets
+  C       10.3.3.0 is directly connected, Vlan3
+  C       10.2.2.0 is directly connected, Vlan2
+  C       10.1.1.0 is directly connected, Vlan1
+  @end
+
+  > Place hosts in different VLAN, configure the respective gateways (VLAN
+    virtual interfaces)
+
+  @code
+  PC1>ip 10.1.1.11/24 gateway 10.1.1.1
+  PC2>ip 10.2.2.12/24 gateway 10.2.2.1
+  PC3>ip 10.3.3.13/24 gateway 10.3.3.1
+  PC4>ip 10.1.1.14/24 gateway 10.1.1.1
+  PC5>ip 10.2.2.15/24 gateway 10.2.2.1
+  PC6>ip 10.3.3.16/24 gateway 10.3.3.1
+  @end
+
+  > test connectivity. Capture the packets being exchanged between the -Router-
+    Switch and L3 Switch.
+
+  A topologia montada apresenta um ciclo entre os switches e o multilayer
+  switch, no entanto, o multilayer switch suporta os protocolos de Spanning
+  Tree, ao contrário dos switches normais que utilizamos. Isto significa que
+  ele irá automaticamente desligar uma das suas portas para prevenir que o loop
+  se feche.
+
+  No entanto, isto significa que se quisermos capturar a troca de pacotes entre
+  o switch e o L3 switch, vamos precisar de descobrir qual dos links está
+  ativo. A maneira mais simples de fazer isto é começar uma captura de pacotes
+  nos dois links do L3 switch e nos computadores fazer um ping entre VLANs. Se
+  forem capturados pacotes de ARP ou ICMP, quer dizer que o link está ativo,
+  caso contrário o link foi desativado.
+
+  Depois de, descobrimos o link ativo e começarmos a captura de pacotes podemos
+  prosseguir como normal, começamos por fazer um `ping` entre o PC1 e o PC4
+  (PCs na mesma VLAN):
+
+  @code
+  PC1> ping 10.1.1.14
+
+  84 bytes from 10.1.1.14 icmp_seq=1 ttl=64 time=0.512 ms
+  84 bytes from 10.1.1.14 icmp_seq=2 ttl=64 time=0.583 ms
+  84 bytes from 10.1.1.14 icmp_seq=3 ttl=64 time=0.517 ms
+  84 bytes from 10.1.1.14 icmp_seq=4 ttl=64 time=0.604 ms
+  84 bytes from 10.1.1.14 icmp_seq=5 ttl=64 time=0.572 ms
+  @end
+
+  @embed image
+  captures/L3_Ping_PC1_PC4.png
+  @end
+
+  Como os dois PCs estão na mesma subnet, não é necessário qualquer tipo de
+  routing, logo na captura apenas vemos a broadcast request de ARP para o
+  endereço do PC4.
+
+  Tentamos agora fazer um ping entre o PC1 e o PC2 (VLAN1 para VLAN2):
+
+  @code
+  PC1> ping 10.2.2.12
+
+  10.2.2.12 icmp_seq=1 timeout
+  84 bytes from 10.2.2.12 icmp_seq=2 ttl=63 time=15.088 ms
+  84 bytes from 10.2.2.12 icmp_seq=3 ttl=63 time=17.208 ms
+  84 bytes from 10.2.2.12 icmp_seq=4 ttl=63 time=15.974 ms
+  84 bytes from 10.2.2.12 icmp_seq=5 ttl=63 time=16.043 ms
+  @end
+
+  @embed image
+  captures/L3_Ping_PC1_PC2.png
+  @end
+
+  Tal como quando tínhamos o router invés do L3 switch, vemos que o PC1 começa
+  por descobrir o endereço do gateway através de ARP, a seguir manda para o
+  gateway o pacote de ICMP com o endereço de IP do PC2 como destino. Após a
+  chegada do pacote ICMP ao L3 switch este vai consultar a tabela de routing e
+  irá mandar o pacote para a VLAN 2, começando por fazer a procura ARP pelo
+  endereço do PC2. Finalmente o L3 switch reencaminha o pacote de ICMP para o
+  PC2, este responde com um ICMP reply e o processo repete-se, mas na outra
+  direção (com a exceção dos pacotes de ARP porque agora os endereços MACs
+  estão guardados na tabela de encaminhamento).
+
+  > Analyze the switching module forwarding table (`show mac-address-table`) in
+    L3 Switch.
+
+  @code
+  Destination Address  Address Type  VLAN  Destination Port
+  -------------------  ------------  ----  --------------------
+  c201.1a3d.0000          Self          1     Vlan1	
+  c201.1a3d.0000          Self          2     Vlan2	
+  c201.1a3d.0000          Self          3     Vlan3	
+  0050.7966.6800          Dynamic       1     FastEthernet1/14	
+  0050.7966.6801          Dynamic       2     FastEthernet1/14	
+  @end
+
+  A tabela de encaminhamento, apresenta os endereços MACs da interface virtual
+  responsável pelo encaminhamento entre VLANs e também os endereços dos PCs que
+  forem descobertos por ARP e ainda estão em memória.

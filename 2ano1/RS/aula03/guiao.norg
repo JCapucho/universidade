@@ -1,6 +1,6 @@
 @document.meta
 title: Aula 03
-description: Estudo do protocolo 802.1Q.
+description: Estudo do protocolo 802.1Q
 author: João Capucho
 @end
 
@@ -97,8 +97,8 @@ author: João Capucho
    @code
    ESW1#configure terminal                        ! Entrar no menu de configuração global
    ESW1(config)#interface range f1/0 – 1          ! Selecionar as portas no intervalo f1/0 -1 (i.e. f1/0 e f1/1)
-   ESW1(config-if-range)#switchport mode access   ! Definir modo da porta como acesso
-   ESW1(config-if-range)#switchport access vlan 2 ! Definir VLAN da porta com indíce 2
+   ESW1(config-if-range)#switchport mode access   ! Definir o modo da porta como acesso
+   ESW1(config-if-range)#switchport access vlan 2 ! Definir a VLAN da porta com indíce 2
    ESW1(config-if-range)#end                      ! Sair do menu de configuração
    @end
 
