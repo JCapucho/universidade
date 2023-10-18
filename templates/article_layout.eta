@@ -11,7 +11,7 @@ mjx-container[display="true"] {
 }
 </style>
 
-<main class="my-4 mx-auto prose md:prose-lg">
+<main class="my-4 mx-auto prose md:prose-lg" data-pagefind-body>
 <%~ it.body %>
 </main>
 

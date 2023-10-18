@@ -52,6 +52,7 @@
         cp ${resumos-fonts}/* fonts/
         bun install
         bun run build
+        bun run index
       '';
 
       base-pkgs = with pkgs; [

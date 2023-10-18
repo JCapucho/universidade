@@ -23,8 +23,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ["Iosevka Aile Iaso", ...defaultTheme.fontFamily.sans],
-        mono: ["Iosevka Curly Iaso", ...defaultTheme.fontFamily.mono],
+        sans: ["Iosevka Aile Resumos", ...defaultTheme.fontFamily.sans],
+        mono: ["Iosevka Curly Resumos", ...defaultTheme.fontFamily.mono],
       },
       typography: ({ theme }) => ({
         DEFAULT: {

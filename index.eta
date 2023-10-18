@@ -1,15 +1,24 @@
 <% layout("./base_layout.eta") %>
 
+<link href="/templates/styles/homepage.css" rel="stylesheet">
+<link href="/pagefind/pagefind-ui.css" rel="stylesheet">
 <div class="mx-auto max-w-screen-xl">
 	<main
 		class="m-4 grid justify-center gap-4"
 		style="grid-template-columns: repeat(auto-fit, minmax(auto, 24rem));"
 	>
+		<div id="search" class="col-span-full"></div>
 		<% it.map.forEach(function explorer(node) { %>
 			<%~ include("./hir_node.eta", { node }) %>
 		<% }) %>
 	</main>
 </div>
+<script src="/pagefind/pagefind-ui.js"></script>
+<script>
+	window.addEventListener('DOMContentLoaded', (event) => {
+		new PagefindUI({ element: "#search", showSubResults: true });
+	});
+</script>
 
 <!--
 vi: ft=embedded_template

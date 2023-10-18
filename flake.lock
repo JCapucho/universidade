@@ -261,11 +261,11 @@
         "rust-overlay": "rust-overlay"
       },
       "locked": {
-        "lastModified": 1694467933,
-        "narHash": "sha256-GtTvrKF0hknXQeaE6GXcXJgbqIXbaB9ze35TRxV7c0E=",
+        "lastModified": 1697553765,
+        "narHash": "sha256-TwuIyyz3EwkSieJxATAiFPv5abr3a0P1idlCejsiZWY=",
         "owner": "tweag",
         "repo": "jupyenv",
-        "rev": "97f76f92fa14814e955a4f6847eaa4198525a19e",
+        "rev": "0c86802aaa3ffd3e48c6f0e7403031c9168a8be2",
         "type": "github"
       },
       "original": {
@@ -425,11 +425,11 @@
     },
     "nixpkgs_3": {
       "locked": {
-        "lastModified": 1696949636,
-        "narHash": "sha256-acolMPyAsCU5BFJ6FKKI/S5KmPfTYgCNgXzUuhuPR60=",
+        "lastModified": 1697661768,
+        "narHash": "sha256-ARvJfGbPSkR+7jg98nnWj/hkidHQxKv6S9VWvFL0j70=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "77adf2ae2b5258d89dfce878c21b8a1784aa071d",
+        "rev": "bc9afe9f951b614523463f94e54b8714ba4e461d",
         "type": "github"
       },
       "original": {
