@@ -1,3 +1,8 @@
+[children]
+"Testes" = "https://uapt33090-my.sharepoint.com/:f:/g/personal/jcapucho_ua_pt/EtAgfbBT3WZNgzqsK14M6JkBrFalAOZqmF4fVgAA92OJvg?e=FULWsE"
+"Projetos GNS3" = "https://uapt33090-my.sharepoint.com/:f:/g/personal/jcapucho_ua_pt/EmCL262EKTdHtCKb1UUBIqMBlkJt2gifWAmYGKfQnc-e8A?e=3gCKPT"
+
 [children."Guiões".children]
+"Enunciados" = "https://uapt33090-my.sharepoint.com/:f:/g/personal/jcapucho_ua_pt/EktPjWO8gHtErbJjyjMMZd8Bb42fzFYpFdnWevbp5jhKdQ?e=d3OlPq"
 "Aula 03" = "aula03/guiao.norg"
 "Aula 04" = "aula04/guiao.norg"
