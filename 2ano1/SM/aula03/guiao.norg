@@ -1,0 +1,82 @@
+@document.meta
+title: Aula 04
+description: Séries de Fourier
+author: João Capucho
+@end
+
+* Exercício 1
+
+  A funçõa tem periocidade de 1 segundo, $\omega_0 = 2\pi$, logo temos
+  que $T_0 = 1$.
+
+  @math
+  \begin{align}
+  a_k &= 2\int_0^{1} x(t) \cos(2\pi k t) \; dt \\
+    &= 2\left[
+      \int_{-\frac{1}{2}}^{0} (-1) \cos(2\pi k t) \; dt
+      + \int_0^\frac{1}{2} \cos(2\pi k t) \; dt
+    \right] \\
+    &= 2\left[
+      -\left[ \frac{\sin(2\pi k t)}{2\pi k} \right]_{-\frac{1}{2}}^0
+      + \left[ \frac{\sin(2\pi k t)}{2\pi k} \right]^\frac{1}{2}_0
+    \right] \\
+    &= 2\left[
+      \frac{\sin\left(-2\pi k \frac{1}{2}\right)}{2\pi k}
+      + \frac{\sin\left(2\pi k \frac{1}{2}\right)}{2\pi k}
+    \right] \\
+    &= 2\left[
+      \frac{\sin\left(-\pi k \right)
+      + \sin\left(\pi k \right)}{2\pi k}
+    \right] \\
+    &= 2\left[
+      \frac{-\sin\left(\pi k \right)
+      + \sin\left(\pi k \right)}{2\pi k}
+    \right] \\
+    &= 2\left[
+      \frac{0}{2\pi k}
+    \right] \\
+    &= 0
+  \end{align}
+  @end
+
+  @math
+  \begin{align}
+  b_k &= 2\int_0^{1} x(t) \sin(2\pi k t) \; dt \\
+    &= 2\left[
+      \int_{-\frac{1}{2}}^{0} (-1) \sin(2\pi k t) \; dt
+      + \int_0^\frac{1}{2} \sin(2\pi k t) \; dt
+    \right] \\
+    &= 2\left[
+      -\left[ \frac{-\cos(2\pi k t)}{2\pi k} \right]_{-\frac{1}{2}}^0
+      + \left[ \frac{-\cos(2\pi k t)}{2\pi k} \right]^\frac{1}{2}_0
+    \right] \\
+    &= 2\left[
+      - \left[ -\frac{1}{2\pi k} + \frac{\cos\left(-2\pi k \frac{1}{2}\right)}{2\pi k} \right]
+      + \left[ - \frac{\cos\left(2\pi k \frac{1}{2}\right)}{2\pi k} + \frac{1}{2\pi k} \right]
+    \right] \\
+    &= 2\left[
+      \frac{1}{2\pi k} - \frac{\cos\left(-2\pi k \frac{1}{2}\right)}{2\pi k}
+      - \frac{\cos\left(2\pi k \frac{1}{2}\right)}{2\pi k} + \frac{1}{2\pi k}
+    \right] \\
+    &= 2\left[
+      \frac{2}{2\pi k} - \frac{\cos\left(-\pi k\right)
+        - \cos\left(\pi k\right)}{2\pi k}
+    \right] \\
+    &= 2\left[
+      \frac{2}{2\pi k} + \frac{- \cos\left(\pi k\right)
+        - \cos\left(\pi k\right)}{2\pi k}
+    \right] \\
+    &= 2\left[
+      \frac{2}{2\pi k} - \frac{2\cos(\pi k)}{2\pi k}
+    \right] \\
+    &= 2\left[
+      \frac{2 - 2\cos(\pi k)}{2\pi k}
+    \right] \\
+    &= \left\{
+      \begin{array}{ll}
+        0 & k \; \text{par} \\
+        \frac{4}{\pi k} & k \; \text{impar}
+      \end{array} 
+    \right. 
+  \end{align}
+  @end
