@@ -1,0 +1,640 @@
+@document.meta
+title: Aula 10
+description: Codificação baseada em dicionários e compressão de Imagens
+author: João Capucho
+@end
+
+* Codificação baseada em dicionários
+
+** Alínea A
+
+   > Usando a técnica de compressão LZW codifique seguinte sequência de
+     caracteres "LALAALAILAILAI"
+
+   A compressão /LZW/ (/Lempel–Ziv–Welch/) baseia-se na codificação através de
+   um dicionário. No entanto, e ao contrário de outros algoritmos baseados em
+   dicionários, o dicionário é criado a medida que o algoritmo codifica a
+   mensagem, sendo apenas necessário um pequeno dicionário inicial que contêm a
+   codificação para todas as strings de tamanho 1.
+
+   O algoritmo pode então ser descrito através dos seguintes passos:
+
+   ~ O dicionário é inicializado com todas as strings de tamanho 1
+   ~ É procurado no dicionário a maior string que corresponde a mensagem por
+     codificar
+   ~ O código correspondente é emitido no resultado
+   ~ A string e o símbolo seguinte são adicionados ao dicionário com um código
+     novo
+   ~ O passo 2 é repetido até toda a mensagem ser codificada
+
+   Assumindo agora que o nosso dicionário inicial é `A = 1`, `I = 2` e `L = 3`,
+   a codificação com /LZW/ é apresentada na imagem seguinte.
+
+   @embed image
+   ./assets/LZW_enconding.png
+   @end
+
+   A codificação da mensagem que nos foi dada é então a sequência `314512498`.
+
+   A descodificação é efetuada de maneira semelhante, sendo mais uma vez apenas
+   necessário um dicionário inicial idêntico ao usado na codificação.
+
+** Alínea B
+
+   > Calcule o rácio de compressão
+
+   O rácio de compressão (ou taxa de compressão) é dado pela seguinte fórmula:
+
+   @math
+   \text{Taxa de compressão} = \frac{
+   \text{Mensagem original}
+   }{\text{Mensagem comprimida}}
+   @end
+
+   Considerando que a mensagem original tem um comprimento de $14$ símbolos e a
+   mensagem codificada têm $9$, obtemos o seguinte rácio de compressão:
+
+   @math
+   \text{Taxa de compressão} = \frac{14}{9} \approx 1.56
+   @end
+
+   Ou seja a mensagem original é aproximadamente $156 \%$ o tamanho da mensagem
+   codificada.
+
+** Matlab
+
+   As alíneas anteriores podem também ser resolvidas no Matlab. Para tal vamos
+   começar por definir a função `lzwEncode`, esta vai receber o dicionário
+   inicial e a mensagem por codificar. O dicionário vai ser representado por um
+   /cell array/ onde o valor é a string e o índice é o código da string:
+
+   @code matlab
+   function [output, dict] = lzwEncode(initial, msg)
+   output = [];
+   dict = initial;
+   % A string a ser codificada
+   substring = [];
+
+   % O código registado para a substring construída previamente
+   lastCode = [];
+
+   for c=msg
+       % Vamos tentar aumentar a string com o símbolo seguinte
+       nextStr = [substring c];
+       code = find(strcmp(dict, nextStr));
+       % Se não for encontrada no dicionário, a string anterior é emitida,
+       % a string aumentada é adicionada ao dicionário e o processo recomeça
+       % no símbolo.
+       if isempty(code)
+           output = [output lastCode];
+           
+           dict = [dict nextStr];
+           
+           substring = c;
+           code = find(strcmp(dict, substring));
+       else
+           % A string aumentada está no dicionário por isso atualizamos a
+           % substring e continuamos o processo sem emitir nada.
+           substring = nextStr;
+       end
+       
+       % Atualizar o código associado a substring
+       lastCode = code;
+   end
+
+   % A última substring ainda não foi emitida, isso precisa de ser feito agora.
+   output = [output lastCode];
+   end
+   @end
+
+   Este código pode ser usado do seguinte modo para resolver o problema.
+
+   @code matlab
+   msg = 'LALAALAILAILAI';
+
+   % O dicionário inicial é construído através de todos os símbolos únicos, o
+   % resultado é uma matriz, mas a função precisa de um cell array, logo usamos
+   % a função `num2cell` para converter entre os dois.
+   initial = num2cell(unique(msg));
+
+   % `output` vai conter a mensagem codificada
+   [output, ~] = lzwEncode(initial, msg);
+
+   % Cálculo do rácio de compressão
+   compressio_ratio = length(msg) / length(output)
+   @end
+
+* Compressão de Ficheiros de Imagem
+
+** Exercício 1
+
+   > Carregue para o workspace do MATLAB o conteúdo da imagem guardada no
+     ficheiro "Parede_8bit.bmp" que se encontra no Moodle (nesta imagem, a cor
+     de cada pixel é armazenada em 8 bits). Para tal, use o comando:
+
+   @code matlab
+   [Image, ColorMap] = imread('Parede_8bit.bmp');
+   @end
+
+   > ficando a informação guardada na matriz ($N \times M$) Image. Visualize a
+     imagem no MATLAB.
+
+   A documentação do Matlab para a função
+   {https://www.mathworks.com/help/matlab/ref/imread.html}[`imread`] apresenta
+   um exemplo que utiliza a função
+   {https://www.mathworks.com/help/matlab/ref/image.html}[`image`] para mostrar
+   a imagem, no entanto, se utilizarmos esta função com a nossa imagem obtemos
+   o seguinte resultado:
+
+   @code matlab
+   image(Image);
+   @end
+
+   @embed image
+   ./assets/ImageFunctionResult.png
+   @end
+
+   Isto acontece porque a imagem que nos foi dada é indexada, isto significa
+   que cada pixel invés de guardar a sua cor, guarda um índice da paleta. A
+   paleta contêm o mapeamento dos índices para cores.
+
+   @embed image
+   ./assets/paletted_image.png
+   @end
+
+   No nosso caso `ColorMap` contêm a paleta e precisamos de usar a função
+   {https://www.mathworks.com/help/images/ref/imshow.html}[`imshow`] que aceita
+   dois argumentos, a imagem indexada e a paleta a utilizar.
+
+   @code matlab
+   imshow(Image, ColorMap);
+   @end
+
+   Se utilizarmos este código obtemos a seguinte imagem:
+
+   @embed image
+   ./assets/ImshowFunctionResult.png
+   @end
+
+** Exercício 2
+
+   > Desenvolva, agora, a função: 
+
+   @code matlab
+   Save8bitImage(Filename, Image)
+   @end
+
+   > Que guarda num ficheiro (cujo nome é especificado pela string `Filename`) a
+     informação contida na matriz `Image`. Esse ficheiro deve seguir a seguinte
+     especificação:
+   > \- os primeiros 2 bytes guardam o valor de $N$ (no formato `uint16`);
+   > \- os 2 bytes seguinte guardam o valor de $M$ (no formato `uint16`);
+   > \- os restantes bytes guardam todos os valores de `Image`
+     (no formato `uint8`).
+   
+
+   Antes de começarmos a escrever para o ficheiro vamos precisar de o criar e
+   abrir para escrita. Isto é feito de maneira semelhante a outras linguagens
+   de programação, o ficheiro é aberto com a função
+   {https://www.mathworks.com/help/matlab/ref/fopen.html}[`fopen`] que aceita
+   como argumentos o nome do ficheiro a abrir e como este deve ser aberto, no
+   nosso caso `'w'` porque queremos apenas escrever para o ficheiro.
+
+   @code matlab
+   function [] = Save8bitImage(Filename, Image)
+   fileID = fopen(Filename, 'w');
+
+   % ...
+   end
+   @end
+
+   O Matlab vai criar o ficheiro se este não existir ou truncar o ficheiro se
+   este já existir (perdendo todos os dados guardados no mesmo).
+
+   O ficheiro após ser usado precisa de ser fechado, não só para garantir que os
+   dados são todos escritos para o ficheiro, mas também para libertar os
+   recursos necessários para manter um ficheiro aberto.
+
+   @code matlab
+   function [] = Save8bitImage(Filename, Image)
+   fileID = fopen(Filename, 'w');
+
+   % ...
+
+   fclose(fileID);
+   end
+   @end
+
+   Agora resta-nos escrever para o ficheiro, o Matlab para tal disponibiliza a
+   função {https://www.mathworks.com/help/matlab/ref/fwrite.html}[`fwrite`],
+   esta aceita como argumentos: o ficheiro onde escrever, os dados a escrever e
+   opcionalmente o formato a usar para guardar os dados.
+
+   Por defeito os dados são guardados como inteiros sem sinal de 8 bits, ou seja,
+   bytes diretamente, isto é um problema para números grandes, com sinal ou não
+   inteiros, nestes casos é necessário especificar o formato no qual os guardar.
+
+   Começando pelas dimensões da imagem, podemos obtê-las utilizando a função
+   `size(Image)`, logo para as escrever no ficheiro basta:
+
+   @code matlab
+   fwrite(fileID, size(Image), 'uint16');
+   @end
+
+   Como foi pedido os valores são guardados no formato `uint16`. Os valores da
+   matriz são escritos individualmente seguindo a ordem das colunas.
+
+   Finalmente os valores de `Image` podem ser guardados:
+
+   @code matlab
+   fwrite(fileID, Image);
+   @end
+
+   O formato por omissão é `uint8` por isso não precisamos de especificar o
+   formato para escrever a `Image`.
+
+   A nossa função final é então:
+
+   @code matlab
+   function [] = Save8bitImage(Filename, Image)
+   fileID = fopen(Filename, 'w');
+
+   fwrite(fileID, size(Image), 'uint16');
+   fwrite(fileID, Image);
+
+   fclose(fileID);
+   end
+
+   @end
+
+   > Teste a função com a matriz gerada na alínea anterior e registe o tamanho
+     (em bytes) desse ficheiro. Tenha o cuidado em atribuir o nome ao ficheiro
+     para que este não coincida com o de outro ficheiro que exista na pasta de
+     trabalho.
+
+   @code matlab
+   Save8bitImage("ImageSave.sav", Image);
+   @end
+
+   Podemos agora verificar o tamanho do ficheiro usando o comando `du`:
+
+   @code sh
+   $ du -b ImageSave.sav
+   1001524	ImageSave.sav
+   @end
+
+** Exercício 3
+
+   > Para verificar a função anterior, desenvolva agora a função:
+
+   @code matlab
+   [N, M, Im] = Load8bitImage(Filename)
+   @end
+
+   > que carrega a informação guardada no ficheiro criado na pergunta anterior,
+     ficando a matriz da imagem na variável `Im`.
+
+   De maneira semelhante ao exercício anterior, começamos por abrir o ficheiro,
+   mas desta vez para leitura (`'w' -> 'r'`) e não nos podemos de esquecer de
+   fechar o ficheiro após o utilizarmos.
+
+   @code matlab
+   function [N, M, Im] = Load8bitImage(Filename)
+   fileID = fopen(Filename, 'r');
+
+   % ...
+
+   fclose(fileID);
+   end
+   @end
+
+   A seguir, vamos usar a função
+   {https://www.mathworks.com/help/matlab/ref/fread.html}[`fread`] para ler os
+   dados do ficheiro, esta função aceita como argumentos: o ficheiro para ler,
+   opcionalmente as dimensões da matriz para onde ler (apenas serão lidos dados
+   suficientes para preencher a matriz, se o tamanho não for definido, todos os
+   dados vão ser lidos para um array) e ainda o formato para ler os dados (mais
+   uma vez é opcional).
+
+   Desta vez o formato é especificado como um par separado pelo símbolo `=>`,
+   o primeiro formato é o que é usado para ler do ficheiro, o segundo é formato
+   para que os dados são convertidos antes de serem guardados na matriz. Por
+   defeito o formato é `uint8=>double`, ou seja, os dados são lidos como bytes,
+   mas cada valor é convertido num `double`.
+
+   Começamos por ler as dimensões, cada uma é um `uint16`:
+
+   @code matlab
+   N = fread(fileID, 1, 'uint16');
+   M = fread(fileID, 1, 'uint16');
+   @end
+
+   Os valores de $N$ e $M$ apesar de serem lidos como `uint16` vão ser
+   convertidos para `double`, isto acontece porque não especificamos o formato
+   destino e por defeito este é `double`.
+
+   Concluímos lendo os valores da imagem em si, para isso vamos precisar de ler
+   $N \times M$ valores com o formato `uint8` o que pode ser feito com o
+   seguinte código:
+
+   @code matlab
+   Im = fread(fileID, [N, M], 'uint8=>uint8');
+   @end
+
+   Neste caso os valores são lidos e guardados como `uint8`, pois não só
+   especificamos o formato de leitura mas também o formato destino.
+
+   Concluindo, a nossa função `Load8bitImage` fica:
+
+   @code matlab
+   function [N, M, Im] = Load8bitImage(Filename)
+   fileID = fopen(Filename, 'r');
+
+   N = fread(fileID, 1, 'uint16');
+   M = fread(fileID, 1, 'uint16');
+   Im = fread(fileID, [N, M], 'uint8=>uint8');
+
+   fclose(fileID);
+   end
+   @end
+
+   > Visualize a imagem carregada deste ficheiro, e verifique que é igual à
+     imagem original (da pergunta 1)
+
+   Começamos por carregar a imagem do ficheiro que guardamos previamente.
+
+   @code matlab
+   [N, M, LoadedImage] = Load8bitImage("ImageSave.sav");
+   @end
+
+   Podemos visualizar a imagem utilizando mais uma vez a função `imshow` e a
+   paleta de cores guardada em `ColorMap`:
+
+   @code matlab
+   imshow(LoadedImage, ColorMap);
+   @end
+
+   @embed image
+   ./assets/ImshowFunctionResult.png
+   @end
+
+   A imagem parece idêntica, mas podemos comprovar utilizando um `assert` e
+   comparando os conteúdos das matrizes `Image` e `LoadedImage`:
+
+   @code matlab
+   assert (isequal(Image, LoadedImage))
+   @end
+   
+   O código executa sem erro, logo as imagens são idênticas.
+
+** Exercício 4
+
+   > Implemente, agora, uma função que proceda à compressão (sem perdas) da
+     informação contida na matriz da imagem com base no algoritmo /RLE/
+     (/Run-Length Encoding/):
+
+   @code matlab
+   Stream = EncodeImage_RLE(Image)
+   @end
+
+   > O resultado desta função é uma sequência de bytes (do tipo `uint8`),
+     guardados no vetor ($K \times 1$) `Stream`, correspondente à compressão
+     efetuada na matriz `Image`, onde o varrimento deverá ser efetuado
+     preferencialmente ao longo dos pixels de cada linha.
+   > Note que, como o número de ocorrências consecutivas de cada cor é
+     armazenado num `uint8`, esta função deverá atender a esta limitação.
+
+   O algoritmo /RLE/ é bastante simples, os valores são processados tal que
+   valores iguais que aparecem juntos são guardados como um par de contagem e
+   valor invés de cada valor individualmente. Todos os valores são guardados
+   nesta forma de pares, logo valores que diferem dos vizinhos gastam mais
+   memória, pois são armazenados com uma contagem de 1 e o seu valor.
+
+   @embed image
+   ./assets/RLE.png
+   @end
+
+   A implementação do algoritmo consiste em guardar o último valor visto e o
+   número de vezes que foi visto, depois para cada valor, se este for igual ao
+   último visto, a contagem é incrementada e passa-se ao valor seguinte, caso
+   contrário a contagem atual é adicionada ao resultado tal como o último valor
+   e o valor atual passa a ser o último valor visto. Isto é repetido até todos
+   os valores serem codificados.
+
+   Isto pode ser implementado em Matlab com a seguinte função:
+
+   @code matlab
+   function Stream = EncodeImage_RLE(Image)
+   % Queremos iterar pelos pixeis linha a linha, logo precisamos de transpor
+   % a matriz `Image` e depois mudar a sua forma para uma matriz NM x 1.
+   bytes = reshape(Image', [], 1);
+
+   % Inicializar o resultado
+   Stream = [];
+
+   % O último valor visto é inicializado com o primeiro byte da imagem
+   % e a sua contagem é 1.
+   lastValue = bytes(1);
+   count = 1;
+
+   for idx=2:length(bytes)
+       val = bytes(idx);
+       
+       % Se o valor for diferente do último visto, a contagem e o último valor
+       % são emitidos e a contagem é reiniciada.
+       %
+       % Também é verifcado que a contagem não vai passar a um valor maior do
+       % que se consegue representar com um `uint8`, se isto for o caso, a
+       % contagem também é reiniciada.
+       if val ~= lastValue || count >= intmax("uint8")
+           Stream = [Stream; count; lastValue];
+           lastValue = val;
+           count = 1;
+       else
+           count = count + 1;
+       end
+   end
+
+   % O último valor ainda não foi emitido, tratamos disso aqui
+   Stream = [Stream; count; lastValue];
+   end
+   @end
+
+   No início temos que ter o cuidado de transpor a `Image` antes de a converter
+   num array, pois o Matlab percorre os valores coluna a coluna e nós queremos
+   linha a linha.
+
+** Exercício 5
+
+   > Pretendendo guardar num ficheiro de menor tamanho a informação resultante
+     da aplicação do método /RLE/ à imagem original, desenvolva a função:
+
+   @code matlab
+   Save8bitStream(Filename, N, M, Stream)
+   @end
+
+   > que guarda no ficheiro indicado por `Filename` a sequência de dados
+     produzida pela função da pergunta anterior. De novo, esse ficheiro começa
+     por conter os valores de $N$ e $M$ (no formato `uint16`), seguindo-se o
+     conteúdo de `Stream` (no formato `uint8`).
+
+   Esta função é quase idêntica a que foi desenvolvida no exercício 2, com a
+   exceção que as dimensões são passadas explicitamente:
+
+   @code matlab
+   function [] = Save8bitStream(Filename, N, M, Stream)
+   fileID = fopen(Filename, 'w');
+
+   fwrite(fileID, N, 'uint16');
+   fwrite(fileID, M, 'uint16');
+   fwrite(fileID, Stream);
+
+   fclose(fileID);
+   end
+   @end
+
+   > Teste com a imagem em análise e verifique a taxa de compressão que foi
+     possível obter, quando comparado com o ficheiro criado na pergunta 2.
+
+   Começamos por comprimir a imagem e guardá-la num ficheiro:
+
+   @code matlab
+   RLEOutput = EncodeImage_RLE(Image);
+   Save8bitStream("ImageStream.sav", N, M, RLEOutput);
+   @end
+
+   A seguir podemos verificar o tamanho do ficheiro:
+
+   @code sh
+   $ du -b ImageStream.sav 
+   378074	ImageStream.sav
+   @end
+
+   Se compararmos com o tamanho do ficheiro sem compressão (`1001524`), obtemos
+   a seguinte taxa de compressão:
+
+   @math
+   \text{Taxa de compressão} = \frac{1001524}{378074} \approx 2.65
+   @end
+
+   Ou seja, a mensagem original é aproximadamente $265 \%$ o tamanho da mensagem
+   comprimida.
+
+** Exercício 6
+
+   > De novo para verificar o funcionamento da função anterior, desenvolva a
+     função que leia a informação contida no ficheiro comprimido anterior:
+
+   @code matlab
+   [N, M, Stream] = Load8bitStream(Filename)
+   @end
+
+   Mais uma vez a função é idêntica à desenvolvida no exercício 2, com a única
+   exceção que o resultado é um array ($K \times 1$) em vez de uma matriz
+   ($N \times M$).
+
+   @code matlab
+   function [N, M, Stream] = Load8bitStream(Filename)
+   fileID = fopen(Filename, 'r');
+
+   N = fread(fileID, 1, 'uint16');
+   M = fread(fileID, 1, 'uint16');
+   Stream = fread(fileID, 'uint8=>uint8');
+
+   fclose(fileID);
+   end
+   @end
+
+   > e teste-a (i.e., verifique se a sequência guardada no ficheiro (pergunta
+     5) é igual à sequência lida a partir do ficheiro)
+
+   @code matlab
+   [NewN, NewM, Stream] = Load8bitStream("ImageStream.sav");
+   assert (NewN == N && NewM == M && isequal(Stream, RLEOutput));
+   @end
+
+   O código executa sem o `assert` dar erro, logo a sequência lida é idêntica a
+   que foi guardada.
+
+** Exercício 7
+
+   > Finalmente, falta descodificar a informação comprimida, para se obter
+     novamente a imagem original. Desenvolva a função:
+
+   @code matlab
+   Image = DecodeImage_RLE(N, M, Stream)
+   @end
+
+   > que volta a gerar a matriz dos pixels da imagem que é obtida por
+     interpretação da informação contida em `Stream` (sequência de dados
+     produzida pelo /RLE/).
+
+   A descodificação de um código /RLE/ é bastante simples, para cada par de
+   contagem e valor, repetimos o valor no resultado tantas vezes quanto a
+   contagem.
+
+   No entanto, é necessário ter em atenção, mais uma vez, a ordem normal das
+   matrizes em Matlab que é coluna a coluna, mas os nossos dados estão dispostos
+   linha a linha, logo vamos ter que escrever os resultados primeiro para a
+   matriz transposta e no final transpor a matriz para obter o resultado que
+   esperamos.
+
+   @code matlab
+   function Image = DecodeImage_RLE(N, M, Stream)
+   % Inicialização do resultado como a matriz com as dimensões
+   % transpostas do resultado final.
+   Image = zeros(M, N, 'uint8');
+
+   % Indíce onde começar a escrever no resultado
+   StartIndex = 1;
+
+   % Iteração dos valores da `Stream` dois a dois
+   for idx=1:2:length(Stream)
+       % Conversão do tipo da contagem para um inteiro (32 bits), isto previne
+       % erros mais tarde nas contas, caso contrário o Matlab decide promover de um
+       % `double` para um `uint8` quando se faz `StartIndex + count`.
+       count = uint32(Stream(idx));
+       value = Stream(idx + 1);
+       
+       % Escrever o valor no intervalo [StartIndex, StartIndex + count[
+       % (`count` vezes)
+       Image(StartIndex:StartIndex + count - 1) = value;
+       
+       StartIndex = StartIndex + count;
+   end
+
+   % Transpor o resultado para obter a ordem e dimensões corretas.
+   Image = Image';
+   end
+   @end
+
+   > Teste a função visualizando a imagem resultante (que terá que ser igual à
+     imagem original).
+
+   Começamos por descodificar a `Stream`:
+
+   @code matlab
+   DecodedImage = DecodeImage_RLE(N, M, Stream);
+   @end
+
+   A seguir usamos `imshow` para ver a imagem descodificada:
+
+   @code matlab
+   @end
+
+   @code matlab
+   imshow(DecodedImage, ColorMap);
+   @end
+
+   @embed image
+   ./assets/ImshowFunctionResult.png
+   @end
+
+   Mais uma vez, a imagem parece idêntica, mas vamos utilizar um `assert` para 
+   garantir:
+
+   @code matlab
+   assert (isequal(Image, DecodedImage))
+   @end
+   
+   O código executa sem erro, logo as imagens são idênticas.

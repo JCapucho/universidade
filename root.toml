@@ -17,4 +17,5 @@
 
 "Algoritmos e Estruturas de Dados" = { include = "./2ano1/AED/map.toml" }
 "Redes e Serviços" = { include = "./2ano1/RS/map.toml" }
+"Sistemas Multimédia" = { include = "./2ano1/SM/map.toml" }
 
