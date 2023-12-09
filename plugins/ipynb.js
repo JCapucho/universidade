@@ -1,6 +1,14 @@
 import { Transformer } from "@parcel/plugin";
 
-import { run, createEtaInstance } from "./utils.js";
+import posthtml from "posthtml";
+
+import {
+  run,
+  createEtaInstance,
+  postHtmlShiftHeadings,
+  postHtmlAssignHeadingId,
+} from "./utils.js";
+import { renderToc } from "./toc.js";
 
 export default new Transformer({
   async loadConfig({ config }) {
@@ -32,22 +40,30 @@ export default new Transformer({
       "--to=html",
       "--template=basic",
       "--TagRemovePreprocessor.remove_input_tags=remove_cell",
+      "--HTMLExporter.exclude_anchor_links=True",
     ]);
     nbconvert_child.child.stdin?.end(source);
     const { stdout: content } = await nbconvert_child;
 
+    const shifted = await posthtml()
+      .use(postHtmlAssignHeadingId)
+      .use(postHtmlShiftHeadings)
+      .process(content);
+
     config.eta.resetTrackers();
-    const code = await config.eta.renderStringAsync(config.template, {
+    const templated = await config.eta.renderStringAsync(config.template, {
       title,
-      content,
+      content: shifted.html,
     });
+
+    const rendered = await renderToc(templated);
 
     for (const path of config.eta.includedPaths) {
       asset.invalidateOnFileChange(path);
     }
 
     asset.type = "html";
-    asset.setCode(code);
+    asset.setCode(rendered);
 
     return [asset];
   },

@@ -59,9 +59,11 @@ export default {
             "h2 code": { fontSize: "1.5rem" },
             "h3 code": { fontSize: "1.25rem" },
 
+            table: { display: "block", "overflow-x": "auto" },
             "blockquote p:first-of-type::before": { content: "none" },
             "blockquote p:first-of-type::after": { content: "none" },
             "td > p": { margin: "0 !important" },
+            "li > p": { margin: "0 !important" },
           },
         },
         lg: {

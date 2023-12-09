@@ -100,6 +100,8 @@
               nodePackages.typescript-language-server
               nodePackages.vscode-langservers-extracted
               nodePackages."@tailwindcss/language-server"
+
+              texlab
             ]);
 
           shellHook = ''

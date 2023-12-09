@@ -9,6 +9,9 @@ mjx-container[display="true"] {
 	overflow-x: scroll;
 	overflow-y: hidden; 
 }
+#toc {
+  @apply border-b border-primary;
+}
 </style>
 
 <main class="my-4 mx-auto prose md:prose-lg" data-pagefind-body>

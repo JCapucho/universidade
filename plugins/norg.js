@@ -1,6 +1,7 @@
 import { Transformer } from "@parcel/plugin";
 
 import { run, createEtaInstance } from "./utils.js";
+import { renderToc } from "./toc.js";
 
 export default new Transformer({
   async loadConfig({ config }) {
@@ -29,6 +30,7 @@ export default new Transformer({
     const pandoc_child = run("pandoc", [
       "-f",
       "json",
+      "--shift-heading-level-by=1",
       "--mathjax",
       "--metadata",
       "lang=pt-PT",
@@ -36,18 +38,19 @@ export default new Transformer({
     pandoc_child.child.stdin?.end(pandoc_json);
     const { stdout: content } = await pandoc_child;
 
-    config.eta.resetTrackers();
-    const result = await config.eta.renderStringAsync(config.template, {
+    const templated = await config.eta.renderStringAsync(config.template, {
       title,
       content,
     });
+
+    const rendered = await renderToc(templated);
 
     for (const path of config.eta.includedPaths) {
       asset.invalidateOnFileChange(path);
     }
 
     asset.type = "html";
-    asset.setCode(result);
+    asset.setCode(rendered);
 
     return [asset];
   },
