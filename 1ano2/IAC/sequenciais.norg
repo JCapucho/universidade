@@ -24,7 +24,7 @@ bi-estáveis, estes circuitos conseguem guardar um bit de informação como esta
    *nunca* podem ser ambos iguais a 1, senão a latch entra num estado inválido.
 
    @embed image
-   assets/latch-sr.png
+   assets/latch-sr.excalidraw
    @end
 
 ** Latch D
@@ -38,7 +38,7 @@ bi-estáveis, estes circuitos conseguem guardar um bit de informação como esta
    inválido em que era possível entrar-se com a latch SR.
 
    @embed image
-   assets/latch-d.png
+   assets/latch-d.excalidraw
    @end
 
 * Flip-Flops
@@ -53,7 +53,7 @@ bi-estáveis, estes circuitos conseguem guardar um bit de informação como esta
    com a diferença que só guarda o valor na transição do clock.
 
    @embed image
-   assets/flip-flop-d.png
+   assets/flip-flop-d.excalidraw
    @end
 
    O flip-flop é identificado com um triângulo na entrada do /CLK/. Além desta versão
@@ -61,7 +61,7 @@ bi-estáveis, estes circuitos conseguem guardar um bit de informação como esta
    esperar pela transição do /CLK/) mudar o valor do flip-flop.
 
    @embed image
-   assets/flip-flop-d-variations.png
+   assets/flip-flop-d-variations.excalidraw
    @end
 
 * Registos
@@ -74,7 +74,7 @@ bi-estáveis, estes circuitos conseguem guardar um bit de informação como esta
   chama-se de registo.
 
   @embed image
-  assets/register.png
+  assets/register.excalidraw
   @end
 
   Um registo é identificado através dos seus inputs com mais de um bit de largura (neste
@@ -101,7 +101,7 @@ bi-estáveis, estes circuitos conseguem guardar um bit de informação como esta
   o número de palavras que a memória consegue guardar.
 
   @embed image
-  assets/memory.png
+  assets/memory.excalidraw
   @end
 
   Usa-se muitas vezes a notação `NxM` quando se fala do tamanho de uma memória, onde $N$ é o

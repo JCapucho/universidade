@@ -17,7 +17,7 @@ author: João Capucho
   instrução.
 
   @embed image
-  assets/bitfield.png
+  assets/bitfield.excalidraw
   @end
 
 * Tipos de instruções
@@ -83,7 +83,7 @@ author: João Capucho
     `t1` e `t0` são respetivamente os registo de índice 10, 9 e 8.
 
     @embed image
-    assets/add-enconding.png
+	assets/add-enconding.excalidraw
     @end
 
     Todas as instruções do tipo-R são codificadas desta maneira com a exceção
@@ -99,7 +99,7 @@ author: João Capucho
     `sll` é $000000_2$.
 
     @embed image
-    assets/sll-enconding.png
+	assets/sll-enconding.excalidraw
     @end
 
 ** Tipo-I
@@ -155,7 +155,7 @@ author: João Capucho
 	e 9 respetivamente.
 
     @embed image
-	assets/addi-enconding.png
+	assets/addi-enconding.excalidraw
     @end
 
 	No caso das operações /load-store/ a ordem dos registos mantém-se igual,
@@ -168,7 +168,7 @@ author: João Capucho
 	é 43 ($101011_2$).
 
     @embed image
-	assets/sw-enconding.png
+	assets/sw-enconding.excalidraw
     @end
 
 	Finalmente as instruções /branching/, não utilizam o registo `rt` como
@@ -198,7 +198,7 @@ author: João Capucho
 	4 ($000100_2$).
 
     @embed image
-	assets/beq-enconding.png
+	assets/beq-enconding.excalidraw
     @end
 
 	É de notar que os /branches/ só conseguem saltar para instruções que estejam a
@@ -226,7 +226,7 @@ author: João Capucho
    adicionamos mais dois bits 0.
 
    @embed image
-   assets/j-target-calculation.png
+   assets/j-target-calculation.excalidraw
    @end
 
    Estes dois bits são sempre 0, pois em MIPS as funções têm que estar sempre
@@ -251,7 +251,7 @@ author: João Capucho
 	($000011_2$).
 
     @embed image
-	assets/jal-enconding.png
+	assets/jal-enconding.excalidraw
     @end
 
 * Instruções em memória
@@ -264,7 +264,7 @@ author: João Capucho
   necessárias instruções extra para ler e alterar esta memória.
 
   @embed image
-  assets/unified-memory-diff.png
+  assets/unified-memory-diff.excalidraw
   @end
 
 * Execução de instruções

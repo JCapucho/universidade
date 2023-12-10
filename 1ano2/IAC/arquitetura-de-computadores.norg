@@ -29,7 +29,7 @@ author: João Capucho
    transferências no System Bus.
 
    @embed image
-   assets/System-Bus.png
+   assets/System-Bus.excalidraw
    @end
 
    Um barramento ou Bus, nada mais é do que uma coleção de fios (cada fio carrega um bit).
@@ -57,7 +57,7 @@ author: João Capucho
    ativadas e de comunicar com o System Bus para aceder a memória e outros blocos.
 
    @embed image
-   assets/CPU.png
+   assets/CPU.excalidraw
    @end
 
 * Instruções
@@ -97,7 +97,7 @@ author: João Capucho
    @end
 
    @embed image
-   assets/Instruções-niveis.png
+   assets/Instruções-niveis.excalidraw
    @end
 
 ** Ciclo de execução
@@ -109,7 +109,7 @@ author: João Capucho
    a operação e guarda o resultado.
 
    @embed image
-   assets/basic-execution-cycle.png
+   assets/basic-execution-cycle.excalidraw
    @end
 
    Após a instrução acabar de executar o ciclo repete-se para a instrução seguinte.
@@ -129,7 +129,7 @@ author: João Capucho
    o hardware implementa a ISA.
 
    @embed image
-   assets/ISA-abstraction.png
+   assets/ISA-abstraction.excalidraw
    @end
 
    Sendo assim ISA define as seguintes propriedades:
@@ -162,7 +162,7 @@ author: João Capucho
      ou memória.
 
    @embed image
-   assets/instruction-execution-cycle.png
+   assets/instruction-execution-cycle.excalidraw
    @end
 
    Este passos abrangem também passos auxiliares, por exemplo incrementar o contador de

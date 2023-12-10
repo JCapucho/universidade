@@ -21,7 +21,7 @@ a partir deles, estes blocos são tão comuns e uteis que possuem designações 
   permite escolher o valor de uma entrada.
 
   @embed image
-  assets/multiplexer.png
+  assets/multiplexer.excalidraw
   @end
 
 ** Implementação de funções lógicas
@@ -32,7 +32,7 @@ a partir deles, estes blocos são tão comuns e uteis que possuem designações 
    da linha correspondente na tabela de verdade.
 
    @embed image
-   assets/multiplexer-logic.png
+   assets/multiplexer-logic.excalidraw
    @end
 
 * Decoder
@@ -42,7 +42,7 @@ a partir deles, estes blocos são tão comuns e uteis que possuem designações 
   é a que está na mesma posição que o número representado nas entradas.
 
   @embed image
-  assets/decoder.png
+  assets/decoder.excalidraw
   @end
 
 ** Implementação de funções lógicas
@@ -52,7 +52,7 @@ a partir deles, estes blocos são tão comuns e uteis que possuem designações 
    é possível implementar funções lógicas.
 
    @embed image
-   assets/decoder-logic.png
+   assets/decoder-logic.excalidraw
    @end
 
 * Somadores
@@ -68,7 +68,7 @@ a partir deles, estes blocos são tão comuns e uteis que possuem designações 
    e o carry da adição.
 
    @embed image
-   assets/full-adder.png
+   assets/full-adder.excalidraw
    @end
 
 ** Somador de $N$ bits
@@ -78,7 +78,7 @@ a partir deles, estes blocos são tão comuns e uteis que possuem designações 
    bit e ligando os carrys sequencialmente.
 
    @embed image
-   assets/n-bit-adder.png
+   assets/n-bit-adder.excalidraw
    @end
 
    Nota\: Esta implementação não é a mais eficiente pois têm muito tempo de atraso,

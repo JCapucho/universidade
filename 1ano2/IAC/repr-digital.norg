@@ -192,7 +192,7 @@ author: João Capucho
 	Sendo assim um número teria a seguinte representação.
 
 	@embed image
-	assets/Sinal-Módulo.png
+    assets/Sinal-Módulo.excalidraw
 	@end
 
 	$N$ é o número de bits do número, o sinal consome 1 bit e um valor de 0 representa
@@ -376,7 +376,7 @@ author: João Capucho
 	8 bits para a parte inteira e 8 bits para a parte fracionária.
 
 	@embed image
-	assets/Vírgula-Fixa-Conversão.png
+    assets/Vírgula-Fixa-Conversão.excalidraw
 	@end
 
 *** Problema
@@ -403,7 +403,7 @@ author: João Capucho
    precisão simples que utiliza 32 bits e o de precisão dupla que usa 64 bits.
 
    @embed image
-   assets/IEEE-754-format.png
+   assets/IEEE-754-format.excalidraw
    @end
 
    No nível de precisão simples o expoente usa 8 bits e a mantissa 23 bits, o
@@ -432,7 +432,7 @@ author: João Capucho
 	Mais uma vez temos o exemplo do $9.125$ para precisão simples.	
 
    @embed image
-   assets/Vírgula-Flutuante-Conversão.png
+    assets/Vírgula-Flutuante-Conversão.excalidraw
    @end
 
 *** Casos especiais
@@ -451,7 +451,7 @@ author: João Capucho
 	um valor não nulo (o sinal é ignorado).
 
 	@embed image
-	assets/IEEE-754-special-cases.png
+    assets/IEEE-754-special-cases.excalidraw
 	@end
 
 * Representação de Caracteres

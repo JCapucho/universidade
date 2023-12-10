@@ -13,7 +13,7 @@ representam tudo como bits, que só tem dois estados também\: 0 (Falso) ou 1 (V
   outras operações, são estas a negação (/NOT/), a conjunção (/AND/) e a disjunção (/OR/).
 
   @embed image
-  assets/logic-fundamental-operations.png
+  assets/logic-fundamental-operations.excalidraw
   @end
 
   No entanto, e principalmente quando se trata de circuitos digitais, operações extra são usadas,
@@ -30,7 +30,7 @@ representam tudo como bits, que só tem dois estados também\: 0 (Falso) ou 1 (V
   - /XNOR/\: Not XOR, é a negação da operação /XOR/ (ou seja verifica se os inputs são iguais).
 
   @embed image
-  assets/logic-extra-operations.png
+  assets/logic-extra-operations.excalidraw
   @end
 
 * Portas lógicas
@@ -41,14 +41,14 @@ representam tudo como bits, que só tem dois estados também\: 0 (Falso) ou 1 (V
   duas e o /AND/ pode ter 2+ entradas).
 
   @embed image
-  assets/logic-gates.png
+  assets/logic-gates.excalidraw
   @end
 
   As portas lógicas com mais de 2 entradas aplicam a operação a todas as entradas, por exemplo
   a seguinte porta /AND/ de 4 entradas:
 
   @embed image
-  assets/4-way-and.png
+  assets/4-way-and.excalidraw
   @end
 
   É equivalente a seguinte fórmula $S = A \cdot B \cdot C \cdot D$.
@@ -73,7 +73,7 @@ representam tudo como bits, que só tem dois estados também\: 0 (Falso) ou 1 (V
    valor lógico é indefinido e o comportamento do circuito muitas vezes também é indefinido.
 
    @embed image
-   assets/tensions-ranges.png
+   assets/tensions-ranges.excalidraw
    @end
 
    Estes intervalos são também definidos para as saídas e, caso todos os inputs sejam válidos, representam
@@ -88,7 +88,7 @@ representam tudo como bits, que só tem dois estados também\: 0 (Falso) ou 1 (V
    - $V_{OL}$\: A tensão máxima que uma saída pode utilizar para representar um valor lógico 0.
 
    @embed image
-   assets/annotated-tensions-ranges.png
+   assets/annotated-tensions-ranges.excalidraw
    @end
 
 ** Ruído
@@ -107,7 +107,7 @@ representam tudo como bits, que só tem dois estados também\: 0 (Falso) ou 1 (V
    - $\text{NM}_L$\: A margem de ruído para o valor lógico o, $\text{NM}_H = V_{IL} - V_{OL}$
 
    @embed image
-   assets/noise-margins.png
+   assets/noise-margins.excalidraw
    @end
 
 ** Especificações temporais
@@ -124,7 +124,7 @@ representam tudo como bits, que só tem dois estados também\: 0 (Falso) ou 1 (V
    outras.
 
    @embed image
-   assets/propagation-time.png
+   assets/propagation-time.excalidraw
    @end
 
    Em alguns circuitos a mesma entrada passa por vários caminhos diferentes que
@@ -135,7 +135,7 @@ representam tudo como bits, que só tem dois estados também\: 0 (Falso) ou 1 (V
    propagação).
 
    @embed image
-   assets/contamination-time.png
+   assets/contamination-time.excalidraw
    @end
 
    Dentro do intervalo de tempo entre o tempo de contaminação e de propagação
@@ -148,5 +148,5 @@ representam tudo como bits, que só tem dois estados também\: 0 (Falso) ou 1 (V
    a saída.
 
    @embed image
-   assets/circuit-paths.png
+   assets/circuit-paths.excalidraw
    @end

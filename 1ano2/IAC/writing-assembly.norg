@@ -470,7 +470,7 @@ author: João Capucho
    baixo, isto é apenas uma convenção histórica, mas tem que ser usada.
 
    @embed image
-   assets/stack.png
+   assets/stack.excalidraw
    @end
 
    Voltando então as nossas funções, se quisermos utilizar os registos
