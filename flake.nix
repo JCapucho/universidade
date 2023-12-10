@@ -49,6 +49,7 @@
       resumos-fonts = pkgs.callPackage ./fonts/custom-fonts.nix {};
 
       buildSite = pkgs.writeScriptBin "build-site" ''
+        set -eu
         cp ${resumos-fonts}/* fonts/
         bun install
         bun run build
@@ -57,7 +58,7 @@
 
       base-pkgs = with pkgs; [
         bun
-        nodejs
+        nodejs_latest
         pandoc
         pandoc-norg-rs.packages.${system}.default
         (pkgs.python3.withPackages base-py-pkgs)

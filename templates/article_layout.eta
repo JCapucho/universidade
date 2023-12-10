@@ -5,12 +5,29 @@ img {
   margin-right: auto;
   border-radius: .375rem;
 }
+
 mjx-container[display="true"] {
 	overflow-x: scroll;
 	overflow-y: hidden; 
 }
+
 #toc {
   @apply border-b border-primary;
+}
+
+.excalidraw-svg svg {
+  width: 100%;
+  height: auto;
+}
+
+:root.dark .excalidraw-svg svg {
+  filter: invert(93%) hue-rotate(180deg);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root.no-js .excalidraw-svg svg {
+    filter: invert(93%) hue-rotate(180deg);
+  }
 }
 </style>
 

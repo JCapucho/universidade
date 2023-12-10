@@ -1,7 +1,7 @@
 import { Transformer } from "@parcel/plugin";
 
 import { run, createEtaInstance } from "./utils.js";
-import { renderToc } from "./toc.js";
+import { convertAllExclidraw, renderToc } from "./posthtmlPlugins.js";
 
 export default new Transformer({
   async loadConfig({ config }) {
@@ -19,7 +19,7 @@ export default new Transformer({
 
     return { eta, template };
   },
-  async transform({ asset, config }) {
+  async transform({ asset, resolve, config, logger }) {
     const sourcePath = await asset.getCode();
 
     const norg_rs_child = run("pandoc-norg-rs");
@@ -36,8 +36,16 @@ export default new Transformer({
       "lang=pt-PT",
     ]);
     pandoc_child.child.stdin?.end(pandoc_json);
-    const { stdout: content } = await pandoc_child;
+    const { stdout: pandoc_result } = await pandoc_child;
 
+    const content = await convertAllExclidraw(
+      asset,
+      resolve,
+      logger,
+      pandoc_result,
+    );
+
+    config.eta.resetTrackers();
     const templated = await config.eta.renderStringAsync(config.template, {
       title,
       content,

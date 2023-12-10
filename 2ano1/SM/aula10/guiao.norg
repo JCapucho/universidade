@@ -31,7 +31,7 @@ author: João Capucho
    a codificação com /LZW/ é apresentada na imagem seguinte.
 
    @embed image
-   ./assets/LZW_enconding.png
+   ./assets/LZW_enconding.excalidraw
    @end
 
    A codificação da mensagem que nos foi dada é então a sequência `314512498`.
@@ -159,7 +159,7 @@ author: João Capucho
    paleta contêm o mapeamento dos índices para cores.
 
    @embed image
-   ./assets/paletted_image.png
+   ./assets/paletted_image.excalidraw
    @end
 
    No nosso caso `ColorMap` contêm a paleta e precisamos de usar a função
@@ -411,7 +411,7 @@ author: João Capucho
    memória, pois são armazenados com uma contagem de 1 e o seu valor.
 
    @embed image
-   ./assets/RLE.png
+   ./assets/RLE.excalidraw
    @end
 
    A implementação do algoritmo consiste em guardar o último valor visto e o

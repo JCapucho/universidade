@@ -5,24 +5,16 @@
   "resolvers": ["./plugins/ignore-resolver.js", "..."],
   "transformers": {
     "index.eta": [
-      "./plugins/homepage.js",
-      "@parcel/transformer-posthtml",
-      "@parcel/transformer-html"
+      "./plugins/homepage.js"
     ],
     "*.norg": [
-      "./plugins/norg.js",
-      "@parcel/transformer-posthtml",
-      "@parcel/transformer-html"
+      "./plugins/norg.js"
     ],
     "*.ipynb": [
-      "./plugins/ipynb.js",
-      "@parcel/transformer-posthtml",
-      "@parcel/transformer-html"
+      "./plugins/ipynb.js"
     ],
     "embed-iframe:*": [
-      "./plugins/embed-iframe.js",
-      "@parcel/transformer-posthtml",
-      "@parcel/transformer-html"
+      "./plugins/embed-iframe.js"
     ]
   },
   "optimizers": {
