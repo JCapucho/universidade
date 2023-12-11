@@ -58,6 +58,7 @@
 
       base-pkgs = with pkgs; [
         bun
+        yarn
         nodejs_latest
         pandoc
         pandoc-norg-rs.packages.${system}.default

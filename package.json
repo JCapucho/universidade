@@ -3,13 +3,14 @@
   "scripts": {
     "dev": "parcel index.eta",
     "build": "parcel build index.eta",
-    "index": "pagefind --site dist"
+    "index": "pagefind --site dist",
+    "postinstall": "bun ./scripts/build-excalidraw.js"
   },
   "staticFiles": {
     "staticPath": "public"
   },
   "devDependencies": {
-    "@excalidraw/excalidraw": "^0.17.2",
+    "@excalidraw/excalidraw": "file:./excalidraw/src/packages/utils",
     "@parcel/config-default": "^2.10.0",
     "@parcel/core": "^2.10.0",
     "@parcel/plugin": "^2.10.0",
@@ -27,6 +28,7 @@
     "posthtml": "^0.16.6",
     "posthtml-parser": "^0.11.0",
     "posthtml-toc": "posthtml/posthtml-toc#0c19ee4de97c5985fda86550d0590e29074191d4",
+    "rewire": "^7.0.0",
     "tailwindcss": "^3.3.3"
   },
   "dependencies": {

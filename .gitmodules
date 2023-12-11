@@ -4,3 +4,6 @@
 [submodule "MAS/Projeto (site)"]
 	path = MAS/Projeto (site)
 	url = https://github.com/JCapucho/mas-projeto-final.git
+[submodule "excalidraw"]
+	path = excalidraw
+	url = https://github.com/excalidraw/excalidraw.git

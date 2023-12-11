@@ -25,6 +25,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          submodules: false
+      - name: Checkout excalidraw
+        run: git submodule update --init excalidraw
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@main
       - name: Setup Nix Cache
