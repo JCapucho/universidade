@@ -1,0 +1,407 @@
+@document.meta
+title: Aula 09
+description: Codificação Eficiente de Informação
+author: João Capucho
+@end
+
+* Codificação Eficiente de Informação
+
+** Exercício 1
+
+   > O alfabeto de um esquema de codificação apresenta o seguinte histograma
+     típico de ocorrência dos seus símbolos:
+
+   @embed image
+   ./assets/HistrogramaSimbolos.png
+   @end
+
+   Podemos converter este histograma em dois arrays do Matlab com os símbolos
+   e as suas frequências:
+
+   @code matlab
+   Simbolos = ['A', 'B', 'C', 'D', 'E'];
+   Frequencia = [14 64 5 10 7] / 100;
+   @end
+
+*** Alínea A
+
+    > Determine a entropia da informação codificada com esse alfabeto.
+
+    A entropia é dada pela seguinte fórmula:
+
+    @math
+    H(X) = - \sum_{x \in X} p(x) \log_2 \left( p(x) \right)
+    @end
+
+    Onde $X$ é o conjunto de todos os símbolos, e $p(x)$ é a
+    probabilidade/frequência de um dado símbolo $x$ pertencente a $X$.
+
+    Isto pode ser implementado com o seguinte código Matlab:
+
+    @code matlab
+    Entropia = -sum(Frequencia .* log2(Frequencia));
+    @end
+
+    Executando o código com os valores dados obtemos uma entropia de
+    $\approx 1.6260$ bits.
+
+*** Alínea B
+
+    > Usando o código de Huffman, atribua um código binário a cada símbolo
+      deste alfabeto.
+
+    A construção do código de Huffman permite-nos atribuir um código binário a
+    cada símbolo com a propriedade que nenhum código é prefixo de outro código
+    (por exemplo, `11` e `110` não são códigos de Huffman válidos porque um é
+    prefixo do outro).
+
+    Esta propriedade é bastante útil na descodificação porque dado um conjunto
+    de valores só existe uma descodificação válida sem serem necessários dados
+    extra para determinar onde começa e termina um símbolo.
+
+    O código de Huffman pode ser construído em duas etapas, primeiro
+    construímos uma representação em árvore binária dos símbolos com base nas
+    suas probabilidades. Esta etapa é efetuada através dos seguintes passos:
+
+    ~ Os símbolos são todos ordenados por ordem crescente de probabilidade
+    ~ Os dois primeiros símbolos são unidos num /metacaractere/, este representa
+      um nó na árvore com ambos os símbolos como folhas, a sua probabilidade
+      corresponde a soma das probabilidades dos dois símbolos que foram unidos.
+    ~ Os símbolos e /metacaracteres/ são ordenados pela sua probabilidade.
+    ~ O passo 2 é repetido até só restar um símbolo ou /metacaractere/.
+
+    Se aplicarmos este processo ao histograma que nos foi dado obtemos o
+    seguinte resultado:
+
+    @embed image
+    ./assets/huffman_tree_building.excalidraw
+    @end
+
+    Agora que já temos a árvore binária, podemos passar a segunda fase que
+    consiste em atribuir os códigos aos nós das árvores, esta etapa é bastante
+    mais simples:
+
+    ~ Para cada nó que não seja folha atribuímos 0 ao ramo da esquerda e 1 ao
+      ramo da direita.
+    ~ O código do símbolo é equivalente aos valores percorridos desde a raiz
+      até chegar ao nó que contêm o símbolo.
+
+    @embed image
+    ./assets/huffman_tree_assign.excalidraw
+    @end
+
+    Obtemos então os seguintes códigos:
+
+    : A1 : Símbolo 
+    : A2 : Código
+    : A3 : Número de bits ($l_i$)
+    : B1 : A
+    : B2 : `00`
+    : B3 : 2
+    : C1 : B
+    : C2 : `1`
+    : C3 : 1
+    : D1 : C
+    : D2 : `0110`
+    : D3 : 4
+    : E1 : D
+    : E2 : `010`
+    : E3 : 3
+    : F1 : E
+    : F2 : `0111`
+    : F3 : 4
+
+**** Matlab
+
+     É possível também utilizar o Matlab para atribuir um código a cada símbolo
+     através da função
+     {https://www.mathworks.com/help/comm/ref/huffmandict.html}[`huffmandict`],
+     esta recebe os arrays de símbolos como primeiro argumento e as suas
+     frequências como segundo argumento.
+
+     Em vez de utilizar os símbolos diretamente, vamos utilizar os seus índices,
+     isto simplifica a codificação de mensagens.
+
+     @code matlab
+     dicionario = huffmandict(1:5, Frequencia);
+     @end
+
+     E obtemos o seguinte dicionário:
+
+     : A1 : Símbolo 
+     : A2 : Código
+     : A3 : Número de bits ($l_i$)
+     : B1 : A
+     : B2 : `11`
+     : B3 : 2
+     : C1 : B
+     : C2 : `0`
+     : C3 : 1
+     : D1 : C
+     : D2 : `1001`
+     : D3 : 4
+     : E1 : D
+     : E2 : `101`
+     : E3 : 3
+     : F1 : E
+     : F2 : `1000`
+     : F3 : 4
+
+     Os códigos diferem dos que obtemos manualmente, isto não significa que os
+     nossos códigos estão errados, existem diversos códigos de Huffman para os
+     mesmos símbolos e probabilidades. Neste caso os `0` e `1` estão trocados
+     em relação ao código que fizemos manualmente.
+
+*** Alínea C
+
+    > Qual seria o número médio de bits por símbolo que esperaria obter numa
+      mensagem composta por 1000 símbolos deste alfabeto?
+
+    O número médio de bits pode ser calculado através do número de bits
+    associado a um símbolo a multiplicar pela sua probabilidade.
+
+    @math
+    \begin{align*}
+    \sum_{i=1}^{\left\lvert X \right\rvert} \; l_i \cdot p(X_i) &= 
+    2 \cdot 0.14 + 1 \cdot 0.64 + 4 \cdot 0.05 + 3 \cdot 0.10 + 4 \cdot 0.07 \\
+    &= 1.7
+    \end{align*}
+    @end
+
+**** Matlab
+
+     Mais uma vez podemos utilizar o Matlab para realizar as contas:
+
+     @code matlab
+     num_bits = cellfun(@length, dicionario(:, 2))';
+     numero_medio_por_simbolo = sum(num_bits .* Frequencia);
+     @end
+
+** Exercício 2
+
+   > Desenvolva, agora, a função:
+
+   @code matlab
+   [NumBits, NumBPS] = GeraMensagem(f, CompMesg, nBits)
+   @end
+
+   > que gera uma mensagem aleatória, com um número total de símbolos dado por
+     `CompMesg`, usando um alfabeto de símbolos cuja frequência de ocorrência é
+     especificada (em percentagem) no vetor `f`, de dimensão $N \times 1$. Na
+     geração da mensagem, a probabilidade com que ocorre cada símbolo deve
+     seguir o valor especificado em `f`. A função recebe ainda o vetor `nBits`,
+     também de dimensão $N \times 1$, em que cada elemento indica o número de
+     bits com que é codificado o símbolo correspondente. A função retorna, em
+     `NumBits`, o número total de bits que a mensagem gerada aleatoriamente
+     requer para ser representada, e retorna também, em `NumBPS`, o número
+     médio de bits por símbolo verificado na mensagem gerada.
+
+   Primeiro vamos considerar como gerar a mensagem. Esta é suposto utilizar um
+   alfabeto predefinido com diferentes probabilidades para cada símbolo, o
+   Matlab fornece a função
+   {https://www.mathworks.com/help/comm/ref/randsrc.html}[`randsrc`] que
+   permite gerar uma matriz aleatória com um tamanho controlado por nós e
+   opcionalmente utilizar um alfabeto e probabilidades também definidas por
+   nós.
+
+   No entanto, não nos é fornecido o alfabeto, apenas as suas probabilidades.
+   Mas o alfabeto em específico, não nos é relevante, podemos apenas utilizar
+   os índices correspondentes a cada símbolo como o alfabeto:
+
+   @code matlab
+   % Utilizamos os índices dos símbolos como o alfabeto
+   alfabeto = 1:length(f);
+   % Geramos a mensagem aleatória como uma matriz (CompMesg x 1) que
+   % utiliza as probabilidades que nos foram passadas e o alfabeto que
+   % criamos.
+   msg = randsrc(CompMesg, 1, [alfabeto; f]);
+   @end
+
+   A seguir precisamos de converter cada símbolo da mensagem para o seu
+   número de bits, isto é facilmente feito, pois como o nosso alfabeto é o índice
+   do símbolo podemos indexar diretamente em `nBits` com a mensagem gerada
+   para obter o número de bits para cada símbolo.
+
+   Finalmente basta calcular `NumBits`, que corresponde a soma de todos os
+   números de bits de uma mensagem, e `NumBPS` que é a média do número de bits
+   da mensagem, o que nos deixa com a seguinte função completa:
+
+   @code matlab
+   function [NumBits, NumBPS] = GeraMensagem(f, CompMesg, nBits)
+       % Utilizamos os índices dos símbolos como o alfabeto
+       alfabeto = 1:length(f);
+       % Geramos a mensagem aleatória como uma matriz (CompMesg x 1) que
+       % utiliza as probabilidades que nos foram passadas e o alfabeto que
+       % criamos.
+       msg = randsrc(CompMesg, 1, [alfabeto; f]);
+
+       NumBits = sum(nBits(msg));
+       NumBPS = NumBits / CompMesg;
+   end
+   @end
+
+
+   > Teste esta função usando o alfabeto da questão anterior.
+
+   @code matlab
+   [NumBits, NumBPS] = GeraMensagem(Frequencia, 1000, num_bits)
+   @end
+
+   O `NumBits` e `NumBPS` variam devido a natureza aleatória da função, mas o
+   valor de `NumBPS` aproxima-se do valor calculado na alínea C do exercício 1
+   como era de esperar.
+
+** Exercício 3
+
+   > Considere a seguinte Tabela
+
+   : A1 : Símbolo 
+   : A2 : Probabilidade
+   : B1 : A
+   : B2 : $0.20$
+   : C1 : !
+   : C2 : $0.05$
+   : D1 : L
+   : D2 : $0.25$ 
+   : E1 : P
+   : E2 : $0.15$
+   : F1 : O
+   : F2 : $0.35$
+
+   Começamos por converter a tabela para arrays de Matlab:
+
+   @code matlab
+   Simbolos = ['A', '!', 'L', 'P', 'O'];
+   Frequencia = [0.2 0.05 0.25 0.15 0.35];
+   @end
+
+*** Alínea A
+
+    > Usando o código de Huffman, atribua um código binário a cada símbolo
+      deste alfabeto.
+
+    Utilizamos mais uma vez a função `huffmandict` para obter o dicionário dos
+    códigos de huffman.
+
+    @code matlab
+    dicionario = huffmandict(1:length(Simbolos), Frequencia);
+    @end
+
+    : A1 : Símbolo 
+    : A2 : Código
+    : A3 : Número de bits ($l_i$)
+    : B1 : A
+    : B2 : `10`
+    : B3 : 2
+    : C1 : !
+    : C2 : `111`
+    : C3 : 3
+    : D1 : L
+    : D2 : `01`
+    : D3 : 2
+    : E1 : P
+    : E2 : `110`
+    : E3 : 3
+    : F1 : O
+    : F2 : `00`
+    : F3 : 2
+
+*** Alínea B
+
+    > Calcule a entropia e o número médio de bits deste código.
+
+    A entropia pode ser calculada com o mesmo código que utilizamos no
+    exercício 1.a):
+
+    @code matlab
+    entropia = -sum(Frequencia .* log2(Frequencia));
+    @end
+
+    Obtendo um valor para a entropia de $\approx 2.1211$ bits.
+
+    O cálculo do número médio de bits utiliza o código da alínea C:
+
+    @code matlab
+    num_bits = cellfun(@length, dicionario(:, 2))';
+    numero_medio_bits = sum(num_bits .* Frequencia);
+    @end
+
+    Que nos dá um número médio de bits de $2.2$.
+
+*** Alínea C
+
+    > Suponha agora que a mensagem a codificar é "OLA!". Qual a sequência de
+      bits para a codificar usando o código de Huffman?
+
+    O Matlab disponibiliza a função
+    {https://www.mathworks.com/help/comm/ref/huffmanenco.html}[`huffmanenco`]
+    que produz a mensagem codificada com um dado dicionário de códigos de
+    huffman.
+
+    No entanto, antes de passarmos a mensagem vamos primeiro precisar de a
+    converter nos índices dos símbolos correspondentes, isto pode ser feito com
+    a função
+    {https://www.mathworks.com/help/matlab/ref/double.ismember.html}[`ismember`]
+    do Matlab.
+
+    @code
+    msg = 'OLA!';
+    [~, idxs] = ismember(msg, Simbolos);
+    bitstream = huffmanenco(idxs, dicionario);
+    @end
+
+    Obtemos então a seguinte mensagem codificada: `000110111`.
+
+*** Alínea D
+
+    > Faça agora o processo inverso, i.e. descodifique a mensagem binária a
+      partir da árvore de codificação.
+
+    Começamos por converter o nosso dicionário na sua representação em árvore:
+
+    @embed image
+    ./assets/ex03_huffman_tree.excalidraw
+    @end
+
+    Para descodificar a mensagem começamos na raiz e seguimos o ramo que é
+    igual ao bit que estamos a processar, repetimos até chegar a uma folha, a
+    este ponto já temos um símbolo para adicionar ao resultado descodificado.
+    Recomeçamos na raiz da árvore e repetimos o processo até processarmos a
+    mensagem codificada na sua totalidade.
+
+    @embed image
+    ./assets/ex03_decode.excalidraw
+    @end
+
+** Exercício 4
+
+   > Considerando a tabela anterior, codifique a mensagem "OLA!" usando
+     codificação aritmética.
+
+   A codificação aritmética baseia-se na subdivisão de um intervalo com base
+   nas probabilidades do alfabeto até ser possível obter uma fração que
+   represente de forma não ambígua a mensagem.
+
+   O funcionamento do algoritmo de codificação pode ser descrito nos seguintes
+   passos:
+
+   ~ O intervalo é inicializado a $[0; 1[$.
+   ~ O intervalo é subdividido em partes proporcionais as probabilidades de
+     cada símbolo.
+   ~ É escolhido o intervalo do símbolo que estamos a processar
+   ~ Repete-se o passo 2 até todos os símbolos serem processados
+
+   No final vamos obter um intervalo que representa a nossa mensagem, no
+   entanto, não é necessário o intervalo todo para descodificar a mensagem,
+   apenas um valor que pertença a este intervalo (também é necessário
+   informação fora de banda para saber quando o descodificador deve parar, tal
+   como o tamanho do código ou um marcador final).
+
+   Aplicando agora ao nosso alfabeto e mensagem, obtemos o seguinte resultado:
+
+    @embed image
+    ./assets/ex03_arith_coding.excalidraw
+    @end
+
+   O intervalo final da nossa mensagem é $[0.741; 0.741875[$, logo o código da
+   mensagem poderia ser $0.741$.
