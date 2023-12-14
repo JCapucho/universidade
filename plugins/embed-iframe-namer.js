@@ -4,7 +4,11 @@ import path from "node:path";
 
 export default new Namer({
   name({ bundle, bundleGraph }) {
-    if (bundle.type === "embed-iframe") {
+    const main_entry = bundle.getMainEntry();
+
+    if (main_entry === null) return null;
+
+    if (main_entry.meta?.is_uni_embed_iframe) {
       const file = bundle.getMainEntry().filePath;
       const name = path.basename(file, path.extname(file));
 
@@ -17,6 +21,7 @@ export default new Namer({
         )
         .replace(/\.\.(\/|\\)/g, "up_$1");
     }
+
     return null;
   },
 });

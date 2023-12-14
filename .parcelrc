@@ -14,7 +14,8 @@
       "./plugins/ipynb.js"
     ],
     "embed-iframe:*": [
-      "./plugins/embed-iframe.js"
+      "./plugins/embed-iframe.js",
+      "..."
     ]
   },
   "optimizers": {

@@ -16,7 +16,7 @@ export default new Transformer({
     const eta = createEtaInstance();
 
     if (!loadedTemplate) {
-      logger.error("Failed to load norg template");
+      logger.error({ message: "Failed to load norg template" });
       template = "ERROR LOADING TEMPLATE";
     }
 
@@ -45,7 +45,8 @@ export default new Transformer({
       asset.invalidateOnFileChange(path);
     }
 
-    asset.type = "embed-iframe";
+    asset.type = "html";
+    asset.meta.is_uni_embed_iframe = true;
     asset.setCode(result);
 
     return [asset];
