@@ -4,7 +4,6 @@ import posthtml from "posthtml";
 
 import { run, createEtaInstance } from "./utils.js";
 import {
-  renderToc,
   postHtmlShiftHeadings,
   postHtmlAssignHeadingId,
 } from "./posthtmlPlugins.js";
@@ -55,14 +54,11 @@ export default new Transformer({
       content: content.html,
     });
 
-    const rendered = await renderToc(templated);
-
     for (const path of config.eta.includedPaths) {
       asset.invalidateOnFileChange(path);
     }
 
-    asset.type = "html";
-    asset.setCode(rendered);
+    asset.setCode(templated);
 
     return [asset];
   },

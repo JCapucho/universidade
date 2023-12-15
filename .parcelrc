@@ -8,10 +8,12 @@
       "./plugins/homepage.js"
     ],
     "*.norg": [
-      "./plugins/norg.js"
+      "./plugins/norg.js",
+      "./plugins/article.js"
     ],
     "*.ipynb": [
-      "./plugins/ipynb.js"
+      "./plugins/ipynb.js",
+      "./plugins/article.js"
     ],
     "embed-iframe:*": [
       "./plugins/embed-iframe.js",

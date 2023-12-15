@@ -63,10 +63,12 @@ export default {
               color: theme("colors.accent"),
             },
 
-            table: {
-              display: "block",
-              width: "fit-content",
+            ".wrapped-table": {
+              width: "100%",
               "overflow-x": "auto",
+            },
+            table: {
+              width: "fit-content",
               "margin-left": "auto",
               "margin-right": "auto",
             },

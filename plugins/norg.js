@@ -1,7 +1,7 @@
 import { Transformer } from "@parcel/plugin";
 
 import { run, createEtaInstance } from "./utils.js";
-import { convertAllExclidraw, renderToc } from "./posthtmlPlugins.js";
+import { convertAllExclidraw } from "./posthtmlPlugins.js";
 
 export default new Transformer({
   async loadConfig({ config }) {
@@ -51,14 +51,11 @@ export default new Transformer({
       content,
     });
 
-    const rendered = await renderToc(templated);
-
     for (const path of config.eta.includedPaths) {
       asset.invalidateOnFileChange(path);
     }
 
-    asset.type = "html";
-    asset.setCode(rendered);
+    asset.setCode(templated);
 
     return [asset];
   },

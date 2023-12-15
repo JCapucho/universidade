@@ -114,17 +114,31 @@ export function postHtmlAssignHeadingId(tree) {
   );
 }
 
-export async function renderToc(templated) {
-  const rendered = await posthtml()
-    .use(
-      toc({
-        title: "Tabela de Conteúdos",
-        insert: { beforeChildren: ".prose" },
-      }),
-    )
-    .process(templated);
+export function postHtmlWrapTables(tree) {
+  function traverse(tree) {
+    if (Array.isArray(tree)) {
+      for (let i = 0; i < tree.length; i++) {
+        tree[i] = traverse(tree[i]);
+      }
+    } else if (tree && typeof tree === "object") {
+      if (tree.tag == "table") {
+        return {
+          tag: "div",
+          attrs: {
+            class: "wrapped-table",
+          },
+          content: [tree],
+        };
+      }
 
-  return rendered.html;
+      if (Object.prototype.hasOwnProperty.call(tree, "content"))
+        traverse(tree.content);
+    }
+
+    return tree;
+  }
+
+  traverse(tree);
 }
 
 export async function convertAllExclidraw(asset, resolve, logger, templated) {
