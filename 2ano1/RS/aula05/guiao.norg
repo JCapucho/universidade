@@ -1,0 +1,716 @@
+@document.meta
+title: Aula 05
+description: Protocolo Spanning Tree
+author: João Capucho
+@end
+
+* Aviso
+
+  A qualquer ponto do guião as configurações podem ser guardadas correndo o
+  comando `wr`, isto é necessário sempre que os nodes forem desligados, caso
+  contrário *toda a configuração é perdida* até ao último ponto onde foi
+  guardada.
+
+* Exercício 1
+
+  > No GNS3 configure uma rede conforme especificado na figura seguinte, usando
+    as ligações do módulo de switching (portas F1/0 a F1/15) de “EtherSwitch
+    Routers”.
+
+  @embed image
+  topologies/ex01.png
+  @end
+
+  > Verifique que todas as portas usadas pertencem à VLAN 1:
+
+  @code
+  ESW1# show vlan-switch brief
+
+  VLAN Name                             Status    Ports
+  ---- -------------------------------- --------- -------------------------------
+  1    default                          active    Fa1/0, Fa1/1, Fa1/2, Fa1/3
+                                                  Fa1/4, Fa1/5, Fa1/6, Fa1/7
+                                                  Fa1/8, Fa1/9, Fa1/10, Fa1/11
+                                                  Fa1/12, Fa1/13, Fa1/14, Fa1/15
+  ESW2# show vlan-switch brief
+
+  VLAN Name                             Status    Ports
+  ---- -------------------------------- --------- -------------------------------
+  1    default                          active    Fa1/0, Fa1/1, Fa1/2, Fa1/3
+                                                  Fa1/4, Fa1/5, Fa1/6, Fa1/7
+                                                  Fa1/8, Fa1/9, Fa1/10, Fa1/11
+                                                  Fa1/12, Fa1/13, Fa1/14, Fa1/15
+  ESW3# show vlan-switch brief
+
+  VLAN Name                             Status    Ports
+  ---- -------------------------------- --------- -------------------------------
+  1    default                          active    Fa1/0, Fa1/1, Fa1/2, Fa1/3
+                                                  Fa1/4, Fa1/5, Fa1/6, Fa1/7
+                                                  Fa1/8, Fa1/9, Fa1/10, Fa1/11
+                                                  Fa1/12, Fa1/13, Fa1/14, Fa1/15
+  @end
+
+  Segundo o output dos switches todas as portas estão na VLAN 1.
+
+  > Com base no resultado do comando
+  > `show spanning-tree vlan 1`
+  > confirme a spanning tree configurada e registe/identifique os seguintes
+    elementos: endereço MAC de cada bridge, prioridade de cada bridge, bridge
+    IDs, bridge raiz, bridges designadas de cada LAN, portas da raiz em cada
+    bridge, portas designadas em cada bridge, o custo para raiz de cada bridge
+    e custos das portas.
+
+  @code
+  ESW1# show spanning-tree vlan 1 brief
+
+  VLAN1
+    Spanning tree enabled protocol ieee
+    Root ID    Priority    32768
+               Address     c201.0cba.0000
+               This bridge is the root
+               Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+    Bridge ID  Priority    32768
+               Address     c201.0cba.0000
+               Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+               Aging Time 300
+
+  Interface                                   Designated
+  Name                 Port ID Prio Cost  Sts Cost  Bridge ID            Port ID
+  -------------------- ------- ---- ----- --- ----- -------------------- -------
+  FastEthernet1/0      128.41   128    19 FWD     0 32768 c201.0cba.0000 128.41 
+  FastEthernet1/1      128.42   128    19 FWD     0 32768 c201.0cba.0000 128.42
+  @end
+
+  O endereço MAC do `ESW1` é `c2:01:0c:ba:00:00` (Retirado do `Address` na
+  `Bridge ID`), este têm prioridade igual a `32768` (a prioridade usada por
+  omissão), o ID da bridge é `32768.c2:01:0c:ba:00:00`, este switch é a bridge
+  raiz, logo também é a bridge designada de ambas as LANs a que esta
+  diretamente conectado.
+
+  Este switch é a bridge raiz logo não têm portas raízes e todas as suas portas
+  são portas designadas, o custo para a raiz desta bridge é 0 e as suas portas
+  têm custo 19.
+
+  @code
+  ESW2# show spanning-tree vlan 1 brief
+
+  VLAN1
+    Spanning tree enabled protocol ieee
+    Root ID    Priority    32768
+               Address     c201.0cba.0000
+               Cost        19
+               Port        41 (FastEthernet1/0)
+               Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+    Bridge ID  Priority    32768
+               Address     c202.0ce3.0000
+               Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+               Aging Time 300
+
+  Interface                                   Designated
+  Name                 Port ID Prio Cost  Sts Cost  Bridge ID            Port ID
+  -------------------- ------- ---- ----- --- ----- -------------------- -------
+  FastEthernet1/0      128.41   128    19 FWD     0 32768 c201.0cba.0000 128.41 
+  FastEthernet1/2      128.43   128    19 FWD    19 32768 c202.0ce3.0000 128.43
+  @end
+
+  O endereço MAC do `ESW2` é `c2:02:0c:e3:00:00`, este têm prioridade igual a
+  `32768`, o ID da bridge é `32768.c2:02:0c:e3:00:00`, este switch é a bridge
+  designada da LAN da porta 2, a porta 0 é a porta raiz desta bridge, a porta 2
+  é uma porta designada, o custo para a raiz desta bridge é 19 e as suas portas
+  têm custo 19.
+
+  @code
+  ESW3# show spanning-tree vlan 1 brief
+
+  VLAN1
+    Spanning tree enabled protocol ieee
+    Root ID    Priority    32768
+               Address     c201.0cba.0000
+               Cost        19
+               Port        42 (FastEthernet1/1)
+               Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+    Bridge ID  Priority    32768
+               Address     c203.0d07.0000
+               Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+               Aging Time 300
+
+  Interface                                   Designated
+  Name                 Port ID Prio Cost  Sts Cost  Bridge ID            Port ID
+  -------------------- ------- ---- ----- --- ----- -------------------- -------
+  FastEthernet1/1      128.42   128    19 FWD     0 32768 c201.0cba.0000 128.42 
+  FastEthernet1/2      128.43   128    19 BLK    19 32768 c202.0ce3.0000 128.43
+  @end
+
+  O endereço MAC do `ESW3` é `c2:03:0d:07:00:00`, este têm prioridade igual a
+  `32768`, o ID da bridge é `32768.c2:03:0d:07:00:00`, a porta 1 é a porta raiz
+  desta bridge, esta bridge não têm portas designadas, o custo para a raiz
+  desta bridge é 19 e as suas portas têm custo 19.
+
+  : A1 : Bridge
+  : A2 : Endereço MAC
+  : A3 : Prioridade da bridge
+  : A4 : Bridge ID
+  : A5 : Porta raiz
+  : A6 : Portas designadas
+  : A7 : Custo raiz
+  : A8 : Custo das portas
+  : B1 : `ESW1`
+  : B2 : `c2:01:0c:ba:00:00`
+  : B3 : `32768`
+  : B4 : `32768.c2:01:0c:ba:00:00`
+  : B5 : ∅
+  : B6 : 0 e 1
+  : B7 : 0
+  : B8 : 19
+  : C1 : `ESW2`
+  : C2 : `c2:02:0c:e3:00:00`
+  : C3 : `32768`
+  : C4 : `32768.c2:02:0c:e3:00:00`
+  : C5 : 0
+  : C6 : 2
+  : C7 : 19
+  : C8 : 19
+  : D1 : `ESW3`
+  : D2 : `c2:03:0d:07:00:00`
+  : D3 : `32768`
+  : D4 : `32768.c2:03:0d:07:00:00`
+  : D5 : 1
+  : D6 : ∅
+  : D7 : 19
+  : D8 : 19
+
+* Exercício 2
+
+  > Inicie uma captura em todas as LAN (SW1-SW2, SW1-SW3 e SW2-SW3). Analise os
+    pacotes BPDU/STP capturados, registe o seu conteúdo e confirme a sua
+    coerência com os resultados obtidos na experiência 1. Qual é a bridge
+    responsável pelo envio de BPDUs em cada rede local?
+
+  Começamos por capturar o tráfico entre `ESW1` e `ESW2`:
+
+  @embed image
+  captures/SW1_SW2_Capture.png
+  @end
+
+  Todos os pacotes são enviados pelo `ESW1`, pois este é a bridge raiz, os
+  pacotes /BDPU/, contêm os valores esperados, o /Root ID/ e o /Bridge ID/ são
+  `32768.c2:01:0c:ba:00:00`, o custo para a raiz é 0, isto é um pacote de
+  configuração e não de mudança de topologia, a /Message Age/ é 0 e os valores
+  de /Forward Delay/ e /Max Age/ são os valores normais por omissão.
+
+  A seguir, vamos capturar o tráfico entre `ESW1` e `ESW3`:
+
+  @embed image
+  captures/SW1_SW3_Capture.png
+  @end
+
+  Tal como no caso anterior observamos os mesmos valores com a exceção do
+  /Port ID/, pois mais uma vez o `ESW1` é a bridge raiz, o `ESW3` apenas se
+  encontra conectado por uma porta diferente.
+
+  Finalmente, observamos a troca de pacotes entre o `ESW2` e o `ESW3`:
+
+  @embed image
+  captures/SW2_SW3_Capture.png
+  @end
+
+  Os pacotes capturados são enviados pelo `ESW2` pois este é a bridge
+  designada, o /Root ID/ continua a ser `32768.c2:01:0c:ba:00:00`, mas o
+  /Bridge ID/ é `32768.c2:02:0c:e3:00:00`, o custo para a raiz é agora 19 e a
+  /Message Age/ foi incrementada para 1.
+
+* Exercício 3
+
+  > Pare (pause) todos os switches e termine todas as capturas. Agora que
+    conhece os Bridge ID dos três switches de que dispõe, inicie uma captura na
+    rede Ethernet que interliga os 2 switches com ID mais elevados. Execute a
+    seguinte sequência de ações:
+  > \(i) Reinicie o switch com o Bridge ID mais elevado, aguarde dois minutos e
+    analise a sequência de pacotes BPDU/STP capturados
+
+  Os dois switches com ID mais elevado são o `ESW2` e o `ESW3`, por isso
+  capturamos os pacotes entre eles. O ID mais elevado pertence ao `ESW3` logo
+  vamos começá-lo:
+
+  @embed image
+  captures/Ex03-I-Capture.png
+  @end
+
+  O switch após recomeçar ainda têm na memória que o `ESW1` é a bridge raiz e o
+  `ESW2` é a bridge designada, logo este não manda mensagens, no entanto, após
+  o tempo do /Max Age/ (20 segundos por omissão) passar sem o switch receber
+  pacotes /BDPU/, este vai considerar que as duas bridges falharam (pois
+  nenhuma delas respondeu) e vai reiniciar o processo de eleição assumindo que
+  ela é a raiz, pois não têm conhecimento de outra bridge com ID menor.
+
+  Antes de poder começar a transmitir os pacotes /BDPU/ a declarar-se como
+  raíz, o switch vai ainda ter de esperar o /Forward Delay/ (15 segundos por
+  omissão) para prevenir que se formem ciclos temporariamente.
+
+  Após isto as mensagens de configuração começam a ser enviadas e o switch como
+  não recebe uma mensagem melhor considera-se como raíz.
+
+  > \(ii) Reinicie o switch com o Bridge ID intermédio, aguarde dois minutos e
+    analise a sequência de pacotes BPDU/STP capturados
+
+  Recomeçamos o `ESW2`:
+
+  @embed image
+  captures/Ex03-II-Old-Root-Capture.png
+  @end
+
+  Este após resumir operação, começa por reenviar um pacote de `ESW1` como a
+  raiz, pois não teve a oportunidade de o enviar quando foi suspenso, o `ESW3`
+  aceita este pacote, pois a raiz anunciada têm ID mais baixo, logo é eleita,
+  além disso, `ESW3` para a transmissão, pois a bridge designada é `ESW2` visto
+  que não existe outro caminho para a raiz (`ESW1` não transmite, por isso
+  apenas este pacote que resultou do switch ter sido suspenso antes de reenviar
+  o pacote /BDPU/ chega a `ESW3`).
+
+
+  Após o /Message Age/ expirar no `ESW3`, pois mais uma vez `ESW1` não está a
+  enviar os pacotes /BDPU/, este vai assumir ser a raiz e espera o
+  /Forward Delay/ antes de mandar os pacotes /BDPU/ onde anuncia que houve uma
+  mudança de topologia (bit `TC` igual a 1) e propõe-se como raiz.
+
+  @embed image
+  captures/Ex03-II-ESW3-root-proposal.png
+  @end
+
+  O `ESW2` volta a mandar um pacote a dizer que `ESW1` é a raiz, mas o
+  /Message Age/ desta vez está a 20 indicando que o temporizador para o
+  /Message Age/ do `ESW2` também está a chegar ao fim.
+
+  @embed image
+  captures/Ex03-II-Old-Root-retransmission.png
+  @end
+
+  Esta mensagem é um /glitch/ (o temporizador expirou ao mesmo tempo que a
+  mensagem foi enviada) e `ESW3` nem a processa, pois a /Message Age/ já passou
+  a /Max Age/, o `ESW2` manda logo de seguida uma mensagem onde anuncia uma
+  mudança de topologia e propõe-se a raiz.
+
+  @embed image
+  captures/Ex03-II-New-Root.png
+  @end
+
+  O `ESW3` aceita este pacote e como agora foi despromovido de raiz manda um
+  pacote /BDPU TCN/ (/Topology Change Notification/).
+
+  @embed image
+  captures/Ex03-II-TCN.png
+  @end
+
+  Este pacote irá chegar a raiz, que após o receber irá mandar os pacotes de
+  configuração com `TC` (/Topology change/) igual a 1 durante /Max Age/
+  mais /Forward Delay/. Isto causa com que todos os switches usem um tempo de
+  vida mais curto nas tabelas de encaminhamento.
+
+  O switch vai continuar a transmitir estes pacotes periodicamente com um
+  intervalo igual a /Hello Time/ até receber um pacote /BDPU/ com `TCA`
+  (/Topology Change Acknowledgement/) igual a 1. O `ESW2` faz exatamente isso
+  após receber o /TCN/.
+
+  @embed image
+  captures/Ex03-II-TCA.png
+  @end
+
+  Finalmente podemos observar os pacotes enviados por `ESW2` (agora a raiz da
+  topologia) com `TC` igual a 1.
+
+  @embed image
+  captures/Ex03-II-TC-Repeat.png
+  @end
+
+  > \(iii) Reinicie o switch com o Bridge ID mais baixo, aguarde dois minutos e
+    analise a sequência de pacotes BPDU/STP capturados.
+
+  O `ESW1` após recomeçar volta a transmitir pacotes /BDPU/ para ambos os
+  switches, isto causa com que `ESW2` volte a anunciar `ESW1` como a raiz (pois
+  este tem um bridge ID menor).
+
+  @embed image
+  captures/Ex03-III-New-Root.png
+  @end
+
+  `ESW2` após ser despromovido de raiz manda também um /TCN BDPU/ para /ESW1/,
+  este vai responder com um pacote /BDPU/ com `TCA` igual a 1. Esta troca
+  acontece entre `ESW1` e `ESW2` logo não é possível observar nesta captura.
+
+  `ESW1` além de confirmar a receção da /TCN/, tal como aconteceu na parte II,
+  vai também começar a transmitir pacotes /BDPU/ com `TC` igual a 1 durante um
+  período de tempo igual a /Max Age/ mais /Forward Delay/.
+
+  @embed image
+  captures/Ex03-III-TC.png
+  @end
+
+  > Com base nos resultados das capturas efetuadas, explique o mecanismo de
+    construção da spanning tree.
+
+  A construção da spanning tree, começa com o switch que foi acabado de
+  adicionar a considerar-se como raiz, se entretanto existirem outros switches
+  já na topologia estes vão estar a retransmitir os pacotes /BDPU/ da bridge
+  raiz, se o switch tiver um bridge ID maior que a raiz, este aceita os pacotes
+  e entra na /Learning Phase/ onde vai calcular a porta raiz e as portas
+  designadas.
+
+  Se no entanto não existirem outros switches na topologia ou este switch tiver
+  um bridge ID menor, este vai esperar que o temporizador do /Forward Delay/
+  termine e vai começar a transmitir pacotes /BDPU/ onde se declara como raiz.
+  Como o switch têm um ID menor que a raiz atual os outros switches vão
+  elegê-lo como raiz e começar a propagar as suas mensagens.
+
+  Após esta mensagem chegar a antiga raiz, esta vai notar que já não é raiz,
+  logo vai começar a mandar pacotes /TCN BDPU/ pela porta raiz com
+  periodicidade igual a /Hello Time/ até o switch a que está ligado responda
+  com um pacote /BDPU/ onde `TCA` é igual a 1, este por sua vez vai
+  retransmitir o pacote /TCN/ pela porta raiz para o seguinte e o processo
+  repete-se até o pacote /TCN/ chegar a raiz.
+
+  A raiz vai por sua vez começar a mandar todos os seus pacotes /BDPU/ com `TC`
+  igual a 1, isto vai acontecer até um temporzador com duração de /Max Age/
+  mais /Forward Delay/ expirar.
+
+  Todos os switches que recebam um pacote /BDPU/ com `TC` igual a 1, vão
+  proceder a usar um tempo de vida curto para as entradas na sua tabela de
+  encaminhamento, o objetivo é garantir que a conectividade mantêm-se, mas sem
+  perturbar o desempenho da rede, um terminal que transmita muitos pacotes vai
+  continuar na tabela de encaminhamento apesar do tempo de vida curto, por isso
+  é que as entradas não são automaticamente destruídas.
+
+  O processo de envio de pacotes /TCN/ acontece também quando uma bridge é
+  promovida a bridge designada ou têm uma das suas portas bloqueadas, seja por
+  introdução de um switch novo na topologia ou intervenção do administrador.
+
+* Exercício 4
+
+  > Inicie uma captura em todas as LAN (SW1-SW2, SW1-SW3 e SW2-SW3). Altere a
+    prioridade de uma bridge de modo a que esta se torne raiz.
+
+  Vamos promover `ESW3` a raiz definindo a sua prioridade como `0x4000 = 16384`
+  que é menor que a prioridade por omissão de `0x8000`:
+
+  @code
+  ESW3# configure terminal 
+  ESW3(config)#spanning-tree vlan 1 priority 16384
+  ESW3(config)#end
+  @end
+
+  > Analise os pacotes BPDU/STP capturados e explique o processo de
+    (re)-eleição da bridge raiz.
+
+  `ESW3` imediatamente após a mudança de prioridade manda um /BDPU/ onde
+  declara que houve uma mudança de topologia (`TC` igual a 1) e que ele é a
+  raiz.
+
+  @embed image
+  captures/Ex04-ESW2-ESW3-New-Root.png
+  @end
+
+  (`ESW2` \- `ESW3`)
+
+  @embed image
+  captures/Ex04-ESW1-ESW3-New-Root.png
+  @end
+
+  (`ESW1` \- `ESW3`)
+
+  Os outros switches aceitam e começam a difundir os pacotes /BPDU/ onde a
+  bridge raíz é `ESW3`.
+
+  @embed image
+  captures/Ex04-ESW1-ESW2-New-Root.png
+  @end
+
+  (`ESW1` \- `ESW2`)
+
+* Exercício 5
+
+  > Inicie uma captura em todas as LAN (SW1-SW2, SW1-SW3 e SW2-SW3). Altere na
+    bridge designada da rede que não está ligada à bridge raiz o custo da sua
+    porta da raiz de modo a ela deixar de ser bridge designada.
+
+  Os comandos do último exercício foram revertidos (isto não é necessário para
+  a resolução deste exercício, mas eu esqueci-me de gravar a configuração),
+  logo a bridge designada da LAN que não está ligada a raiz é `ESW2`.
+
+  Os seguintes comandos permitem-nos alterar o custo da porta raiz (`f1/0`):
+
+  @code
+  ESW2# configure terminal
+  ESW2(config)# interface f1/0
+  ESW2(config)# spanning-tree cost 20
+  ESW2(config)# end
+  @end
+
+  Aumentamos o custo de 19 (valor usado por omissão) para 20, isto garante que
+  o caminho por `ESW3` será o de menor custo para esta LAN.
+
+  > Uma vez que ocorreu uma alteração dos parâmetros do protocolo Spanning
+    Tree, é iniciado o mecanismo de notificação de alteração da topologia.
+    Prolongue a captura por um período de pelo menos 1 minuto após o instante
+    de alteração do custo da porta. Analise a sequência de pacotes capturados e
+    verifique se houve envio de pacotes BPDU do tipo TCN e se houve alterações
+    nas flags TC e TCA dos pacotes BPDU de configuração.
+
+  Começamos por analisar os pacotes trocados entre `ESW2` e `ESW3`:
+
+  @embed image
+  captures/Ex05-ESW2-ESW3.png
+  @end
+
+  O pacote marcado a preto é quando é alterada a configuração do switch de modo
+  a aumentar o custo da sua porta, o `ESW3` após receber este pacote
+  apercebe-se que têm custo menor para a LAN e agurda que o temporizador de
+  /Forward Delay/ acabe.
+
+  Após este expirar, o `ESW3` vai começar a enviar pacotes /BPDU/ para a LAN, o
+  `ESW2` após receber estes vai aperceber-se que não têm o melhor custo para a
+  raiz e vai começar a transicionar a porta para o estado /blocking/ o que
+  causa um envio de um pacote /TCN/ para a raiz, como pode ser visto na captura
+  entre `ESW1` e `ESW2`:
+
+  @embed image
+  captures/Ex05-ESW1-ESW2.png
+  @end
+
+  Isto causa com que a raiz começe a enviar periodicamente pacotes com o bit
+  `TC` a 1.
+
+  Entretanto a porta designada de `ESW2` para a LAN está a transicionar de
+  /listening/ para /forwarding/, quando esta transição acaba `ESW2` vai também
+  enviar um pacote /TCN/ como podemos ver na captura entre este e `ESW1`:
+
+  @embed image
+  captures/Ex05-ESW1-ESW3.png
+  @end
+
+* Exercício 6
+
+  > Execute a seguinte sequência de ações:
+  > \(i) altere o parâmetro Hello time da bridge raiz para 6 segundos e, com o
+    auxílio do analisador de protocolos, verifique a periodicidade dos BPDUs
+    gerados
+
+  Começamos por alterar o /Hello time/ no `ESW1` (a bridge raiz), através dos
+  seguintes comandos:
+
+  @code
+  ESW1# configure terminal
+  ESW1(config)# spanning-tree vlan 1 hello-time 6
+  ESW1(config)# end
+  @end
+
+  De seguida observamos os pacotes que foram capturados:
+
+  @embed image
+  captures/Ex06-i.png
+  @end
+
+  O pacote assinalado a preto representa o primeiro pacote enviado após a
+  mudança, como podemos ver os pacotes antes da mudança eram enviados com um
+  periodicidade de 2 segundos enquanto que os pacotes novos são enviados com
+  uma periodicidade de 6 segundos.
+
+  > \(ii) reponha o parâmetro Hello Time na bridge raiz com o seu valor por
+    defeito, altere este parâmetro na bridge designada da rede do PC para 6
+    segundos e verifique agora a periodicidade dos BPDUs
+
+  Começamos por reverter o /Hello time/ no `ESW1` para 2 segundos.
+
+  @code
+  ESW1# configure terminal       
+  ESW1(config)# spanning-tree vlan 1 hello-time 2
+  ESW1(config)# end
+  @end
+
+  A bridge designada é `ESW3` (alteramos isto no exercício, caso contrário
+  seria `ESW2`):
+
+  @code
+  ESW3# configure terminal
+  ESW3(config)# spanning-tree vlan 1 hello-time 6
+  ESW3(config)# end
+  @end
+
+  A captura de pacotes é apresentada na imagem seguinte:
+
+  @embed image
+  captures/Ex06-ii.png
+  @end
+
+  Mais uma vez o pacote marcado com preto é o primeiro a ser enviado após a
+  mudança, no entanto, desta vez não existe diferença entre antes e após a
+  mudança, os pacotes continuam a ter um /Hello Time/ de 2 segundos e a ser
+  enviados com essa periodicidade.
+
+  > O que conclui quanto ao efeito da configuração do parâmetro Hello Time nos
+    diferentes switches, no funcionamento do protocolo Spanning Tree?
+
+  O /Hello Time/ configura com que periodicidade a bridge raiz vai enviar os
+  pacotes /BPDU/, logo não têm efeito nas outras bridges que não são raiz,
+  visto que estas apenas retransmitiem os pacotes de configuração gerados pela
+  raiz.
+
+* Exercício 7
+
+  > Crie a VLAN 2 nos switches, defina todas a ligações entre switches como sendo inter-switch/trunk.
+
+  Os seguintes comandos configuram a VLAN2 e as portas trunk no `ESW1`:
+
+  @code
+  ESW1# vlan database 
+  ESW1(vlan)# vlan 2
+  ESW1(vlan)# apply 
+  ESW1(vlan)# exit
+  ESW1# configure terminal 
+  ESW1(config)# interface f1/0           ! Change this port
+  ESW1(config-if)# switchport mode trunk
+  ESW1(config-if)# interface f1/1        ! And this one
+  ESW1(config-if)# switchport mode trunk
+  ESW1(config-if)# end
+  @end
+
+  Este processo têm de ser aplicado em todos os switches, mas, as portas têm de
+  ser trocadas, para o `ESW2`\: `f1/0` e `f1/2`, e para o `ESW3`\: `f1/1` e
+  `f1/2`.
+
+  > Verifique o estado dos processos de Spanning-Tree em cada uma das VLAN:
+
+  @code
+  ESW1#show spanning-tree brief
+  VLAN1
+    Spanning tree enabled protocol ieee
+    Root ID    Priority    32768
+               Address     c201.96bc.0000
+               This bridge is the root
+               Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+    Bridge ID  Priority    32768
+               Address     c201.96bc.0000
+               Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+               Aging Time 300
+
+  Interface                                   Designated
+  Name                 Port ID Prio Cost  Sts Cost  Bridge ID            Port ID
+  -------------------- ------- ---- ----- --- ----- -------------------- -------
+  FastEthernet1/0      128.41   128    19 FWD     0 32768 c201.96bc.0000 128.41 
+  FastEthernet1/1      128.42   128    19 FWD     0 32768 c201.96bc.0000 128.42 
+
+            
+  VLAN2     
+    Spanning tree enabled protocol ieee
+    Root ID    Priority    32768
+               Address     c201.96bc.0001
+               This bridge is the root
+               Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+            
+    Bridge ID  Priority    32768
+               Address     c201.96bc.0001
+               Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+               Aging Time 300
+            
+  Interface                                   Designated
+  Name                 Port ID Prio Cost  Sts Cost  Bridge ID            Port ID
+  -------------------- ------- ---- ----- --- ----- -------------------- -------
+  FastEthernet1/0      128.41   128    19 FWD     0 32768 c201.96bc.0001 128.41 
+  FastEthernet1/1      128.42   128    19 FWD     0 32768 c201.96bc.0001 128.42 
+  @end
+
+  O resultado é semelhante ao obtido no exercício 1, com a exceção que agora
+  aparece um resultado para a VLAN 1 e outro diferente para a VLAN 2, isto
+  acontece pois o /PVST/ da /Cisco/ simplesmente corre um processo de spanning
+  tree para cada VLAN, estes processos correm todos em paralelo e não interagem
+  entre si.
+
+  > Inicie uma captura em todas as LAN (SW1-SW2, SW1-SW3 e SW2-SW3) e analise
+    os pacotes BPDU/PVST capturados.
+  > Nota\: Para a VLAN nativa (por omissão a 1) não são adicionados rótulos
+    802.1Q.
+
+  @embed image
+  captures/Ex07-stp.png
+  @end
+
+  Esta captura foi realizada entre `ESW1` e `ESW2`, como podemos ver existem
+  pacotes de spanning tree e de /PVST+/ a passar na rede, isto acontece pois
+  devidos a razões de compatibilidade com outros switches que não implementam
+  /PVST+/ a VLAN 1 participa na spanning tree normal. Como tal o pacote para a
+  VLAN 1 é enviado tanto como um pacote /STP/ normal (para o endereço MAC
+  multicast para bridges /STP/) e como um pacote /PSVT+/ (para o endereço MAC
+  multicast dedicado a bridges /PVST+/).
+
+  @embed image
+  captures/Ex07-PVST.png
+  @end
+
+  Os pacotes de /PVST+/, seguem o formato /STP/ com a adição de um campo /TLV/
+  (/Type Length Value/) que indica a VLAN de onde originou o pacote, este é
+  usado para garantir que não há erros de configuração que podem ocorrer em
+  redes com switches /PSVT+/ e switches /STP/ normais.
+
+* Exercício 8
+
+  > Altere a bridge raiz (mudando a prioridade) apenas para a VLAN 2
+
+  Vamos mudar a prioridade da bridge `ESW3` de modo a que esta passe a ser a
+  bridge raiz:
+
+  @code
+  ESW3# configure terminal
+  ESW3(config)# spanning-tree vlan 2 priority 16384
+  ESW3(config)# end
+  @end
+
+  > Verifique o estado dos processos em cada uma das VLAN:
+
+  @code
+  ESW1#show spanning-tree brief
+
+  VLAN1
+    Spanning tree enabled protocol ieee
+    Root ID    Priority    32768
+               Address     c201.96bc.0000
+               This bridge is the root
+               Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+    Bridge ID  Priority    32768
+               Address     c201.96bc.0000
+               Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+               Aging Time 300
+
+  Interface                                   Designated
+  Name                 Port ID Prio Cost  Sts Cost  Bridge ID            Port ID
+  -------------------- ------- ---- ----- --- ----- -------------------- -------
+  FastEthernet1/0      128.41   128    19 FWD     0 32768 c201.96bc.0000 128.41 
+  FastEthernet1/1      128.42   128    19 FWD     0 32768 c201.96bc.0000 128.42 
+
+            
+  VLAN2     
+    Spanning tree enabled protocol ieee
+    Root ID    Priority    16384
+               Address     c203.96f8.0001
+               Cost        38
+               Port        41 (FastEthernet1/0)
+               Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+            
+    Bridge ID  Priority    32768
+               Address     c201.96bc.0001
+               Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+               Aging Time 300
+            
+  Interface                                   Designated
+  Name                 Port ID Prio Cost  Sts Cost  Bridge ID            Port ID
+  -------------------- ------- ---- ----- --- ----- -------------------- -------
+  FastEthernet1/0      128.41   128    19 FWD    19 32768 c202.96da.0001 128.41 
+  FastEthernet1/1      128.42   128    19 FWD    38 32768 c201.96bc.0001 128.42
+  @end
+
+  A bridge raiz é diferente entre as duas VLANs apesar de estarem a utilizar a
+  mesma rede física, isto mostra a grande vantagem  da /PVST/, é possível
+  desenhar as spanning trees de acordo com as necessidades de cada VLAN, invés
+  de ter utilizar uma /STP/ para a rede física toda.
