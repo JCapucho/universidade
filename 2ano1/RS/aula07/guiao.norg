@@ -1,0 +1,1012 @@
+@document.meta
+title: Aula 07
+description: Protocolos de encaminhamento RIP/RIPng e OSPFv2/v3
+author: João Capucho
+@end
+
+* Aviso
+
+  A qualquer ponto do guião as configurações podem ser guardadas correndo o
+  comando `wr`, isto é necessário sempre que os nodes forem desligados, caso
+  contrário *toda a configuração é perdida* até ao último ponto onde foi
+  guardada.
+
+* Protocolo RIP
+
+** Exercício 1
+
+   > Monte uma rede constituída por 3 routers interligados através de redes
+     Ethernet tal como especificado na figura
+
+   @embed image
+   ./topologies/ex01.png
+   @end
+
+   > Configure os endereços IP das interfaces dos routers e do PC respeitando as
+     redes IP especificadas.
+
+   @code
+   R1(config)# interface f0/0
+   R1(config-if)# ip address 192.10.10.1 255.255.255.0
+   R1(config-if)# no shutdown
+   R1(config-if)# interface f0/1
+   R1(config-if)# ip address 192.30.30.1 255.255.255.0
+   R1(config-if)# no shutdown
+
+   R2(config)# interface f0/0
+   R2(config-if)# ip address 192.30.30.2 255.255.255.0
+   R2(config-if)# no shutdown
+   R2(config-if)# interface f0/1
+   R2(config-if)# ip address 192.20.20.2 255.255.255.0
+   R2(config-if)# no shutdown
+
+   R3(config)# interface f0/0
+   R3(config-if)# ip address 192.10.10.3 255.255.255.0
+   R3(config-if)# no shutdown
+   R3(config-if)# interface f0/1
+   R3(config-if)# ip address 192.20.20.3 255.255.255.0
+   R3(config-if)# no shutdown
+   @end
+
+   Temos ainda de configurar um gateway no PC caso contrário a comunicação com
+   as redes que não lhe são adjacentes não será possível.
+
+   @code
+   PC1> ip 192.10.10.100/24 192.10.10.1
+   PC1 : 192.10.10.100 255.255.255.0 gateway 192.10.10.1
+   @end
+
+
+   > Registe e justifique a tabela de encaminhamento de cada router.
+
+   @code
+   R1# show ip route        
+   C    192.30.30.0/24 is directly connected, FastEthernet0/1
+   C    192.10.10.0/24 is directly connected, FastEthernet0/0
+
+   R2# show ip route        
+   C    192.30.30.0/24 is directly connected, FastEthernet0/0
+   C    192.20.20.0/24 is directly connected, FastEthernet0/1
+
+   R3# show ip route        
+   C    192.10.10.0/24 is directly connected, FastEthernet0/0
+   C    192.20.20.0/24 is directly connected, FastEthernet0/1
+   @end
+
+   As rotas presentes nos routers são apenas as subnets das suas interfaces.
+
+   > Verifique e justifique para que endereços IP existe conectividade a partir
+     do router 2.
+
+   @code
+   R2# ping 192.20.20.3
+   Success rate is 100 percent (5/5), round-trip min/avg/max = 8/9/12 ms
+   R2# ping 192.30.30.1
+   Success rate is 80 percent (4/5), round-trip min/avg/max = 8/12/16 ms
+   R2# ping 192.10.10.3
+   Success rate is 0 percent (0/5)
+   R2# ping 192.10.10.1
+   Success rate is 0 percent (0/5)
+   R2# ping 192.10.10.100
+   Success rate is 0 percent (0/5)
+   @end
+
+   O router 2 têm conectividade com os equipamentos nas subnet `192.20.20.0/24`
+   e `192.30.30.0/24`, mas não com equipamentos na subnet `192.10.10.0/24`,
+   isto é esperado, pois o router 2 não têm nenhuma rota para esta subnet, logo
+   não sabe como encaminhar pacotes para esta.
+
+** Exercício 2
+
+   > Configure o protocolo RIP em todos os routers.
+
+   A configuração do /RIP/ requer que todas as redes a que o router está
+   conectado sejam declaradas:
+
+   @code
+   R1(config)# router rip
+   R1(config-router)# network 192.10.10.0
+   R1(config-router)# network 192.30.30.0
+
+   R2(config)# router rip
+   R2(config-router)# network 192.30.30.0
+   R2(config-router)# network 192.20.20.0
+
+   R3(config)# router rip
+   R3(config-router)# network 192.10.10.0
+   R3(config-router)# network 192.20.20.0
+   @end
+
+   > Visualize a tabela de encaminhamento em todos os routers
+
+   @code
+   R1# show ip route
+   C    192.30.30.0/24 is directly connected, FastEthernet0/1
+   C    192.10.10.0/24 is directly connected, FastEthernet0/0
+   R    192.20.20.0/24 [120/1] via 192.30.30.2, 00:00:07, FastEthernet0/1
+                       [120/1] via 192.10.10.3, 00:00:20, FastEthernet0/0
+
+   R2# show ip route
+   C    192.30.30.0/24 is directly connected, FastEthernet0/0
+   R    192.10.10.0/24 [120/1] via 192.30.30.1, 00:00:03, FastEthernet0/0
+                       [120/1] via 192.20.20.3, 00:00:10, FastEthernet0/1
+   C    192.20.20.0/24 is directly connected, FastEthernet0/1
+
+   R3# show ip route
+   R    192.30.30.0/24 [120/1] via 192.20.20.2, 00:00:02, FastEthernet0/1
+                       [120/1] via 192.10.10.1, 00:00:22, FastEthernet0/0
+   C    192.10.10.0/24 is directly connected, FastEthernet0/0
+   C    192.20.20.0/24 is directly connected, FastEthernet0/1
+   @end
+
+   As tabelas de encaminhamento são quase idênticas as anteriores, mas agora
+   todos os routers têm uma rota extra para a rede onde não estão diretamente
+   conectados, estas rotas têm um tipo `R` o que indica que foram configuradas
+   por /RIP/.
+
+** Exercício 3
+
+   > Inicie uma captura na rede 192.10.10.0/24 e capture pelo menos 6 pacotes RIP
+     (filtro de visualização: “rip”).
+
+   @embed image
+   captures/ex03.png
+   @end
+
+   > Que tipo de pacotes são enviados por cada router e qual a sua periodicidade?
+
+   Ambos os routers mandam pacotes /RIP response/, estes contêm todas as redes
+   que o router tem conhecimento desde que o seu custo seja menor do que as
+   redes que foram descobertas através desta interface. Estes pacotes são
+   enviados com uma periodicidade de cerca de 30 segundos.
+
+** Exercício 4
+
+   > Com base nos pacotes capturados em todas as redes, determine se as
+     interfaces dos routers estão configuradas com ou sem split-horizon.
+
+   Os pacotes capturados no exercício anterior sugerem que as interfaces dos
+   routers, têm /Split Horizon/ ativado, porque não vemos os routers a reenviar
+   rotas aprendidas pela mesma interface onde foram recebidas.
+
+   > Inverta a configuração do split-horizon nas interfaces dos routers ligados à
+     rede 192.10.10.0.
+
+   @code
+   R1(config)# interface f0/0
+   R1(config-if)# no ip split-horizon
+
+   R3(config)# interface f0/0
+   R3(config-if)# no ip split-horizon
+   @end
+
+   > Capture novamente pelo menos 6 pacotes RIP. Analise os pacotes capturados e
+     compare o seu conteúdo com os da experiência 3. Que conclusões retira quanto
+     ao funcionamento do split-horizon?
+
+   @embed image
+   captures/ex04.png
+   @end
+
+   O /Split Horizon/ proíbe que rotas aprendidas numa interface sejam
+   retransmitidas nela outra vez, isto poupa tempo de processamento, mas talvez
+   mais importante, largura de banda.
+
+** Exercício 5.1
+
+   > Reponha a configuração por omissão do split-horizon nas interfaces dos
+     routers ligados à rede 192.10.10.0
+
+   @code
+   R1(config)# interface f0/0
+   R1(config-if)# ip split-horizon
+
+   R3(config)# interface f0/0
+   R3(config-if)# ip split-horizon
+   @end
+
+   > Inicie uma captura com o filtro RIP (na rede 192.10.10.10/24) e simule uma
+     falha de conectividade na interface do router 1 ligado à rede 192.30.30.0
+     (removendo a ligação ou desligando o interface Ethernet).
+
+   Vamos simular a falha de ligação desligando a interface, visto que remover
+   ligações não funciona muito bem no /GNS3/:
+
+   @code
+   R1(config)# interface f0/1
+   R1(config-if)# shutdown
+   @end
+
+   > Capture pacotes durante pelo menos 1 minuto após a interrupção da ligação.
+     Analise os pacotes RIP filtrados e explique o que observa.
+
+   @embed image
+   captures/ex05_1.png
+   @end
+
+   O router 1 para de anunciar rotas, pois devido ao /Split Horizon/ não têm
+   nenhuma rota para anunciar que o router 3 já não tenha. Isto causa o router 3
+   a enviar informação sobre a subnet `192.30.30.0/24`, pois o router 1, já não há
+   anuncia.
+
+** Exercício 5.2
+
+   > Inicie uma nova captura com o filtro RIP (na rede 192.10.10.10/24) e reponha
+     a conectividade na interface do router 1 ligado à rede 192.30.30.0. Capture
+     pacotes durante pelo menos 1 minuto após a reposição da ligação
+
+   @embed image
+   captures/ex05_2.png
+   @end
+
+   > Analise os pacotes RIP filtrados e explique o que observa.
+
+   O router 1 após restabelecer comunicação com a rede `192.30.30.0/24` vai
+   voltar a anunciá-la (pois tem um custo mais baixo do que pelo router 3). O
+   router 3 irá receber estas mensagens e vai parar de anunciar a rota de volta
+   ao router 1.
+
+** Exercício 6
+
+   > No Router 2 adicione os seguintes comandos:
+
+   @code
+   R2(config)# router rip
+   R2(config-router)# default-information originate
+   @end
+
+   > Visualize a tabela de encaminhamento em todos os routers e explique o
+     propósito deste comando.
+
+   @code
+   R1# show ip route
+   C    192.30.30.0/24 is directly connected, FastEthernet0/1
+   C    192.10.10.0/24 is directly connected, FastEthernet0/0
+   R    192.20.20.0/24 [120/1] via 192.30.30.2, 00:00:04, FastEthernet0/1
+                       [120/1] via 192.10.10.3, 00:00:05, FastEthernet0/0
+   R*   0.0.0.0/0 [120/1] via 192.30.30.2, 00:00:04, FastEthernet0/1
+
+   R2# show ip route
+   C    192.30.30.0/24 is directly connected, FastEthernet0/0
+   R    192.10.10.0/24 [120/1] via 192.30.30.1, 00:00:04, FastEthernet0/0
+                       [120/1] via 192.20.20.3, 00:00:16, FastEthernet0/1
+   C    192.20.20.0/24 is directly connected, FastEthernet0/1
+
+   R3# show ip route
+   R    192.30.30.0/24 [120/1] via 192.20.20.2, 00:00:02, FastEthernet0/1
+                       [120/1] via 192.10.10.1, 00:00:13, FastEthernet0/0
+   C    192.10.10.0/24 is directly connected, FastEthernet0/0
+   C    192.20.20.0/24 is directly connected, FastEthernet0/1
+   R*   0.0.0.0/0 [120/1] via 192.20.20.2, 00:00:02, FastEthernet0/1
+   @end
+
+   Este comando diz ao router para anunciar a rota por omissão (`0.0.0.0/0`),
+   logo todos os endereços que não estejam em outras entradas da tabela de
+   encaminhamento vão ser roteados pelo router 2.
+
+* Protocolo OSPF
+
+** Exercício 7
+
+   > Desative o protocolo RIP
+
+   @code
+   R1(config)# no router rip
+   R2(config)# no router rip
+   R3(config)# no router rip
+   @end
+
+   > Configure o protocolo OSPF em todos os routers de tal modo que todas as
+     redes pertençam a uma única área (área 0).
+
+   O /OSPF/ requer que cada rede a que o router está conectado seja declarada
+   bem como a área a que pertence.
+
+   @code
+   R1(config)# router ospf 1
+   R1(config-router)# network 192.10.10.0 0.0.0.255 area 0
+   R1(config-router)# network 192.30.30.0 0.0.0.255 area 0
+
+   R2(config)# router ospf 1
+   R2(config-router)# network 192.30.30.0 0.0.0.255 area 0
+   R2(config-router)# network 192.20.20.0 0.0.0.255 area 0
+
+   R3(config)# router ospf 1
+   R3(config-router)# network 192.20.20.0 0.0.0.255 area 0
+   R3(config-router)# network 192.10.10.0 0.0.0.255 area 0
+   @end
+
+   > Visualize a tabela de encaminhamento em todos os routers
+
+   @code
+   R1# show ip route
+   C    192.30.30.0/24 is directly connected, FastEthernet0/1
+   C    192.10.10.0/24 is directly connected, FastEthernet0/0
+   O    192.20.20.0/24 [110/20] via 192.30.30.2, 00:02:41, FastEthernet0/1
+                       [110/20] via 192.10.10.3, 00:02:41, FastEthernet0/0
+   R2# show ip route
+   C    192.30.30.0/24 is directly connected, FastEthernet0/0
+   O    192.10.10.0/24 [110/20] via 192.30.30.1, 00:02:43, FastEthernet0/0
+                       [110/20] via 192.20.20.3, 00:02:43, FastEthernet0/1
+   C    192.20.20.0/24 is directly connected, FastEthernet0/1
+
+   R3# show ip route
+   O    192.30.30.0/24 [110/20] via 192.20.20.2, 00:02:47, FastEthernet0/1
+                       [110/20] via 192.10.10.1, 00:02:47, FastEthernet0/0
+   C    192.10.10.0/24 is directly connected, FastEthernet0/0
+   C    192.20.20.0/24 is directly connected, FastEthernet0/1
+   @end
+
+   > Justifique as tabelas de encaminhamento obtidas.
+
+   As tabelas de encaminhamento contêm não só as redes que estão diretamente
+   conectadas mas também as redes que foram descobertas por /OSPF/, como
+   existem caminhos de custo igual para a mesma rede as entradas na tabela têm
+   dois endereços como /Next Hop/.
+
+   > Utilizando o comando
+   > `show ip ospf interface`
+   > para verificar se custos OSPF atribuídos por omissão a cada interface estão
+     de acordo com os custos dos percursos existentes na tabela de
+     encaminhamento
+
+   @code
+   R1# show ip ospf interface brief
+   Interface    PID   Area            IP Address/Mask    Cost  State Nbrs F/C
+   Fa0/1        1     0               192.30.30.1/24     10    DR    1/1
+   Fa0/0        1     0               192.10.10.1/24     10    DR    1/1
+
+   R2# show ip ospf interface brief
+   Interface    PID   Area            IP Address/Mask    Cost  State Nbrs F/C
+   Fa0/1        1     0               192.20.20.2/24     10    DR    1/1
+   Fa0/0        1     0               192.30.30.2/24     10    BDR   1/1
+
+   R3# show ip ospf interface brief
+   Interface    PID   Area            IP Address/Mask    Cost  State Nbrs F/C
+   Fa0/0        1     0               192.10.10.3/24     10    BDR   1/1
+   Fa0/1        1     0               192.20.20.3/24     10    BDR   1/1
+   @end
+
+   Todas as interfaces têm custo 10 (o valor usado por omissão), isto faz
+   sentido com os valores que vimos nas tabelas de encaminhamento, pois o custo
+   corresponde a soma dos custos das interfaces de saída (contando a interface
+   do router que vai enviar o pacote) o que no nosso caso dá 20 (temos que passar
+   por um router).
+
+** Exercício 8
+
+   > Com base na configuração da experiência anterior, consulte e analise as
+     bases de dados dos routers. Verifique que a conjugação das bases de dados
+     Router Link States e Network Link States constitui uma representação da
+     topologia completa da rede. Identifique qual o Designated Router de cada
+     LAN.
+
+   O router 1 é o /Designated Router/ das LANs `192.10.10.0/24`. O router 2 é o
+   /Designated Router/ das LANs `192.20.20.0/24` e `192.30.30.0/24`. Isto faz
+   sentido se considerarmos que o router 2 têm o endereço mais elevado nas suas
+   duas subnets (`192.30.30.2`) e que o router 1 têm o endereço mais elevado na
+   rede `192.10.10.0/24` (`192.30.30.1` vs `192.20.20.3` do router 3), como não
+   configuramos o /Router ID/ manualmente este é igual ao endereço mais elevado.
+
+   Note-se que o /Designated Router/ é o router que entrou primeiro na rede, o
+   /Router ID/ é usado apenas para desempate, logo o /Designated Router/ pode
+   variar mesmo com a mesma topologia e configuração.
+
+** Exercício 9
+
+   > Configure o default gateway do PC com o endereço da interface apropriada do
+     router 3.
+
+   @code 
+   PC1> ip 192.10.10.100/24 192.10.10.3
+   @end
+
+   > Configure os custos por forma a que ao executar o comando ping do PC para a
+     interface do Router 2 com a rede 192.30.30.0 os pacotes ICMP Echo e ICMP
+     Echo Reply sigam (sempre) o percurso inverso ao dos ponteiros do relógio.
+
+   Para configurarmos os custos de maneira que os pacotes sigam sempre o sentido
+   dos ponteiros inversos do relógio, precisamos que a interface/porta que
+   encaminha pacotes no sentido dos ponteiros do relógio tenha um custo mais
+   alto do que a outra interface.
+
+   No nosso caso isto vai ser a interface `f0/0` do router 3 e a interface
+   `f0/1` do router 2 (de modo que as respostas ao `ping` não voltem pelo
+   router 3), vamos configurá-las de modo que tenham um custo de 20:
+
+   @code
+   R2(config-if)# interface f0/1
+   R2(config-if)# ip ospf cost 20
+
+   R3(config-if)# interface f0/0
+   R3(config-if)# ip ospf cost 20
+   @end
+
+   Podemos verificar que as nossas mudanças tiveram o resultado esperado
+   consultando as tabelas de encaminhamento:
+
+   @code
+   R2# show ip route         
+   C    192.30.30.0/24 is directly connected, FastEthernet0/0
+   O    192.10.10.0/24 [110/20] via 192.30.30.1, 00:00:17, FastEthernet0/0
+   C    192.20.20.0/24 is directly connected, FastEthernet0/1
+
+   R3# show ip route           
+   O    192.30.30.0/24 [110/20] via 192.20.20.2, 00:00:46, FastEthernet0/1
+   C    192.10.10.0/24 is directly connected, FastEthernet0/0
+   C    192.20.20.0/24 is directly connected, FastEthernet0/1
+   @end
+
+   Como podemos ver o único caminho do router 3 para a subnet `192.30.30.0/24` é
+   pelo router 2, e deste para a subnet `192.10.10.0/24` apenas pelo router 1,
+   logo os pacotes terão sempre de seguir o caminho contra os ponteiros do
+   relógio.
+
+   Se capturarmos os pacotes entre o router 2 e 3 vamos ver que todos os pacotes
+   do router 3 para a subnet `192.30.30.0/24` vão passar entre eles e nenhum
+   pacote para a subnet `192.10.10.0/24` irá passar.
+
+   @code
+   PC1> ping 192.30.30.2
+
+   84 bytes from 192.30.30.2 icmp_seq=1 ttl=254 time=24.862 ms
+   84 bytes from 192.30.30.2 icmp_seq=2 ttl=254 time=16.580 ms
+   84 bytes from 192.30.30.2 icmp_seq=3 ttl=254 time=16.599 ms
+   84 bytes from 192.30.30.2 icmp_seq=4 ttl=254 time=7.680 ms
+   84 bytes from 192.30.30.2 icmp_seq=5 ttl=254 time=16.626 ms
+   @end
+
+   @embed image
+   captures/Ex09.png
+   @end
+
+** Exercício 10
+
+   > Implemente um filtro de visualização para o protocolo OSPF e capture no
+     mínimo 6 pacotes. Que tipo de pacotes OSPF capturou? Quem os envia e qual a
+     sua periodicidade? Compare a função destes pacotes com a função dos pacotes
+     RIP response gerados periodicamente pelo protocolo RIP.
+
+   @embed image
+   captures/Ex10.png
+   @end
+
+   Os pacotes /OSPF/ capturados são do tipo /Hello/ e são transmitidos por todos
+   os routers /OSPF/ com uma periodicidade igual ao /Hello Interval/ (10
+   segundos por omissão).
+
+   Estes pacotes, ao contrário dos pacotes /RIP Response/, não transportam as
+   redes e os seus custos, mas são sim usados para negociar relações de
+   vizinhança entre os routers. Ou seja, estes servem para estabelecer os
+   vizinhos do router, fazer a eleição do /Designated Router/ (e o seu
+   /backup/) e para verificar que o router ainda está vivo.
+
+   As bases de dados apenas são sincronizadas quando há mudanças (e
+   periodicamente, mas com muito pouca frequência), logo em redes maiores os
+   pacotes /OSPF/ têm um impacto muito inferior aos pacotes /RIP/, o que também
+   implica que podem ser trocados mais frequentemente sem causar problemas de
+   desempenho na rede, isto faz com que o /OSPF/ consiga detetar mais depressa
+   quando um equipamento morre e convergir mais rápido no novo estado da rede.
+
+** Exercício 11
+
+   > No Router 2 adicione os seguintes comandos
+
+   @code
+   R2(config)# router ospf 1
+   R2(config-router)# default-information originate always
+   @end
+
+   > Visualize a tabela de encaminhamento em todos os routers e explique o
+     propósito deste comando.
+
+   @code
+   R1# show ip route
+   C    192.30.30.0/24 is directly connected, FastEthernet0/1
+   C    192.10.10.0/24 is directly connected, FastEthernet0/0
+   O    192.20.20.0/24 [110/20] via 192.10.10.3, 01:25:13, FastEthernet0/0
+   O*E2 0.0.0.0/0 [110/1] via 192.30.30.2, 01:25:13, FastEthernet0/1
+
+   R3# show ip route
+   O    192.30.30.0/24 [110/20] via 192.20.20.2, 00:01:21, FastEthernet0/1
+   C    192.10.10.0/24 is directly connected, FastEthernet0/0
+   C    192.20.20.0/24 is directly connected, FastEthernet0/1
+   O*E2 0.0.0.0/0 [110/1] via 192.20.20.2, 00:01:21, FastEthernet0/1
+   @end
+
+   Este comando diz ao router para anunciar a rota por omissão (`0.0.0.0/0`),
+   logo todos os endereços que não estejam em outras entradas da tabela de
+   encaminhamento vão ser roteados pelo router 2.
+
+   É de notar que isto é uma rota do tipo `O*E2`, ou seja, /OSPF/ externa, logo
+   apesar de ter um custo menor (1) que as outras rotas /OSPF/, vai ser sempre
+   evitada quando existem outras rotas não externas.
+
+** Exercício 12
+
+   > Desative o OSPF nos 3 routers.
+
+   @code
+   R1(config)# no router ospf 1
+   R2(config)# no router ospf 1
+   R3(config)# no router ospf 1
+   @end
+
+   > Reative e configure o protocolo OSPF nos 3 routers com duas áreas, deixando
+     a rede 192.10.10.0 na área 0 e configurando as duas restantes redes na área
+     1.
+
+   @code
+   R1(config)# router ospf 1
+   R1(config-router)# network 192.10.10.0 0.0.0.255 area 0
+   R1(config-router)# network 192.30.30.0 0.0.0.255 area 1
+   R1(config-router)# end
+
+   R2(config)# router ospf 1
+   R2(config-router)# network 192.30.30.0 0.0.0.255 area 1
+   R2(config-router)# network 192.20.20.0 0.0.0.255 area 1
+   R2(config-router)# end
+
+   R3(config)# router ospf 1
+   R3(config-router)# network 192.10.10.0 0.0.0.255 area 0
+   R3(config-router)# network 192.20.20.0 0.0.0.255 area 1
+   R3(config-router)# end
+   @end
+
+   > Registe o conteúdo das bases de dados dos três routers. Verifique se a
+     base de dados do router interior da área 1 (router 2) reflete apenas a
+     porção da rede desta área.
+
+   (As bases de dados não são apresentadas aqui devido ao seu tamanho)
+
+   As bases de dados mostram que de facto o router 2 apenas tem conhecimento do
+   estado da área 1, no entanto, este continua a possuir uma rota para a subnet
+   `192.10.10.0/24`, esta foi transmitida através de um /Summary Link State/, ou
+   seja, os routers 1 e 3 que estão na fronteira podem ser usados para aceder as
+   subnets na área 0.
+
+   > Verifique também se as bases de dados dos outros routers incluem a
+     informação das áreas 0 e 1 de uma forma separada.
+
+   Cada área é apresentada separadamente, pois efetivamente cada uma possui a
+   sua própria base de dados, no entanto, estas podem comunicar entre si.
+
+   > Conclua quanto à utilidade do encaminhamento hierárquico OSPF.
+
+   O encaminhamento hierárquico permite guardar base dados menores para os
+   routers que são interiores as áreas, o que implica a utilização de menos
+   recursos e menos largura de banda, visto que a base de dados a ser partilhada
+   é menor.
+
+   Logo é possível construir topologias maiores e que são capazes de crescer,
+   pois as bases de dados podem ser mantidas menores dentro de áreas e precisam
+   de menos processamento com a adição de novas áreas.
+
+* Protocolo RIPng
+
+** Exercício 13
+
+   > Configure a rede IPv6 ilustrada na figura seguinte.
+
+   @embed image
+   topologies/ipv6.png
+   @end
+
+   Temos de ativar as interfaces de todos os routers e atribuir-lhes um endereço
+   /IPv6/ na subnet onde estão ligadas.
+
+   @code
+   !! Configuration for router 1
+   R1(config)# interface f0/0
+   R1(config-if)# ipv6 address 2001:10:10::1/64 
+   R1(config-if)# no shutdown
+   R1(config-if)# interface f0/1
+   R1(config-if)# ipv6 address 2001:30:30::1/64
+   R1(config-if)# no shutdown
+
+   !! Configuration for router 2
+   R2(config)# interface f0/0
+   R2(config-if)# ipv6 address 2001:30:30::2/64
+   R2(config-if)# no shutdown
+   R2(config-if)# interface f0/1
+   R2(config-if)# ipv6 address 2001:20:20::2/64
+   R2(config-if)# no shutdown
+
+   !! Configuration for router 3
+   R3(config)# interface f0/0
+   R3(config-if)# ipv6 address 2001:20:20::3/64
+   R3(config-if)# no shutdown
+   R3(config-if)# interface f0/1
+   R3(config-if)# ipv6 address 2001:10:10::3/64
+   R3(config-if)# no shutdown
+   @end
+
+   A seguir, configuramos o PC com um endereço e o router 3 como gateway.
+
+   @code
+   !! Configuration for PC 1
+   PC1> ip 2001:10:10::10/64 2001:10:10::3
+   @end
+
+   > Ative o encaminhamento IPv6 em todos os routers:
+
+   Os routers da Cisco por omissão não têm encaminhamento /IPv6/ ativado, logo
+   temos de o ativar em todos os routers manualmente:
+
+   @code
+   R1(config)# ipv6 unicast-routing
+   R2(config)# ipv6 unicast-routing
+   R3(config)# ipv6 unicast-routing
+   @end
+
+   > Ative o protocolo RIPng (processo número 1) em todos os interfaces:
+
+   Ao contrário do /RIP/, o /RIPng/ é ativado por interface, na nossa topologia
+   todas as interfaces é suposto utilizarem /RIPng/, logo vamos ter de correr o
+   comando `ipv6 rip 1 enable` para cada interface em cada router.
+
+   Os seguintes comandos têm que ser executados para cada router:
+
+   @code
+   R1(config)# interface f0/0
+   R1(config-if)# ipv6 rip 1 enable
+   R1(config-if)# interface f0/1
+   R1(config-if)# ipv6 rip 1 enable
+   @end
+
+   > Visualize a tabela de encaminhamento em todos os routers
+
+   @code
+   R1# show ipv6 route
+   C   2001:10:10::/64 [0/0]
+        via ::, FastEthernet0/0
+   R   2001:20:20::/64 [120/2]
+        via FE80::C002:64FF:FEFB:0, FastEthernet0/1
+        via FE80::C003:65FF:FE1E:1, FastEthernet0/0
+   C   2001:30:30::/64 [0/0]
+        via ::, FastEthernet0/1
+
+   R2# show ipv6 route
+   R   2001:10:10::/64 [120/2]
+        via FE80::C001:64FF:FED6:1, FastEthernet0/0
+        via FE80::C003:65FF:FE1E:0, FastEthernet0/1
+   C   2001:20:20::/64 [0/0]
+        via ::, FastEthernet0/1
+   C   2001:30:30::/64 [0/0]
+        via ::, FastEthernet0/0
+
+   R3# show ipv6 route
+   C   2001:10:10::/64 [0/0]
+        via ::, FastEthernet0/1
+   C   2001:20:20::/64 [0/0]
+        via ::, FastEthernet0/0
+   R   2001:30:30::/64 [120/2]
+        via FE80::C002:64FF:FEFB:1, FastEthernet0/0
+        via FE80::C001:64FF:FED6:0, FastEthernet0/1
+   @end
+
+   (As rotas /Loopback/ foram cortadas por questões de leitura)
+
+   > Justifique as tabelas de encaminhamento obtidas.
+
+   A tabela de encaminhamento contêm entradas para as subnets que estão
+   diretamente conectadas e para as subnets que foram descobertas por /RIPng/.
+
+
+   Note-se que o /Next Hop/ usa os endereços /Link Local/, uma classe nova de
+   endereços introduzida no /IPv6/ usada exclusivamente na mesma rede Layer 2
+   (ie. ethernet), isto faz sentido se considerarmos que o router têm que estar
+   conectado em L2 com o /Next Hop/.
+
+   > Teste a conectividade IPv6 entre os equipamentos.
+
+   Começamos por testar a conectividade do PC1 com os routers adjacentes.
+
+   @code
+   PC1> ping 2001:10:10::1
+
+   2001:10:10::1 icmp6_seq=1 ttl=64 time=9.800 ms
+   2001:10:10::1 icmp6_seq=2 ttl=64 time=5.618 ms
+   2001:10:10::1 icmp6_seq=3 ttl=64 time=5.184 ms
+   2001:10:10::1 icmp6_seq=4 ttl=64 time=5.453 ms
+   2001:10:10::1 icmp6_seq=5 ttl=64 time=4.821 ms
+
+   PC1> ping 2001:10:10::3
+
+   2001:10:10::3 icmp6_seq=1 ttl=64 time=9.768 ms
+   2001:10:10::3 icmp6_seq=2 ttl=64 time=4.656 ms
+   2001:10:10::3 icmp6_seq=3 ttl=64 time=4.885 ms
+   2001:10:10::3 icmp6_seq=4 ttl=64 time=5.443 ms
+   2001:10:10::3 icmp6_seq=5 ttl=64 time=4.668 ms
+   @end
+
+   A seguir, testamos a conectividade com o Router 2, por ambas subnets.
+
+   @code
+   PC1> ping 2001:20:20::2
+
+   2001:20:20::2 icmp6_seq=1 ttl=63 time=31.864 ms
+   2001:20:20::2 icmp6_seq=2 ttl=63 time=28.493 ms
+   2001:20:20::2 icmp6_seq=3 ttl=63 time=11.322 ms
+   2001:20:20::2 icmp6_seq=4 ttl=63 time=18.552 ms
+   2001:20:20::2 icmp6_seq=5 ttl=63 time=13.357 ms
+
+   PC1> ping 2001:30:30::2
+
+   2001:30:30::2 icmp6_seq=1 ttl=63 time=42.708 ms
+   2001:30:30::2 icmp6_seq=2 ttl=63 time=21.269 ms
+   2001:30:30::2 icmp6_seq=3 ttl=63 time=32.166 ms
+   2001:30:30::2 icmp6_seq=4 ttl=63 time=17.840 ms
+   2001:30:30::2 icmp6_seq=5 ttl=63 time=33.374 ms
+   @end
+
+   Existe conectividade entre todos o equipamento, independentemente se estão na
+   mesma subnet ou não, como era de esperar.
+
+** Exercício 14
+
+   > Inicie uma captura na rede do PC, espere 1 minuto e desligue o interface
+     (`shutdown`) do Router 2 ligado à rede 2001:20:20::/64.
+
+   @code
+   R2(config)# interface f0/1
+   R2(config-if)# shutdown
+   @end
+
+   > Analise os pacotes RIPng capturados.
+
+   @embed image
+   captures/Ex14-shutdown.png
+   @end
+
+   Os pacotes capturados não mudam, pois o router 1 já não anunciava a rota
+   visto que o router 3 a anunciava com um custo menor e o /Split Horizon/
+   está ligado.
+
+   > Espere mais 1 minuto e reative o interface desligado (`no shutdown`).
+     Analise os pacotes RIPng capturados.
+
+   @code
+   R2(config)# interface f0/1
+   R2(config-if)# no shutdown
+   @end
+
+   @embed image
+   captures/Ex14-no-shutdown.png
+   @end
+
+   Mais uma vez não se regista qualquer mudança nos pacotes capturados nesta
+   subnet devido ao /Split Horizon/ que faz com que (neste caso) os dois routers
+   apenas anunciem as subnets onde estão diretamente conectados, pois o outro
+   têm sempre um custo mais baixo para a subnet não adjacente.
+
+** Exercício 15
+
+   > Configure no interface do Router 2 com a rede `2001:20:20::/64` o anúncio
+     de uma rota por omissão IPv6 via RIPng:
+
+   @code
+   R2(config)# interface f0/1
+   R2(config-if)# ipv6 rip 1 default-information originate
+   @end
+
+   > Re-verifique as tabelas de encaminhamento IPv6 e analise os pacotes RIPng
+     capturados.
+
+   @code
+   R1# show ipv6 route
+   R   ::/0 [120/3]
+        via FE80::C003:65FF:FE1E:1, FastEthernet0/0
+   R   2001:20:20::/64 [120/2]
+        via FE80::C003:65FF:FE1E:1, FastEthernet0/0
+        via FE80::C002:64FF:FEFB:0, FastEthernet0/1
+
+   R2# show ipv6 route
+   R   2001:10:10::/64 [120/2]
+        via FE80::C001:64FF:FED6:1, FastEthernet0/0
+        via FE80::C003:65FF:FE1E:0, FastEthernet0/1
+
+   R3# show ipv6 route
+   R   ::/0 [120/2]
+        via FE80::C002:64FF:FEFB:1, FastEthernet0/0
+   R   2001:30:30::/64 [120/2]
+        via FE80::C001:64FF:FED6:0, FastEthernet0/1
+        via FE80::C002:64FF:FEFB:1, FastEthernet0/0
+   @end
+
+   As tabelas de encaminhamento dos routers 1 e 3 apresentam agora outra rota
+   descoberta por /RIPng/, esta é para o endereço `::/0`, ou seja é uma rota por
+   omissão e o /Next Hop/ é router 2.
+
+   O custo no router 1 desta rota é de 3, pois ao contrário das outras rotas
+   esta foi apenas anunciada pelo router 2 na interface `f0/1`, a interface que
+   esta na mesma subnet que o router 3. Logo se o router 1 utilizar esta rota,
+   os pacotes terão de passar pelo router 3 e só depois é que chegaram ao router
+   2, apesar de o router 1 estar diretamente conectado ao router 2.
+
+   @embed image
+   captures/Ex15.png
+   @end
+
+   O pacote enviado pelo router 3 inclui a rota por omissão anunciada pelo
+   router 2, a métrica da rota é 2 (já passou por um router) e quando chegar ao
+   router 1 será 3, confirmando os dados presentes nas tabelas de
+   encaminhamento.
+
+* Protocolo OSPFv3
+
+** Exercício 16
+
+   > Desative o protocolo RIPng (`no ipv6 router rip 1`) em todos os routers e
+     ative o protocolo OSPFv3 (processo número 1) em todos os interfaces de
+     todos os routers considerando que todas as redes pertencem à mesma área
+     (área 0)
+
+   Começamos por desativar então o /RIPng/ em todos os routers:
+
+   @code
+   R1(config)# no ipv6 router rip 1
+   R2(config)# no ipv6 router rip 1
+   R3(config)# no ipv6 router rip 1
+   @end
+
+   A seguir, começamos os processos de /OSPFv3/ em todos os routers:
+
+   @code
+   R1(config)# ipv6 router ospf 1
+   R1(config-rtr)# router-id 1.1.1.1
+
+   R2(config)# ipv6 router ospf 1
+   R2(config-rtr)# router-id 2.2.2.2
+
+   R3(config)# ipv6 router ospf 1
+   R3(config-rtr)# router-id 3.3.3.3
+   @end
+
+   É de notar que tivemos de configurar manualmente o /Router ID/ em todos os
+   routers, pois recebemos o seguinte erro:
+
+   @code
+   %OSPFv3-4-NORTRID: OSPFv3 process 1 could not pick a router-id, please configure manually
+   @end
+
+   No entanto, com /OSPFv2/ os IDs eram atríbuidos automaticamente a partir dos
+   endereços dos routers. Isto acontece, pois na transição para /OSPFv3/ os IDs
+   mantiveram-se todos com 4 bytes, mas agora os endereços /IPv6/ têm 16 bytes
+   logo não é possível extrair deles 4 bytes que possamos garantir sejam únicos.
+
+   Finalmente basta atribuirmos a cada interface uma área de /OSPF/, no nosso
+   caso vão todas pertencer à área 0.
+
+   @code
+   R1(config)# interface f0/0
+   R1(config-if)# ipv6 ospf 1 area 0
+   R1(config-if)# interface f0/1 
+   R1(config-if)# ipv6 opsf 1 area 0
+   @end
+
+   Note-se que mais uma vez a configuração é feita por interface e que não foi
+   necessário definir as subnets e a que área pertencem, pois estas são
+   retiradas diretamente das interfaces.
+
+   > Visualize a tabela de encaminhamento em todos os routers.
+
+   @code
+   R1# show ipv6 route
+   O   2001:20:20::/64 [110/20]
+        via FE80::C003:65FF:FE1E:1, FastEthernet0/0
+        via FE80::C002:64FF:FEFB:0, FastEthernet0/1
+
+   R2# show ipv6 route
+   O   2001:10:10::/64 [110/20]
+        via FE80::C003:65FF:FE1E:0, FastEthernet0/1
+        via FE80::C001:64FF:FED6:1, FastEthernet0/0
+
+   R3# show ipv6 route
+   O   2001:30:30::/64 [110/20]
+        via FE80::C001:64FF:FED6:0, FastEthernet0/1
+        via FE80::C002:64FF:FEFB:1, FastEthernet0/0
+   @end
+
+   > Justifique as tabelas de encaminhamento obtidas.
+
+   As tabelas de encaminhamento mostram as rotas /OSPF/ (as rotas diretamente
+   conectadas e /Loopback/ foram cortadas, mas estão presentes) que foram
+   obtidas a partir dos outros routers.
+
+   A semelhança do que vimos com o /RIPng/ os endereços do /Next Hop/
+   correspondem aos endereços /Link Local/ das interfaces dos outros routers,
+   mais uma vez isto faz sentido se considerarmos que o /Next Hop/ têm que
+   partilhar um /Link/ com o router para funcionar.
+
+   A exceção disso o resultado é idêntico ao que obtemos com /OSPFv2/.
+
+   > Teste a conectividade IPv6 entre os equipamentos.
+
+   @code
+   R1# ping 2001:10:10::3
+   Success rate is 100 percent (5/5), round-trip min/avg/max = 4/18/28 ms
+
+   R1# ping 2001:30:30::2
+   Success rate is 100 percent (5/5), round-trip min/avg/max = 16/19/20 ms
+
+   R1# ping 2001:20:20::2
+   Success rate is 100 percent (5/5), round-trip min/avg/max = 8/16/32 ms
+
+   R1# ping 2001:20:20::3
+   Success rate is 100 percent (5/5), round-trip min/avg/max = 8/22/52 ms
+   @end
+
+   Testamos a conectividade a partir do router 1, conseguimos comunicar com os
+   routers diretamente conectados como era de esperar. Conseguimos também
+   comunicar com os routers 2 e 3 através da subnet `2001:20:20::/64` onde o
+   router 1 não está ligado diretamente.
+
+   > Verifique e analise a informação das base de dados do OSPFv3.
+
+   (As bases de dados não são apresentadas aqui devido ao seu tamanho)
+
+   O /OSPFv3/ com a transição para /IPv6/ removeu referências a endereços e
+   prefixos das bases de dados da rede (/network/) e dos routers, sendo então
+   necessário a introdução de novas bases de dados para fazer a conversão entre
+   o /Router ID/ e os endereços, e também entre o /Link ID/ e o prefixo mais
+   máscara da rede.
+
+   O objetivo desta separação é fazer com que seja possível usar /OSPFv3/ em
+   cima de vários protocolos, mas também que seja possível utilizar /OSPFv3/
+   para suportar vários tipos de endereços, é possível usar /OSPFv3/ para
+   partilhar não só rotas /IPv6/ mas também rotas /IPv4/ em simultâneo.
+
+** Exercício 17
+
+   > Configure no Router 2 um anúncio de uma rota por omissão IPv6 via OSPFv3:
+
+   @code
+   R2(config)# ipv6 router ospf 1
+   R2(config-rtr)# default-information originate always
+   @end
+
+   > Re-verifique as tabelas de encaminhamento IPv6 e analise os pacotes OSPFv3
+     capturados.
+
+   @code
+   R1# show ipv6 route
+   OE2  ::/0 [110/1], tag 1
+        via FE80::C002:64FF:FEFB:0, FastEthernet0/1
+   O   2001:20:20::/64 [110/20]
+        via FE80::C003:65FF:FE1E:1, FastEthernet0/0
+        via FE80::C002:64FF:FEFB:0, FastEthernet0/1
+
+   R2# show ipv6 route
+   O   2001:10:10::/64 [110/20]
+        via FE80::C003:65FF:FE1E:0, FastEthernet0/1
+        via FE80::C001:64FF:FED6:1, FastEthernet0/0
+
+   R3#show ipv6 route
+   OE2  ::/0 [110/1], tag 1
+        via FE80::C002:64FF:FEFB:1, FastEthernet0/0
+   O   2001:30:30::/64 [110/20]
+        via FE80::C001:64FF:FED6:0, FastEthernet0/1
+        via FE80::C002:64FF:FEFB:1, FastEthernet0/0
+   @end
+
+   As tabelas de encaminhamento nos routers 1 e 3 apresentam agora uma rota do
+   tipo `OE2` que indica tratar-se de uma rota /OSPF/ externa de tipo 2, a
+   semelhança do que vimos no exercício 11 com /OSPFv2/.
+
+   Esta é a rota por omissão, pois é válida para todos os endereços (`::/0`), e
+   tem como endereço de /Next Hop/ o router 2.
+
+   @embed image
+   captures/Ex17.png
+   @end
+
+   A captura mostra o pacote /LS Update/ que mostra um /LSA/ (/Link State
+   Advertisement/) de tipo 5, ou seja, uma /LSA/ externa, é o router 2 faz este
+   anúncio (podemos ver no /Advertising Router/ o ID), esta rota têm um prefixo
+   de `::`, ou seja, tudo zeros e um tamanho de prefixo de 0, o que nos dá
+   `::/0` que corresponde a rota por omissão.
+
+   Podemos ainda ver que o custo da rota é de 1 (campo /Metric/ no pacote), no
+   entanto, como a rota está marcada como externa os routers vão preferir outras
+   rotas (não externas) mesmo que tenham custos maiores.
