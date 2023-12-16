@@ -225,9 +225,9 @@ author: João Capucho
    @end
 
    O router 1 para de anunciar rotas, pois devido ao /Split Horizon/ não têm
-   nenhuma rota para anunciar que o router 3 já não tenha. Isto causa o router 3
-   a enviar informação sobre a subnet `192.30.30.0/24`, pois o router 1, já não há
-   anuncia.
+   nenhuma rota para anunciar que o router 3 já não tenha. Isto faz com que o
+   router 3 comece a enviar informação sobre a subnet `192.30.30.0/24`, pois,
+   mais uma vez, o router 1, já não há anuncia.
 
 ** Exercício 5.2
 
