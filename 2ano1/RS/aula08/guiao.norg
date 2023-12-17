@@ -1,0 +1,595 @@
+@document.meta
+title: Aula 08
+description: Protocolo BGP
+author: João Capucho
+@end
+
+* Aviso
+
+  A qualquer ponto do guião as configurações podem ser guardadas correndo o
+  comando `wr`, isto é necessário sempre que os nodes forem desligados, caso
+  contrário *toda a configuração é perdida* até ao último ponto onde foi
+  guardada.
+
+* Protocolo BGP
+
+** Exercício 1
+
+   > Monte a rede IPv4 representada na figura, constituída por dois Sistemas
+     Autónomos (SA).
+
+   @embed image
+   topology.png
+   @end
+
+   Após montar a rede é necessário configurar os endereços das interfaces nos
+   routers, começamos no router 1:
+
+   @code
+   R1(config)# interface f0/0
+   R1(config-if)# ip address 192.20.20.1 255.255.255.0
+   R1(config-if)# ipv6 address 2001:20:20::1/64
+   R1(config-if)# no shutdown
+
+   R1(config-if)# interface f0/1
+   R1(config-if)# ip address 192.10.10.1 255.255.255.0
+   R1(config-if)# ipv6 address 2001:10:10::1/64
+   R1(config-if)# no shutdown
+   @end
+
+   A seguir, configuramos o router 2:
+
+   @code
+   R2(config)# interface f0/0
+   R2(config-if)# ip address 192.20.20.2 255.255.255.0
+   R2(config-if)# ipv6 address 2001:20:20::2/64
+   R2(config-if)# no shutdown
+
+   R2(config-if)# interface f0/1
+   R2(config-if)# ip address 192.30.30.2 255.255.255.0
+   R2(config-if)# ipv6 address 2001:30:30::2/64
+   R2(config-if)# no shutdown
+   @end
+
+   Finalmente configuramos as interfaces do router 3:
+
+   @code
+   R3(config)# interface f0/0          
+   R3(config-if)# ip address 192.30.30.3 255.255.255.0   
+   R3(config-if)# ipv6 address 2001:30:30::3/64          
+   R3(config-if)# no shutdown
+
+   R3(config-if)# interface f0/1
+   R3(config-if)# ip address 192.30.31.3 255.255.255.0
+   R3(config-if)# ipv6 address 2001:30:31::3/64
+   R3(config-if)# no shutdown
+   @end
+
+   > Configure os routers de forma a que o OSPFv2 seja o protocolo de
+     encaminhamento interno IPv4.
+
+   Apenas os routers da AS2 precisam de um /IGP/ (/Interior Gateway Protocol/),
+   pois a AS1 têm apenas um router. Logo, vamos necessitar de configurar
+   /OSPFv2/ no router 2 e o 3:
+
+   @code
+   R2(config)#router ospf 1
+   R2(config-router)#network 192.30.30.0 0.0.0.255 area 0
+   R2(config-router)#default-information originate always
+
+   R3(config)#router ospf 1
+   R3(config-router)#network 192.30.30.0 0.0.0.255 area 0
+   R3(config-router)#network 192.30.31.0 0.0.0.255 area 0
+   @end
+
+   Note-se que no router 1 não adicionamos a rede `192.20.20.0/24` a
+   configuração do /OSPF/, isto é feito, pois esta rede não pertence a este
+   /Autonomous System/, mais especificamente esta rede não pertence a nenhuma
+   AS.
+
+   Este tipo de redes é usado na fronteira entre /Autonomous Systems/ para que
+   os routers fronteira possam comunicar entre si e estabelecer as relações de
+   vizinhança através de /EGP/ (/Exterior Gateway Protocols/) como no caso do
+   /BGP/. Estas redes, apesar de existirem, são completamente invisíveis na
+   internet.
+
+   É de realçar também que definimos no router 2 para anunciar a rota por
+   omissão, através do comando `default-information originate always`. Isto faz
+   sentido, pois este é o router fronteira, qualquer endereço que não esteja
+   dentro da AS deve utilizar este router para comunicar para fora da AS.
+
+   > Inicie uma captura de pacotes com um filtro para pacotes TCP. Configure os
+     routers de forma a que o BGP seja o protocolo de encaminhamento externo.
+
+   Começando no router 1, primeiro configuramos o ASn
+   (/Automatic System Number/) a que este router /BGP/ pertence, que no caso do
+   router 1 é o AS1:
+
+   @code
+   R1(config-if)# router bgp 1
+   @end
+
+   A seguir, configuramos os seus vizinhos (endereço do router e AS a que
+   pertencem), neste caso é só o router 2:
+
+   @code
+   R1(config-router)# neighbor 192.20.20.2 remote-as 2
+   @end
+
+   Finalmente, configuramos as redes a que este router está ligado e que serão
+   anunciadas por /BGP/.
+
+   @code
+   R1(config-router)# network 192.10.10.0
+   @end
+
+   Repetimos o mesmo processo para o router 2:
+
+   @code
+   R2(config)# router bgp 2
+   R2(config-router)# neighbor 192.20.20.1 remote-as 1
+   R2(config-router)# network 192.30.30.0
+   R2(config-router)# redistribute ospf 1
+   @end
+
+   Note-se que foi adicionado o comando `redistribute ospf 1` no final, este
+   tal como o nome indica, irá redistribuir todas as rotas que forem
+   descobertas por /OSPF/ para os vizinhos /BGP/.
+
+   > Verifique que tipo de pacotes são inicialmente trocados entre os routers
+     para se fazerem conhecer. Analise que informação os routers trocam nestes
+     pacotes.
+
+   Se voltarmos então a captura que começamos antes de configurar o /BGP/ nos
+   routers, vemos que estes já trocaram alguns pacotes.
+
+   @embed image
+   captures/Ex01_BGP_OPEN.png
+   @end
+
+   A primeira coisa a realçar é que o protocolo /BGP/ é construído em cima de
+   /TCP/ e é por isso que vemos pacotes de /TCP/ a estabelecer uma ligação
+   antes de o /BGP/ começar a trocar os seus pacotes.
+
+   A seguir, reparamos que existem vários tipos de mensagem e que um dado
+   pacote pode ter mais do que uma mensagem, isto é feito porque cada pacote
+   tem um custo extra não só dos frames de /TCP/, /IP/ e etc..., mas também
+   inerente ao /TCP/, cada pacote precisa de receber um pacote de volta de como
+   foi recebido. Logo, o /BGP/ junta várias mensagens num pacote para fazer um
+   uso mais eficiente da rede.
+
+   Das mensagens que capturamos, registamos três tipos diferentes `OPEN`,
+   `UPDATE` e `KEEPALIVE`, esta última como o nome indica serve apenas para
+   indicar que o router ainda está vivo.
+
+   As mensagens `OPEN` servem para estabelecer as relações de vizinhança entre
+   os routers /BGP/, estas incluem informação sobre o /AS/ a que o router
+   pertence, configurações do /BGP/ que devem ser acordadas entre os dois
+   routers, como, por exemplo, o /Hold Time/ (tempo até considerar um router como
+   morto) e capacidades extra suportadas pelo router (/Optional Parameters/).
+   Um router /BGP/ após receber esta mensagem e se aceitar o outro router como
+   vizinho, vai responder também com um pacote `OPEN`.
+
+   Finalmente, temos as mensagens do tipo `UPDATE`, como a que é apresentada na
+   seguinte imagem:
+
+   @embed image
+   captures/Ex01_BGP_UPDATE.png
+   @end
+
+   Estas são as principais mensagens do /BGP/, servem tanto para anunciar rotas
+   novas, como para remover rotas antigas.
+
+   O campo /Withdrawn Routes Length/ serve para determinar quantos bytes de
+   rotas para remover existem na mensagem, no caso desta captura é 0, logo não
+   existem rotas para remover.
+
+   A seguir, temos os /Path Attributes/, estes fornecem informação sobre o
+   caminho que a rota vai percorrer, temos o /Next Hop/ como era de esperar,
+   mas também que /Autonomous Systems/ é que a rota vai percorrer, isto é usado
+   pelos routers para verificar que não existem ciclos, para escolher o caminho
+   mais curto (em termos de AS que são atravessadas) e em alguns casos para
+   verificar a validade do caminho.
+
+   Outro atributo que é relevante é a origem, isto indica como é que esta rota
+   foi descoberta pelo router /BGP/, se foi internamente por /IGP/ na AS, ou
+   possivelmente por /EGP/, isto é usado também para escolher a melhor rota,
+   visto que é preferível rotas que foram descobertas internamente a rotas
+   descobertas externamente.
+
+   Tal como na mensagem `OPEN`, os /Path Attributes/ suportam extensões
+   opcionais que forneçam informação extra sobre a rota e que podem ajudar a
+   seleção da rota ideal, estas aparecem como um /Path Attribute/ mas com uma
+   flag a indicar que não são atributos obrigatórios.
+
+   Finalmente, temos a /Network Layer Reachability Information/, esta parte da
+   mensagem indica que redes é que o router /BGP/ está a anunciar na forma de
+   prefixo mais máscara. Esta informação em conjunção com os /Path Attributes/
+   permite construir as rotas na tabela de encaminhamento do vizinho.
+
+** Exercício 2
+
+   > Registe e justifique as tabelas de encaminhamento dos diversos routers.
+
+   Começamos por verificar a tabela de encaminhamento do router 1:
+
+   @code
+   R1# show ip route
+   B    192.30.31.0/24 [20/20] via 192.20.20.2, 01:16:39
+   B    192.30.30.0/24 [20/0] via 192.20.20.2, 01:17:09
+   C    192.10.10.0/24 is directly connected, FastEthernet0/1
+   C    192.20.20.0/24 is directly connected, FastEthernet0/0
+   @end
+
+   Este, para além das redes que lhe são adjacentes, também apresenta as rotas
+   da AS2 que foram descobertas por /BGP/.
+
+   @code
+   R2# show ip route
+   O    192.30.31.0/24 [110/20] via 192.30.30.3, 01:16:56, FastEthernet0/1
+   C    192.30.30.0/24 is directly connected, FastEthernet0/1
+   B    192.10.10.0/24 [20/0] via 192.20.20.1, 01:41:40
+   C    192.20.20.0/24 is directly connected, FastEthernet0/0
+   @end
+
+   No router 2, temos as rotas para as redes adjacentes, a rota para a rede
+   `192.30.31.0/24` conectada ao router 3 e descoberta por /OSPF/, bem como
+   a rede da AS1 que foi descoberta por /BGP/.
+
+   @code
+   R3# show ip route
+   C    192.30.31.0/24 is directly connected, FastEthernet0/1
+   C    192.30.30.0/24 is directly connected, FastEthernet0/0
+   O*E2 0.0.0.0/0 [110/1] via 192.30.30.2, 01:16:53, FastEthernet0/0
+   @end
+
+   O Router 3 continua com a mesma tabela de encaminhamento, apresentando as
+   redes que lhe são adjacentes e a rota por omissão configurada no router 2.
+
+   > Justifique como é que o router 3, embora não contendo na sua tabela de
+     encaminhamento as redes exteriores ao seu Sistema Autónomo, ainda assim
+     tem conectividade com qualquer delas.
+
+   O router 3 apesar de não conhecer as redes de outros sistemas autónomos têm
+   uma rota por omissão para o router 2. O router 2 por sua vez é o router
+   fronteira e como tal tem rotas para redes de outras AS. Logo, o router 3,
+   para qualquer rede que não conhece, manda os pacotes para o router 2, este
+   consequentemente e se conhecer outro sistema autónomo com a rede do endereço
+   em questão irá reencaminhar o pacote para o router fronteira desse AS.
+
+** Exercício 3
+
+   > Inicie uma nova captura e mantenha-a pelo menos durante 3 minutos. Que
+     tipo de pacotes capturou e com que periodicidade.
+
+   @embed image
+   captures/Ex03_Keepalive.png
+   @end
+
+   Os pacotes registados nesta captura são mensagens `KEEPALIVE` que como já
+   foi mencionado, servem para os routers /BGP/ mostrarem que ainda estão
+   vivos. Estas mensagens são enviadas com uma periodicidade de 60 segundos.
+
+** Exercício 4
+
+   > Depois de iniciar uma nova captura, simule uma falha de ligação física na
+     interface do router 3 ligada à rede 192.30.31.0. 
+
+   Para simular uma falha na ligação física vamos desligar a interface `f0/1`
+   que conecta o router 3 à rede `192.30.31.0/24`.
+
+   @code
+   R3(config)# interface f0/1
+   R3(config-if)# shutdown
+   @end
+
+   > Sem interromper a captura, anule a alteração efetuada na mesma interface.
+
+   @code
+   R3(config)# interface f0/1
+   R3(config-if)# no shutdown
+   @end
+
+   > Determine que tipo de pacotes foram gerados nas duas situações e analise o
+     conteúdo destes pacotes tendo em conta a experiência executada.
+
+   Começamos por analisar os pacotes trocados após a interface ter sido
+   desligada.
+
+   @embed image
+   captures/Ex04_down.png
+   @end
+
+   O router 2 envia uma mensagem `UPDATE` para o router 1, esta mensagem
+   apresenta um campo /Withdrawn Routes/, ou seja rotas para remover, e contêm a
+   rede `192.30.31.0/24`, o router 1 após receber isto irá remover esta rede
+   da sua tabela de encaminhamento.
+
+   Após restaurarmos a interface, o router 2 descobre por /OSPF/ que a rede
+   voltou a estar disponível e recebemos outra mensagem `UPDATE`:
+
+   @embed image
+   captures/Ex04_up.png
+   @end
+
+   Esta tal como as que foram trocadas quando as redes foram inicialmente
+   configuradas, mostra o caminho da rota e as redes acessíveis por esta, que
+   no caso será a rede `192.30.31.0/24`. O router 1 após a receção desta
+   mensagem irá adicionar outra vez uma rota para a rede na sua tabela de
+   encaminhamento.
+
+** Exercício 5
+
+   > Altere a configuração do router 2 de modo a ele anunciar ao sistema
+     autónomo vizinho o agregado das redes do seu sistema autónomo.
+
+   Um agregado permite transformar várias rotas com caminhos iguais numa única
+   rota mais genérica (ie. agregar rotas), para tal precisamos de configurar o
+   prefixo e a máscara do agregado:
+
+   @code
+   R2(config)# router bgp 2
+   R2(config-router)# aggregate-address 192.30.30.0 255.255.254.0 summary-only
+   @end
+
+   Note-se que aqui foi necessário utilizar a opção `summary-only` no comando
+   `aggregate-address` visto que, por omissão, o /BGP/ não agrega rotas se
+   estas tiverem /Path Attributes/ diferentes. O `summary-only` agrega rotas
+   mesmo que elas tenham /Path Attributes/ que sejam mais específicos, isto é
+   necessário no nosso caso porque as nossas rotas são anunciadas com duas
+   origens diferentes (`Internal` e `Unknown`).
+
+   > Consulte e registe as tabelas de encaminhamento dos diversos routers.
+     Explique as diferenças observadas relativamente à experiência 2.
+
+   Começamos por verificar a tabela de encaminhamento do router 1:
+
+   @code
+   R1# show ip route
+   C    192.10.10.0/24 is directly connected, FastEthernet0/1
+   C    192.20.20.0/24 is directly connected, FastEthernet0/0
+   B    192.30.30.0/23 [20/0] via 192.20.20.2, 00:19:07
+   @end
+
+   Este agora só apresenta uma rota para a rede `192.30.30.0/23` invês de rotas
+   individuais para as redes do AS2.
+
+   @code
+   R2# show ip route
+   O    192.30.31.0/24 [110/20] via 192.30.30.3, 00:35:57, FastEthernet0/1
+   C    192.30.30.0/24 is directly connected, FastEthernet0/1
+   B    192.10.10.0/24 [20/0] via 192.20.20.1, 02:40:31
+   C    192.20.20.0/24 is directly connected, FastEthernet0/0
+   B    192.30.30.0/23 [200/0] via 0.0.0.0, 00:08:41, Null0
+   @end
+
+   O router 2 apresenta agora uma rota nula (todos os pacotes são descartados)
+   para a rede que foi agregada, isto acontece porque os routers cisco só
+   conseguem anunciar por /BGP/ rotas que estão nas tabelas de encaminhamento,
+   então eles adicionam uma rota nula para representar agregados. Isto é um
+   detalhe de implementação, mas pode ser usado para verificar se foi
+   configurada agregação olhando apenas para a tabela de encaminhamento.
+
+   A tabela de encaminhamento do router 3 não foi alterada de todo.
+
+   > Tire conclusões sobre a utilidade da agregação de redes na
+     tabela de encaminhamento do router 1.
+
+   O benefício da agregação é que permite obter tabelas de encaminhamento muito
+   mais pequenas, independentemente de quantos rotas diferentes existem numa
+   AS, que podem ser centenas ou milhares em redes maiores. As tabelas de
+   encaminhamento mais curtas não só consomem menos memória mas também são mais
+   rápidas de se consultar quando se encaminha um pacote.
+
+** Exercício 6
+
+   > Com a configuração da experiência anterior, inicie uma captura com o
+     filtro TCP. Simule uma falha de ligação física na interface do router 3
+     ligada à rede 192.30.31.0.
+
+   @code
+   R3(config)# interface f0/1
+   R3(config-if)# shutdown
+   @end
+
+   > Sem interromper a captura, deixe passar cerca de 2 minutos e anule a
+     alteração efetuada na mesma interface
+
+   @code
+   R3(config)# interface f0/1
+   R3(config-if)# no shutdown
+   @end
+
+   > Analise os pacotes observados.
+
+   @embed image
+   captures/Ex06.png
+   @end
+
+   A captura apresenta um pacote marcado a preto, este é o ponto onde a ligação
+   foi retomada. Como podemos ver não foram trocados pacotes de `UPDATE` entre
+   os routers, isto quer dizer que a rede nunca foi removida. Como um agregado
+   anuncia várias redes numa só rota, se umas das redes falhar o router /BGP/
+   não vai anunciar a sua remoção.
+
+   Isto pode ser um ponto positivo ou negativo dependendo da perspetiva, por um
+   lado já não temos uma reflexão do estado real da rede, mas pelo outro se as
+   redes vêm todas do mesmo vizinho não é necessário saber o estado interno da
+   sua rede (na maior parte dos casos). Além disso, também prevenimos mandar
+   várias mensagens `UPDATE` quando uma rede interna falha e volta, o que poupa
+   recursos nos routers /BGP/ que não as têm de processar.
+
+** Exercício 7
+
+   > Repita a experiência 6. simulando a falha da ligação física na interface
+     do router 2 ligada à rede 192.30.30.0 e a sua reposição.
+
+   @code
+   R2(config)# interface f0/1
+   R2(config-if)# shutdown
+   !! Esperamos uns minutos
+   R2(config-if)# no shutdown
+   @end
+
+   > Analise os pacotes observados e compare com a experiência anterior. Que
+     conclusões retira destas duas experiências.
+
+   @embed image
+   captures/Ex07_down.png
+   @end
+
+   Esta captura mostra os pacotes capturados imediatamente após a ligação ter
+   sido cortada. Como podemos ver desta vez o router 3 anunciou a remoção de
+   uma rota, a rota do agregado. Isto faz sentido se considerarmos que o
+   agregado é a junção de rotas para as redes e que ambas as redes foram
+   abaixo, já não existe nada para agregar por isso a rota é retirada.
+
+   Observamos agora a captura após a ligação ter sido reestabelecida:
+
+   @embed image
+   captures/Ex07_up.png
+   @end
+
+   Após uma das redes voltar o router 2 volta a anunciar o agregado. Note-se
+   que a este ponto apenas uma das redes voltou, pois o /OSPF/ ainda não teve
+   tempo de reestabelecer as relações de vizinhança entre o router 2 e 3. Mesmo
+   após estas serem reestabelecidas o router 2 não vai anunciar outra rota,
+   pois já anunciou o agregado todo.
+
+* Protocolo BGP-MP
+
+** Exercício 8
+
+   > Adicione as configurações IPv6 à rede representada na figura, constituída
+     por dois Sistemas Autónomos (SA).
+
+   Já foi feito, falta apenas ativar o roteamento de IPv6:
+
+   @code
+   R1(config)# ipv6 unicast-routing
+   R2(config)# ipv6 unicast-routing
+   R3(config)# ipv6 unicast-routing
+   @end
+
+   > Inicie uma captura de pacotes com um filtro para pacotes TCP. Apague o
+     processo de BGP configurado anteriormente.
+
+   @code
+   R1(config)# no router bgp 1
+   R2(config)# no router bgp 2
+   @end
+
+   > Configure os routers de forma a que o OSPFv3 seja o protocolo
+     de encaminhamento interno.
+
+   Ativamos o /OSPFv3/ e atribuímos todas as interfaces a área 0:
+
+   @code
+   R2(config)# ipv6 router ospf 1
+   R2(config-rtr)# router-id 2.2.2.2
+   R2(config-rtr)# default-information originate always
+   R2(config-rtr)# interface f0/1
+   R2(config-if)# ipv6 ospf 1 area 0
+
+   R3(config)# ipv6 router ospf 1
+   R3(config-rtr)# router-id 3.3.3.3
+   R3(config-rtr)# interface f0/0
+   R3(config-if)# ipv6 ospf 1 area 0
+   R3(config-if)# interface f0/1
+   R3(config-if)# ipv6 ospf 1 area 0
+   @end
+
+   É de relembrar que a interface `f0/0` do router 2 não participa no OSPF,
+   visto que esta rede é usada apenas entre os routers /BGP/. E também que
+   o router 2 vai anunciar a rota por omissão.
+
+   > Configure o MP-BGP seja o protocolo de encaminhamento externo.
+
+   Começamos por configurar no router 1:
+
+   @code
+   R1(config)# router bgp 1 
+
+   R1(config-router)# address-family ipv4 unicast
+   R1(config-router-af)# network 192.10.10.0
+   R1(config-router-af)# neighbor 192.20.20.2 remote-as 2
+
+   R1(config-router-af)# address-family ipv6 unicast
+   R1(config-router-af)# network 2001:10:10::/64
+   R1(config-router-af)# neighbor 2001:20:20::2 remote-as 2
+   @end
+
+   É de realçar o comando `address-family` que nos permite configurar o
+   /MP-BGP/ para cada tipo de endereço. É de notar também que nós para cada
+   família definimos o vizinho com um endereço do mesmo tipo, isto não é
+   necessário, o /MP-BGP/ consegue carregar informação sobre vários tipos de
+   endereços usando apenas um endereço, por exemplo, de /IPv4/.
+
+   A seguir, configuramos no router 2, não esquecendo que este tem de
+   redistribuir as rotas aprendidas por /OSPF/:
+
+   @code
+   R2(config-rtr)# router bgp 2
+
+   R2(config-router)# address-family ipv4 unicast
+   R2(config-router-af)# neighbor 192.20.20.1 remote-as 1
+   R2(config-router-af)# network 192.30.30.0
+   R2(config-router-af)# aggregate-address 192.30.30.0 255.255.254.0 summary-only
+   R2(config-router-af)# redistribute ospf 1
+
+   R2(config-router-af)# address-family ipv6 unicast
+   R2(config-router-af)# neighbor 2001:20:20::1 remote-as 1
+   R2(config-router-af)# network 2001:30:30::/64
+   R2(config-router-af)# redistribute ospf 1
+   @end
+
+   Tal como no router 1 configuramos um vizinho para cada família de endereços.
+   Também configuramos um agregado para os endereços de IPv4, tal como no
+   exercício 5.
+
+   > Verifique que tipo de pacotes são inicialmente trocados entre os routers
+     para se fazerem conhecer. Analise que informação os routers trocam nestes
+     pacotes
+
+   Começamos por visualizar os pacotes imediatamente após ambos os routers
+   /MP-BGP/ terem sido configurados:
+
+   @embed image
+   captures/Ex08_OPEN.png
+   @end
+
+   Como configuramos cada tipo de endereços com o seu próprio vizinho, vemos
+   duas trocas de mensagens `OPEN`, uma com endereços /IPv4/ outra com
+   endereços /IPv6/.
+
+   Estes pacotes `OPEN` são idênticos aos trocados no exercício 1, com a
+   exceção que agora ambos os routers anunciam a extensão de multi protocolos, o
+   /MP/ em /MP-BGP/.
+
+   @embed image
+   captures/Ex08_OPEN.png
+   @end
+
+   Tal como foram trocados dois pares de mensagens `OPEN`, também existem dois
+   pares de mensagens `UPDATE` na captura, a segunda troca é feita por /IPv4/ e
+   é idêntica as que vimos nos exercícios anteriores.
+
+   A troca por /IPv6/ é apresentada e desta vez a
+   /Network Layer Reachability Information/ não é um campo separado na
+   mensagem, mas é sim um /Path Attribute/. Este inclui o /Next Hop/, que já
+   não é um /Path Attribute/, pois este vai depender do tipo de endereços, que
+   também é codificado neste. No final do /Path Attribute/ temos as redes
+   válidas para esta rota.
+
+** Exercício 9
+
+   > Inicie uma nova captura e mantenha-a pelo menos durante 3 minutos. Que
+     tipo de pacotes capturou e com que periodicidade.
+
+   @embed image
+   captures/Ex09.png
+   @end
+
+   Os pacotes capturados, mais uma vez, são as mensagens de `KEEPALIVE` do
+   /BGP/ sendo trocadas a cada 60 segundos. Tal como no exercício anterior,
+   estas são mandadas para cada endereço do vizinho que foi configurado.
