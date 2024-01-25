@@ -7,3 +7,6 @@
 [submodule "excalidraw"]
 	path = excalidraw
 	url = https://github.com/excalidraw/excalidraw.git
+[submodule "2ano1/MPEI/trabalho-pratico-2-2023-2024-v1"]
+	path = 2ano1/MPEI/trabalho-pratico-2-2023-2024-v1
+	url = https://github.com/JCapucho/Trabalho-MPEI-2.git
