@@ -1,0 +1,255 @@
+#!/bin/bash
+#
+# Miguel Oliveira e Silva (mos@ua.pt), 2017-2021
+
+scriptName=antlr4-visitor
+target=java
+sourceExt="java"
+
+function help()
+{
+   echo -e "Usage: $scriptName [-h | -help] [-cpp [inline] | -python | -java] [-f | -force]\n                      [<grammar>] <visitor-class-name> <visitor-type>"
+   echo ""
+   echo "   Creates a visitor class named <visitor-class-name> in the target language for <grammar>."
+   echo "   Type instance of base generic visitor class will be <visitor-type>."
+   echo "   Argument <grammar> may be omitted iff there is only one grammar in the directory"
+   echo "   (and eventual subdirectories)."
+   echo ""
+   echo "   Target language:"
+   echo "       -java:       java (default)"
+   echo "       -cpp:        c++"
+   echo "       -cpp inline: c++ with inline implementation (implementation in *.h class definition)"
+   echo "       -python:     python3"
+   echo ""
+   echo "   options:"
+   echo "       -h"
+   echo "       -help"
+   echo "           help page"
+   echo "       -f"
+   echo "       -force"
+   echo "           force creation of visitor file"
+   echo "       -i <N>"
+   echo "       -indent <N>"
+   echo "           number of indentation spaces (default: 3)"
+   echo "       -l"
+   echo "       -log"
+   echo "           add method log stdout print"
+   exit 1
+}
+
+function logJava()
+{
+   local visitorType=$1
+   local indent=$2
+   if [[ $logActive == "true" ]]; then
+      cat - | sed "s/\($visitorType \)\(visit[a-zA-Z0-9_]\+\)\((.*$\)/\1\2\3\n${indent}${indent}System.out.println(\"[\2]\");/g"
+   else
+      cat -
+   fi
+}
+
+function logCpp()
+{
+   local indent=$1
+   if [[ $logActive == "true" ]]; then
+      cat - | sed "s/\(visit[a-zA-Z0-9_]\+\)\((.*{$\)/\1\2\n${indent}printf(\"[%s]\\\n\", \"\1\");/g"
+   else
+      cat -
+   fi
+}
+
+function logPython()
+{
+   local indent=$1
+   if [[ $logActive == "true" ]]; then
+      cat - | sed "s/\(visit[a-zA-Z0-9_]\+\)\((.*:$\)/\1\2\n${indent}${indent}print(\"[\1]\")/g"
+   else
+      cat -
+   fi
+}
+
+indentSpaces="3"
+forceCreation="false"
+logActive="false"
+
+# process options:
+while [[ $1 == -* ]]; do
+   case $1 in
+      -h | -help)
+         help
+         ;;
+      -cpp | -c++)
+         target="cpp"
+         sourceExt="cpp"
+         if [[ $# > 1 && $2 == "inline" ]]; then
+            shift
+            inline="true"
+         else
+            inline="false"
+         fi
+         ;;
+      -python | -python3)
+         target="python"
+         sourceExt="py"
+         ;;
+      -java)
+         target="java"
+         sourceExt="java"
+         ;;
+      -i | -indent)
+         shift
+         if (( $# == 0 )); then
+            echo -e "ERROR: missing indentation value!"
+            exit 1
+         fi
+         indentSpaces="$1"
+         if ! [[ "$indentSpaces" =~ ^[0-9]+$ ]]; then
+            echo "ERROR: invalid indentation number"
+            exit 1
+         fi
+         ;;
+      -f | -force)
+         forceCreation="true"
+         ;;
+      -l | -log)
+         logActive="true"
+         ;;
+      -*)
+         echo "ERROR: invalid argument!"
+         exit 1
+         ;;
+   esac
+   shift
+done
+
+if [[ $# == 0 || $# == 1 && $target != "python" ]]; then
+   echo "ERROR: Missing <visitor-class-name> <visitor-type> arguments!"
+   echo ""
+   help
+fi
+
+indentval=${indentSpaces}; indent=$(printf "%${indentval}s")
+
+if (! command -v cpp >/dev/null 2>&1); then
+   echo "ERROR: cpp command missing (install gcc)"
+   exit 1
+fi
+
+grammar=""
+grammarFile=""
+if [ $# -eq 3 ]; then
+   gr=${1%.g4}
+   grammar=${gr%Parser}
+   if [[ ! -e "${grammar}.g4" && ! -e "${grammar}Parser.g4" ]]; then
+      echo "ERROR: Grammar file not found!"
+      exit 1
+   fi
+   shift
+else
+   count=`find . -name \*.g4 | sed 's/Parser.g4$\|Lexer.g4$\|.g4$//1' | uniq | wc -l`
+   if ((count == 0)); then
+      echo "ERROR: Grammar file not found!"
+      exit 1
+   elif ((count > 1)); then
+      echo "ERROR: Too many grammar files!"
+      find . -name \*.g4 -printf "   %p\n"
+      exit 1
+   fi
+   g4=`find . -name \*.g4 | sed 's/Parser.g4$\|Lexer.g4$\|.g4$//1' | uniq`
+   p=`dirname $g4 | sed 's/^\.\///1'`
+   if [[ "$p" == "." ]]; then
+     p=""
+   else
+     p=$p.
+   fi
+
+   if [ ! -e $g4.g4 ]; then
+      g4=${g4}Parser
+   fi
+
+   grammar=`cat "$g4"*.g4 | cpp 2>/dev/null | grep -wv ^# | sed 's/{/ { /g' | sed 's/}/ } /g' | tr '\n' ' ' | tr ' ' '\n' | grep -wv parser | grep -wv options | grep -v ^\;$ | grep -v ^$ | gawk 'BEGIN {incode=0;} /{/ {incode++;} /}/ {incode--;}  {if (incode == 0) print $0;}' | grep -v \} | grep -v @.* | head -2 | tail -1 | sed 's/[:;].*$//g' | grep -v ^$ | sed 's/Parser$//'`
+
+   if [ -z "$grammar" ]; then
+      echo "ERROR: grammar name missing!"
+      exit 1
+   fi
+fi
+
+grammarFile="${grammar}.g4"
+if [[ ! -e "$grammarFile" ]]; then
+   grammarFile="${grammar}Parser.g4"
+   if [[ ! -e "$grammarFile" ]]; then
+      echo "ERROR: Grammar file not found!"
+      exit 1
+   fi
+fi
+
+if ! [[ $# == 2 || ( $# == 1 && $target == "python" ) ]]; then
+   echo "ERROR: Missing <visitor-class-name> <visitor-type> arguments!"
+   echo ""
+   help
+fi
+
+visitor=$(echo $1 | sed "s/\.${sourceExt}$//1" | sed 's/\.*//g')
+if [[ $forceCreation == "false" ]]; then
+   if [ -e ${visitor}.$sourceExt ]; then
+      echo "ERROR: Visitor file \"${visitor}.$sourceExt\" already exists!"
+      exit 2
+   fi
+fi
+
+if [[ ${visitor} == ${grammar}Visitor || ${visitor} == ${grammar}BaseVisitor ||
+      ${visitor} == ${grammar}Listener || ${visitor} == ${grammar}BaseListener ||
+      ${visitor} == ${grammar}Parser || ${visitor} == ${grammar}Lexer ]]; then
+   echo "ERROR: Invalid visitor name (\"${visitor}\")!"
+   exit 1
+fi
+
+visitorType=${2}
+
+echo "Grammar: $grammar"
+echo "Visitor: $visitor"
+echo "Type: $visitorType"
+echo "Target language: $target"
+
+if [[ -e "${grammar}Lexer.g4" ]]; then
+   antlr4 -$target "${grammar}Lexer.g4"
+fi
+antlr4 -$target -visitor "$grammarFile"
+if [[ -e "${grammar}Parser.g4" ]]; then
+   grammar=${grammar}Parser
+fi
+
+case $target in
+   java)
+      cpp "${grammar}BaseVisitor.java" | grep -v "^#.*$" | grep -v "^import.*$" | grep -v "^[ \t]*$" | sed "s/${grammar}BaseVisitor<T>.*/${visitor} extends ${grammar}BaseVisitor<${visitorType}> {/1" | sed "s/\<T\>/$visitorType/g" | sed "s/^ /\n${indent}/g" | sed "s/ \(return.*;\)/\n${indent}${indent}$visitorType res = null;\n${indent}${indent}\1\n${indent}${indent}\/\/return res;/g" | sed "s/; }/;\n${indent}}/g" | logJava "$visitorType" "${indent}" > "${visitor}.java"
+      ;;
+   cpp)
+      if [[ $inline == "false" ]]; then
+         echo -e "#pragma once\n" > "${visitor}.h"
+         echo -e "#include \"${grammar}BaseVisitor.h\"\n" >> "${visitor}.h"
+         cat "${grammar}BaseVisitor.h" | grep -v "^#.*$" | cpp | grep -v "^#.*$" | grep -v "^[ \t]*$" | grep -v "^[ \t]*}$" | grep -wv "return" | sed "s/${grammar}BaseVisitor.*/${visitor} : public ${grammar}BaseVisitor {/1" | sed "s/^  /${indent}/g" | sed "s/^\(${indent}virtual\)/\n\1/g" | sed 's/override {/override;/g' >> "${visitor}.h"
+         echo "#include \"${visitor}.h\"" > "${visitor}.cpp"
+         cat "${grammar}BaseVisitor.h" | grep -v "^#.*$" | cpp | grep -v "^#.*$" | grep -v "^[ \t]*$" | grep -v "};" | grep -wv "class\|public" | sed "s/^  //g" | sed "s/^virtual /\n/g" | sed 's/override //g' | sed "s/any \(visit\)/any ${visitor}::\1/g" | sed "s/  \(return.*\)/${indent}std::any res;\n${indent}$visitorType r;\n${indent}\/\/ if (res.has_value()) {\n${indent}${indent}\/\/ r = std::any_cast<$visitorType>(res);\n${indent}\/\/ }\n${indent}\1\n${indent}\/\/return res;/g" | logCpp "${indent}" >> "${visitor}.cpp"
+      else
+         echo -e "#pragma once\n" > "${visitor}.h"
+         echo -e "#include \"${grammar}BaseVisitor.h\"\n" >> "${visitor}.h"
+         cat "${grammar}BaseVisitor.h" | grep -v "^#.*$" | cpp | grep -v "^#.*$" | grep -v "^[ \t]*$" | sed "s/${grammar}BaseVisitor.*/${visitor} : public ${grammar}BaseVisitor {/1" | sed "s/^  /${indent}/g" | sed "s/  \(return.*\)/${indent}std::any res;\n${indent}${indent}$visitorType r;\n${indent}${indent}\/\/ if (res.has_value()) {\n${indent}${indent}${indent}\/\/ r = std::any_cast<$visitorType>(res);\n${indent}${indent}\/\/ }\n${indent}${indent}\1\n${indent}${indent}\/\/return res;/g" | sed "s/^\(${indent}virtual\)/\n\1/g" | logCpp "${indent}${indent}" >> "${visitor}.h"
+         echo "#include \"${visitor}.h\"" > "${visitor}.cpp"
+      fi
+      ;;
+   python)
+      echo -e "from antlr4 import *" > "${visitor}.py"
+      echo -e "from ${grammar}Parser import ${grammar}Parser" >> "${visitor}.py"
+      echo -e "from ${grammar}Visitor import ${grammar}Visitor" >> "${visitor}.py"
+      echo -e "" >> "${visitor}.py"
+      echo -e "class $visitor(${grammar}Visitor):" >> "${visitor}.py"
+      cat "${grammar}Visitor.py" | grep -v "^[ \t]*#.*$" | grep  "visit\|return" | sed -e 's/^[ \t]*//g' | sed -e "s/^\(def.*\)$/${indent}\1/g" | sed -e "s/^\(return.*\)$/${indent}${indent}\1\n/g" | logPython "${indent}" >> "${visitor}.py"
+      ;;
+   *)
+      echo "ERROR: $target visitors not yet implemented!"
+      ;;
+esac
+antlr4-clean -$target >& /dev/null
+
+exit 0

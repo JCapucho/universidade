@@ -1,0 +1,97 @@
+#!/bin/bash
+#
+# Miguel Oliveira e Silva (mos@ua.pt), 2017-2020
+
+if [ -z "$ANTLR4_PATH" ]; then
+   cp=""
+else
+   TMP_VERSION=$(ls -f $ANTLR4_PATH/antlr-4*-complete.jar | tail -1 | sed 's/.*\///g' | sed 's/-com.*//g')
+   ANTLR4File=$(ls -f $ANTLR4_PATH/antlr-4*-complete.jar | grep "$TMP_VERSION" | awk '{ print length(), $0 | "sort -n" }' | sed 's/^[0-9 ]\+//g' | tail -1)
+   TMP_VERSION=$(ls -f $ANTLR4_PATH/ST-*.jar | tail -1 | sed 's/.*\///g' | sed 's/\.jar//g')
+   STFile=$(ls -f $ANTLR4_PATH/ST-*.jar | grep "$TMP_VERSION" | awk '{ print length(), $0 | "sort -n" }' | sed 's/^[0-9 ]\+//g' | tail -1)
+   cp="-cp .:$ANTLR4File:$STFile"
+fi
+
+function help()
+{
+   echo "Usage: antlr4-test [<grammar> <rule>] [options]"
+   echo ""
+   echo "   Tests the ANTLR4 <grammar> starting at rule <rule>."
+   echo "   Arguments <grammar> <rule> may be omitted iff there is only one grammar in the directory"
+   echo "   (and eventual subdirectories), and the first symbol in the grammar is the desired <rule> symbol."
+   echo ""
+   echo "   principal options:"
+   echo "       -h"
+   echo "       -help"
+   echo "           help page"
+   echo "       -gui"
+   echo "           shows the syntax tree"
+   echo "       -tokens"
+   echo "           shows the tokens"
+   echo ""
+   echo "   other options:"
+   java -ea $cp org.antlr.v4.gui.TestRig 2>&1 | tail -n +2 | sed 's/^/      /g'
+   exit 1;
+}
+
+if [[ $# == 1 && ($1 == "-h" || $1 == "-help") ]]; then
+   help
+fi
+
+if [ $# -eq 1 ]; then
+   if [[ "$1" =~ "-h" ]]; then
+      java -ea $cp org.antlr.v4.gui.TestRig
+      exit 1
+   fi
+fi
+
+if [ $# -eq 0 ] || [ $# -eq 1 ] && [[ "$1" =~ "-"* ]]; then
+   if (command -v cpp >/dev/null 2>&1); then
+      count=`find . -name \*.g4 | sed 's/Parser.g4$\|Lexer.g4$\|.g4$//1' | uniq | wc -l`
+      if ((count == 0)); then
+         echo "ERROR: Grammar file not found! (try option -h)"
+         exit 1
+      elif ((count > 1)); then
+         echo "ERROR: Too many grammar files!"
+         find . -name \*.g4 -printf "   %p\n"
+         exit 1
+      fi
+      g4=`find . -name \*.g4 | sed 's/Parser.g4$\|Lexer.g4$\|.g4$//1' | uniq`
+      p=`dirname $g4 | sed 's/^\.\///1'`
+      if [[ "$p" == "." ]]; then
+        p=""
+      else
+        p=$p.
+      fi
+
+      if [ ! -e $g4.g4 ]; then
+         g4=${g4}Parser
+      fi
+
+      grammar=`cat "$g4"*.g4 | cpp 2>/dev/null | grep -wv ^# | sed 's/{/ { /g' | sed 's/}/ } /g' | tr '\n' ' ' | tr ' ' '\n' | grep -wv parser | grep -wv options | grep -v ^\;$ | grep -v ^$ | gawk 'BEGIN {incode=0;} /{/ {incode++;} /}/ {incode--;}  {if (incode == 0) print $0;}' | grep -v \} | grep -v @.* | head -2 | tail -1 | sed 's/[:;].*$//g' | grep -v ^$ | sed 's/Parser$//'`
+         rule=`cat "$g4"*.g4 | cpp 2>/dev/null | grep -wv ^# | sed 's/{/ { /g' | sed 's/}/ } /g' | tr '\n' ' ' | tr ' ' '\n' | grep -wv parser | grep -wv options | grep -v ^\;$ | grep -v ^$ | gawk 'BEGIN {incode=0;} /{/ {incode++;} /}/ {incode--;}  {if (incode == 0) print $0;}' | grep -v \} | grep -v @.* | head -3 | tail -1 | sed 's/[:;].*$//g' | grep -v ^$`
+
+      #echo "Grammar: $grammar"
+      #echo "Main rule: $rule"
+
+      if [ -z "$grammar" ]; then
+         echo "ERROR: grammar name missing! (try option -h)"
+         exit 1
+      fi
+      if [ -z "$rule" ]; then
+         echo "ERROR: first grammar rule missing!"
+         exit 1
+      fi
+
+      #echo "Grammar: $grammar"
+      #echo "Rule: $rule"
+
+      java -ea $cp org.antlr.v4.gui.TestRig $p$grammar $rule $*
+   else
+      java -ea $cp org.antlr.v4.gui.TestRig $*
+   fi
+else
+   java -ea $cp org.antlr.v4.gui.TestRig $*
+fi 
+
+exit $?

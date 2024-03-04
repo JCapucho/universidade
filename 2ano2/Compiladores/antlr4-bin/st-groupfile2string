@@ -1,0 +1,23 @@
+#!/bin/bash
+#
+# Miguel Oliveira e Silva (mos@ua.pt), 2020
+
+if (( $# != 1 )); then
+   echo "Converts a STGroupFile to a String template (STGroupString)."
+   echo ""
+   echo "USAGE: st-groupfile2string <STGroupFile-path>"
+   exit 1
+fi
+
+file=$1
+if ! [ -e ${file} ]; then
+   echo "ERROR: STGroupFile ${file} not found!"
+   exit 2
+fi
+
+echo "   // Automatically generated from $file"
+echo '   String templates = ""+'
+cat "$file" | sed 's/\\/\\\\/g' | sed 's/"/\\"/g' | sed 's/^/      "/g' | sed 's/$/\\n"\+/g'
+echo '      "";'
+
+exit 0

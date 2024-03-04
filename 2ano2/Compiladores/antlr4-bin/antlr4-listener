@@ -1,0 +1,250 @@
+#!/bin/bash
+#
+# Miguel Oliveira e Silva (mos@ua.pt), 2017-2021
+
+scriptName=antlr4-listener
+target=java
+sourceExt="java"
+
+function help()
+{
+   echo -e "Usage: $scriptName [-h | -help] [-cpp [inline] | -python | -java] [-f | -force]\n                       [<grammar>] <listener-class-name>"
+   echo ""
+   echo "   Creates a listener class named <listener-class-name> in the target language for <grammar>."
+   echo "   Argument <grammar> may be omitted iff there is only one grammar in the directory"
+   echo "   (and eventual subdirectories)."
+   echo ""
+   echo "   Target language:"
+   echo "       -java:       java (default)"
+   echo "       -cpp:        c++"
+   echo "       -cpp inline: c++ with inline implementation (implementation in *.h class definition)"
+   echo "       -python:     python3"
+   echo ""
+   echo "   options:"
+   echo "       -h"
+   echo "       -help"
+   echo "           help page"
+   echo "       -f"
+   echo "       -force"
+   echo "           force creation of listener file"
+   echo "       -i <N>"
+   echo "       -indent <N>"
+   echo "           number of indentation spaces (default: 3)"
+   echo "       -l"
+   echo "       -log"
+   echo "           add method log stdout print"
+   exit 1
+}
+
+function logJava()
+{
+   local indent=$1
+   if [[ $logActive == "true" ]]; then
+      cat - | sed "s/\(void \)\(enter[a-zA-Z0-9_]\+\|exit[a-zA-Z0-9_]\+\)\((.*$\)/\1\2\3\n${indent}${indent}System.out.println(\"[\2]\");/g"
+   else
+      cat -
+   fi
+}
+
+function logCpp()
+{
+   local indent=$1
+   if [[ $logActive == "true" ]]; then
+      cat - | sed "s/\(enter[a-zA-Z0-9_]\+\|exit[a-zA-Z0-9_]\+\)\((.*$\)/\1\2\n${indent}printf(\"[%s]\\\n\", \"\1\");/g"
+   else
+      cat -
+   fi
+}
+
+function logPython()
+{
+   local indent=$1
+   if [[ $logActive == "true" ]]; then
+      cat - | sed "s/\(enter[a-zA-Z0-9_]\+\|exit[a-zA-Z0-9_]\+\)\((.*:$\)/\1\2\n${indent}${indent}print(\"[\1]\")/g"
+   else
+      cat -
+   fi
+}
+
+indentSpaces="3"
+forceCreation="false"
+logActive="false"
+
+# process options:
+while [[ $1 == -* ]]; do
+   case $1 in
+      -h | -help)
+         help
+         ;;
+      -cpp | -c++)
+         target="cpp"
+         sourceExt="cpp"
+         if [[ $# > 1 && $2 == "inline" ]]; then
+            shift
+            inline="true"
+         else
+            inline="false"
+         fi
+         ;;
+      -python | -python3)
+         target="python"
+         sourceExt="py"
+         ;;
+      -java)
+         target="java"
+         sourceExt="java"
+         ;;
+      -f | -force)
+         forceCreation="true"
+         ;;
+      -i | -indent)
+         shift
+         if (( $# == 0 )); then
+            echo -e "ERROR: missing indentation value!"
+            exit 1
+         fi
+         indentSpaces="$1"
+         if ! [[ "$indentSpaces" =~ ^[0-9]+$ ]]; then
+            echo "ERROR: invalid indentation number"
+            exit 1
+         fi
+         ;;
+      -l | -log)
+         logActive="true"
+         ;;
+      -*)
+         echo "ERROR: invalid argument!"
+         exit 1
+         ;;
+   esac
+   shift
+done
+
+if [ $# -eq 0 ]; then
+   echo "ERROR: Missing <listener-class-name> argument!"
+   echo ""
+   help
+fi
+
+indentval=${indentSpaces}; indent=$(printf "%${indentval}s")
+
+if (! command -v cpp >/dev/null 2>&1); then
+   echo "ERROR: cpp command missing (install gcc)"
+   exit 1
+fi
+
+grammar=""
+grammarFile=""
+if [ $# -eq 2 ]; then
+   gr=${1%.g4}
+   grammar=${gr%Parser}
+   if [[ ! -e "${grammar}.g4" && ! -e "${grammar}Parser.g4" ]]; then
+      echo "ERROR: Grammar file not found!"
+      exit 1
+   fi
+   shift
+else
+   count=`find . -name \*.g4 | sed 's/Parser.g4$\|Lexer.g4$\|.g4$//1' | uniq | wc -l`
+   if ((count == 0)); then
+      echo "ERROR: Grammar file not found!"
+      exit 1
+   elif ((count > 1)); then
+      echo "ERROR: Too many grammar files!"
+      find . -name \*.g4 -printf "   %p\n"
+      exit 1
+   fi
+   g4=`find . -name \*.g4 | sed 's/Parser.g4$\|Lexer.g4$\|.g4$//1' | uniq`
+   p=`dirname $g4 | sed 's/^\.\///1'`
+   if [[ "$p" == "." ]]; then
+     p=""
+   else
+     p=$p.
+   fi
+
+   if [ ! -e $g4.g4 ]; then
+      g4=${g4}Parser
+   fi
+
+   grammar=`cat "$g4"*.g4 | cpp 2>/dev/null | grep -wv ^# | sed 's/{/ { /g' | sed 's/}/ } /g' | tr '\n' ' ' | tr ' ' '\n' | grep -wv parser | grep -wv options | grep -v ^\;$ | grep -v ^$ | gawk 'BEGIN {incode=0;} /{/ {incode++;} /}/ {incode--;}  {if (incode == 0) print $0;}' | grep -v \} | grep -v @.* | head -2 | tail -1 | sed 's/[:;].*$//g' | grep -v ^$ | sed 's/Parser$//'`
+
+   if [ -z "$grammar" ]; then
+      echo "ERROR: grammar name missing!"
+      exit 1
+   fi
+fi
+
+grammarFile="${grammar}.g4"
+if [[ ! -e "$grammarFile" ]]; then
+   grammarFile="${grammar}Parser.g4"
+   if [[ ! -e "$grammarFile" ]]; then
+      echo "ERROR: Grammar file not found!"
+      exit 1
+   fi
+fi
+
+if [ ! $# -eq 1 ]; then
+   echo "ERROR: Missing <listener-class-name> argument!"
+   echo ""
+   help
+fi
+
+listener=$(echo $1 | sed "s/\.${sourceExt}$//1" | sed 's/\.*//g')
+if [[ $forceCreation == "false" ]]; then
+   if [ -e ${listener}.$sourceExt ]; then
+      echo "ERROR: Listener file \"${listener}.$sourceExt\" already exists!"
+      exit 2
+   fi
+fi
+
+if [[ ${listener} == ${grammar}Listener || ${listener} == ${grammar}BaseListener ||
+      ${listener} == ${grammar}Visitor || ${listener} == ${grammar}BaseVisitor ||
+      ${listener} == ${grammar}Parser || ${listener} == ${grammar}Lexer ]]; then
+   echo "ERROR: Invalid listener name (\"${listener}\")!"
+   exit 1
+fi
+
+echo "Grammar: $grammar"
+echo "Listener: $listener"
+echo "Target language: $target"
+
+if [[ -e "${grammar}Lexer.g4" ]]; then
+   antlr4 -$target "${grammar}Lexer.g4"
+fi
+antlr4 -$target "$grammarFile"
+if [[ -e "${grammar}Parser.g4" ]]; then
+   grammar=${grammar}Parser
+fi
+
+case $target in
+   java)
+      cpp "${grammar}BaseListener.java" | grep -v "^#.*$" | grep -v "^[ \t]*$" | sed 's/^\<public\>/\npublic/g' | sed "s/${grammar}BaseListener.*/${listener} extends ${grammar}BaseListener {/1" | sed "s/^ /\n${indent}/g" | sed "s/{ }/{\n${indent}}/g" | sed "s/; }/;\n${indent}}/g" | logJava "${indent}" > "${listener}.java"
+      ;;
+   cpp)
+      if [[ $inline == "false" ]]; then
+         echo -e "#pragma once\n" > "${listener}.h"
+         echo -e "#include \"${grammar}BaseListener.h\"\n" >> "${listener}.h"
+         cat "${grammar}BaseListener.h" | grep -v "^#.*$" | cpp | grep -v "^#.*$" | grep -v "^[ \t]*$" | grep -v "visit" | sed "s/${grammar}BaseListener.*/${listener} : public ${grammar}BaseListener {/1" | sed "s/^  /${indent}/g" | sed "s/^\(${indent}virtual\)/\n\1/g" | sed 's/* /*ctx/g' | sed 's/\(override\).*/\1;/g' >> "${listener}.h"
+         echo "#include \"${listener}.h\"" > "${listener}.cpp"
+         cat "${grammar}BaseListener.h" | grep -v "^#.*$" | cpp | grep -v "^#.*$" | grep -v "^[ \t]*$" | grep -v "visit" | grep -v "};" | grep -wv "class\|public" | sed "s/^  //g" | sed "s/^virtual /\n/g" | sed 's/* /*ctx/g' | sed 's/override //g' | sed "s/\(enter\|exit\)/${listener}::\1/g" | sed "s/{ }/{\n}/g" | logCpp "${indent}" >> "${listener}.cpp"
+      else
+         echo -e "#pragma once\n" > "${listener}.h"
+         echo -e "#include \"${grammar}BaseListener.h\"\n" >> "${listener}.h"
+         cat "${grammar}BaseListener.h" | grep -v "^#.*$" | cpp | grep -v "^#.*$" | grep -v "^[ \t]*$" | grep -v "visit" | sed "s/${grammar}BaseListener.*/${listener} : public ${grammar}BaseListener {/1" | sed "s/^  /${indent}/g" | sed "s/^\(${indent}virtual\)/\n\1/g" | sed 's/* /*ctx/g' | sed "s/{ }/{\n${indent}}/g" | logCpp "${indent}${indent}" >> "${listener}.h"
+         echo "#include \"${listener}.h\"" > "${listener}.cpp"
+      fi
+      ;;
+   python)
+      echo -e "from antlr4 import *" > "${listener}.py"
+      echo -e "from ${grammar}Parser import ${grammar}Parser" >> "${listener}.py"
+      echo -e "from ${grammar}Listener import ${grammar}Listener" >> "${listener}.py"
+      echo -e "" >> "${listener}.py"
+      echo -e "class $listener(${grammar}Listener):" >> "${listener}.py"
+      cat "${grammar}Listener.py" | grep  "enter\|exit" | sed -e 's/^[ \t]*//g' | sed -e "s/^\(.*\)$/${indent}\1\n${indent}${indent}pass\n/g" | logPython "${indent}" >> "${listener}.py"
+      ;;
+   *)
+      echo "ERROR: $target listeners not yet implemented!"
+      ;;
+esac
+antlr4-clean -$target >& /dev/null
+
+exit 0

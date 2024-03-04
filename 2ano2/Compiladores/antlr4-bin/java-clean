@@ -1,0 +1,5 @@
+#!/bin/bash
+#
+# Miguel Oliveira e Silva (mos@ua.pt), 2006-2020
+
+find . -name \*.class -printf "removing %p\n" -exec rm -f {} \;

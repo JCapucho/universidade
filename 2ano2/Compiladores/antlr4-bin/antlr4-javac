@@ -1,0 +1,17 @@
+#!/bin/bash
+#
+# Miguel Oliveira e Silva (mos@ua.pt), 2020
+
+if [ -z "$ANTLR4_PATH" ]; then
+   cp=""
+else
+   TMP_VERSION=$(ls -f $ANTLR4_PATH/antlr-4*-complete.jar | tail -1 | sed 's/.*\///g' | sed 's/-com.*//g')
+   ANTLR4File=$(ls -f $ANTLR4_PATH/antlr-4*-complete.jar | grep "$TMP_VERSION" | awk '{ print length(), $0 | "sort -n" }' | sed 's/^[0-9 ]\+//g' | tail -1)
+   TMP_VERSION=$(ls -f $ANTLR4_PATH/ST-*.jar | tail -1 | sed 's/.*\///g' | sed 's/\.jar//g')
+   STFile=$(ls -f $ANTLR4_PATH/ST-*.jar | grep "$TMP_VERSION" | awk '{ print length(), $0 | "sort -n" }' | sed 's/^[0-9 ]\+//g' | tail -1)
+   cp="-cp .:$ANTLR4File:$STFile"
+fi
+
+javac $cp $*
+
+exit $?

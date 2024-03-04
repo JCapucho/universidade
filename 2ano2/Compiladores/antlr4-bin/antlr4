@@ -1,0 +1,60 @@
+#!/bin/bash
+#
+# Miguel Oliveira e Silva (mos@ua.pt), 2017-2021
+
+scriptName="$0"
+target="java"
+options=""
+
+function help()
+{
+   echo "Usage: $scriptName [-h | -help | -cpp | -python | -java] ..."
+   echo ""
+   echo "   Compiles an antlr4 grammar to a target language."
+   echo ""
+   echo "   Target language:"
+   echo "       -java:   java (default)"
+   echo "       -cpp:    c++"
+   echo "       -python: python3"
+   #exit 1
+}
+
+case $1 in
+   -h | -help)
+      help
+      echo ""
+      shift
+      ;;
+   -cpp | -c++)
+      target="cpp"
+      options="-Dlanguage=Cpp"
+      shift
+      ;;
+   -python | -python3)
+      target="python3"
+      options="-Dlanguage=Python3"
+      shift
+      ;;
+   -java)
+      shift
+      ;;
+esac
+
+if [ $# -eq 0 ]; then
+   options=""
+fi
+
+if [ -z "$ANTLR4_PATH" ]; then
+   java -ea org.antlr.v4.Tool $options $*
+else
+   TMP_VERSION=$(ls -f $ANTLR4_PATH/antlr-4*-complete.jar | tail -1 | sed 's/.*\///g' | sed 's/-com.*//g')
+   ANTLR4File=$(ls -f $ANTLR4_PATH/antlr-4*-complete.jar | grep "$TMP_VERSION" | awk '{ print length(), $0 | "sort -n" }' | sed 's/^[0-9 ]\+//g' | tail -1)
+   TMP_VERSION=$(ls -f $ANTLR4_PATH/ST-*.jar | tail -1 | sed 's/.*\///g' | sed 's/\.jar//g')
+   STFile=$(ls -f $ANTLR4_PATH/ST-*.jar | grep "$TMP_VERSION" | awk '{ print length(), $0 | "sort -n" }' | sed 's/^[0-9 ]\+//g' | tail -1)
+
+   #echo "java -ea -cp .:$ANTLR4File:$STFile org.antlr.v4.Tool $options $*"
+   java -ea -cp .:"$ANTLR4File":"$STFile" org.antlr.v4.Tool $options $*
+fi
+
+exit $?
+
