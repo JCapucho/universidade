@@ -39,7 +39,7 @@ function process()
    fi
    case $target in
       java)
-         (cd `dirname $g`; if ( grep Visitor *java &> /dev/null ); then opt="-visitor"; else opt=""; fi; antlr4 $opt `basename $g`*.g4) && javac ./`dirname $g`/*.java
+         (cd `dirname $g`; if ( grep Visitor *java &> /dev/null ); then opt="-visitor"; else opt=""; fi; antlr4 $opt `basename $g`*.g4) && antlr4-javac ./`dirname $g`/*.java
          ;;
       cpp)
          (cd `dirname $g`; make)

@@ -25,7 +25,7 @@
           installPhase = ''
             set -eu
             mkdir -p $out/share/java
-            cp ${src} $out/share/java
+            cp ${src} $out/share/java/ST-${version}.jar
           '';
         };
 
