@@ -4,15 +4,12 @@
 
 # change the following variables to point to browser and javadoc directories!
 
-#BROWSER="/usr/bin/firefox"
-BROWSER="firefox"
-JDKDIR1=$(ls -fd /usr/share/doc/openjdk-*-jre-headless)
-#JDKDIR1="/usr/share/doc/openjdk-8-jre-headless"
-#JDKDIR2="/usr/local/share/java/docs"
-JDKDIR2=""
-#OTHERDIR="/usr/local/doc"
-OTHERDIR="/usr/share/doc"
-#OTHERDIR=""
+# BROWSER="/usr/bin/firefox"
+# BROWSER="firefox"
+BROWSER="xdg-open"
+JDKDIR1="@JDK_DOCS_DIR@"
+# JDKDIR2=""
+# OTHERDIR=""
 
 if [ $# -eq 0 ]; then
   echo "Usage: view-javadoc <CLASS-NAME>"
@@ -40,7 +37,7 @@ case ${#docs[@]} in
   ;;
 1)
   doc=${docs[0]}
-  "$BROWSER" $doc &
+  "$BROWSER" $doc >/dev/null &
   ;;
 *)
   select doc in ${docs[@]}; do
