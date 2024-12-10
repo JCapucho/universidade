@@ -1,0 +1,220 @@
+@document.meta
+title: Aula 05
+description: Protocolo Spanning Tree
+author: João Capucho
+@end
+
+* Aviso
+
+  A qualquer ponto do guião as configurações podem ser guardadas correndo o
+  comando `wr`, isto é necessário sempre que os nodes forem desligados, caso
+  contrário *toda a configuração é perdida* até ao último ponto onde foi
+  guardada.
+
+* Exercício 1
+
+  >  Connect the above depicted network. At the VPCS, type the command `show
+  ipv6`.
+
+  @code
+  PC1> show ipv6
+
+  NAME              : PC1[1]
+  LINK-LOCAL SCOPE  : fe80::250:79ff:fe66:6800/64
+  GLOBAL SCOPE      : 
+  DNS               : 
+  ROUTER LINK-LAYER : 
+  MAC               : 00:50:79:66:68:00
+  LPORT             : 10006
+  RHOST:PORT        : 127.0.0.1:10007
+  MTU:              : 1500
+  @end
+
+  > Start a capture with Wireshark, power on Router1 and configure its
+     interface to network A.
+
+  @code
+  R1#configure terminal
+  R1(config)#ipv6 unicast-routing
+  R1(config)#interface f0/0
+  R1(config-if)#ipv6 enable
+  R1(config-if)#no shutdown
+  R1(config-if)#end
+  @end
+
+  > Verify router's interfaces configuration:
+
+  @code
+  R1#show ipv6 interface
+  FastEthernet0/0 is up, line protocol is up
+    IPv6 is enabled, link-local address is FE80::C801:CFF:FEE9:0 
+    No global unicast address is configured
+    Joined group address(es):
+      FF02::1
+      FF02::2
+      FF02::1:FFE9:0
+    MTU is 1500 bytes
+    ICMP error messages limited to one every 100 milliseconds
+    ICMP redirects are enabled
+    ND DAD is enabled, number of DAD attempts: 1
+    ND reachable time is 30000 milliseconds
+    ND advertised reachable time is 0 milliseconds
+    ND advertised retransmit interval is 0 milliseconds
+    ND router advertisements are sent every 200 seconds
+    ND router advertisements live for 1800 seconds
+    Hosts use stateless autoconfig for addresses.
+  @end
+
+  @code
+  R1#show ipv6 route
+  IPv6 Routing Table - 2 entries
+  Codes: C - Connected, L - Local, S - Static, R - RIP, B - BGP
+         U - Per-user Static route
+         I1 - ISIS L1, I2 - ISIS L2, IA - ISIS interarea, IS - ISIS summary
+         O - OSPF intra, OI - OSPF inter, OE1 - OSPF ext 1, OE2 - OSPF ext 2
+         ON1 - OSPF NSSA ext 1, ON2 - OSPF NSSA ext 2
+  L   FE80::/10 [0/0]
+       via ::, Null0
+  L   FF00::/8 [0/0]
+       via ::, Null0
+  @end
+
+  @code
+  PC1> show ipv6
+
+  NAME              : PC1[1]
+  LINK-LOCAL SCOPE  : fe80::250:79ff:fe66:6800/64
+  GLOBAL SCOPE      : 
+  DNS               : 
+  ROUTER LINK-LAYER : 
+  MAC               : 00:50:79:66:68:00
+  LPORT             : 10006
+  RHOST:PORT        : 127.0.0.1:10007
+  MTU:              : 1500
+  @end
+
+* Execício 2
+
+  @code
+  R1#configure terminal
+  Enter configuration commands, one per line.  End with CNTL/Z.
+  R1(config)#interface f0/0
+  R1(config-if)#ipv6 address 2001:A:1:1::100/64
+  R1(config-if)#no shutdown
+  R1(config-if)#end
+  @end
+
+  @code
+  PC1> show ipv6
+
+  NAME              : PC1[1]
+  LINK-LOCAL SCOPE  : fe80::250:79ff:fe66:6800/64
+  GLOBAL SCOPE      : 2001:a:1:1:2050:79ff:fe66:6800/64
+  DNS               : 
+  ROUTER LINK-LAYER : ca:01:0c:e9:00:00
+  MAC               : 00:50:79:66:68:00
+  LPORT             : 10006
+  RHOST:PORT        : 127.0.0.1:10007
+  MTU:              : 1500
+  @end
+
+  @code
+  R1# show ipv6 interface brief
+  FastEthernet0/0            [up/up]
+      FE80::C801:CFF:FEE9:0
+      2001:A:1:1::100
+  @end
+
+  @code
+  R1#show ipv6 route
+  IPv6 Routing Table - 4 entries
+  Codes: C - Connected, L - Local, S - Static, R - RIP, B - BGP
+         U - Per-user Static route
+         I1 - ISIS L1, I2 - ISIS L2, IA - ISIS interarea, IS - ISIS summary
+         O - OSPF intra, OI - OSPF inter, OE1 - OSPF ext 1, OE2 - OSPF ext 2
+         ON1 - OSPF NSSA ext 1, ON2 - OSPF NSSA ext 2
+  C   2001:A:1:1::/64 [0/0]
+       via ::, FastEthernet0/0
+  L   2001:A:1:1::100/128 [0/0]
+       via ::, FastEthernet0/0
+  L   FE80::/10 [0/0]
+       via ::, Null0
+  L   FF00::/8 [0/0]
+       via ::, Null0
+  @end
+
+* Execício 3
+
+  @code
+  R1#configure terminal
+  R1(config)#interface f0/0                     
+  R1(config-if)#ipv6 address 2001:A:1:2::/64 eui-64
+  R1(config-if)#no shutdown
+  R1(config-if)#end
+  @end
+
+  @code
+  PC1> show ipv6
+
+  NAME              : PC1[1]
+  LINK-LOCAL SCOPE  : fe80::250:79ff:fe66:6800/64
+  GLOBAL SCOPE      : 2001:a:1:1:2050:79ff:fe66:6800/64
+  DNS               : 
+  ROUTER LINK-LAYER : ca:01:0c:e9:00:00
+  MAC               : 00:50:79:66:68:00
+  LPORT             : 10006
+  RHOST:PORT        : 127.0.0.1:10007
+  MTU:              : 1500
+  @end
+
+  @code
+  R1#show ipv6 interface brief
+  FastEthernet0/0            [up/up]
+      FE80::C801:CFF:FEE9:0
+      2001:A:1:1::100
+      2001:A:1:2:C801:CFF:FEE9:0
+  @end
+
+  @code
+  R1#show ipv6 route
+  IPv6 Routing Table - 6 entries
+  Codes: C - Connected, L - Local, S - Static, R - RIP, B - BGP
+         U - Per-user Static route
+         I1 - ISIS L1, I2 - ISIS L2, IA - ISIS interarea, IS - ISIS summary
+         O - OSPF intra, OI - OSPF inter, OE1 - OSPF ext 1, OE2 - OSPF ext 2
+         ON1 - OSPF NSSA ext 1, ON2 - OSPF NSSA ext 2
+  C   2001:A:1:1::/64 [0/0]
+       via ::, FastEthernet0/0
+  L   2001:A:1:1::100/128 [0/0]
+       via ::, FastEthernet0/0
+  C   2001:A:1:2::/64 [0/0]
+       via ::, FastEthernet0/0
+  L   2001:A:1:2:C801:CFF:FEE9:0/128 [0/0]
+       via ::, FastEthernet0/0
+  L   FE80::/10 [0/0]
+       via ::, Null0
+  L   FF00::/8 [0/0]
+       via ::, Null0
+  @end
+
+* Exercício 4
+
+  @code
+  PC1> ping FE80::C801:CFF:FEE9:0
+
+  FE80::C801:CFF:FEE9:0 icmp6_seq=1 ttl=64 time=16.698 ms
+  FE80::C801:CFF:FEE9:0 icmp6_seq=2 ttl=64 time=2.153 ms
+  FE80::C801:CFF:FEE9:0 icmp6_seq=3 ttl=64 time=10.311 ms
+  FE80::C801:CFF:FEE9:0 icmp6_seq=4 ttl=64 time=10.787 ms
+  FE80::C801:CFF:FEE9:0 icmp6_seq=5 ttl=64 time=1.934 ms
+  @end
+
+  @code
+  PC1> ping 2001:A:1:1::100      
+
+  2001:A:1:1::100 icmp6_seq=1 ttl=64 time=10.020 ms
+  2001:A:1:1::100 icmp6_seq=2 ttl=64 time=2.858 ms
+  2001:A:1:1::100 icmp6_seq=3 ttl=64 time=10.083 ms
+  2001:A:1:1::100 icmp6_seq=4 ttl=64 time=1.009 ms
+  2001:A:1:1::100 icmp6_seq=5 ttl=64 time=5.717 ms
+  @end
