@@ -1,0 +1,3 @@
+15:06: whoami
+15:06: ls
+15:06: echo "bananas" | wc
