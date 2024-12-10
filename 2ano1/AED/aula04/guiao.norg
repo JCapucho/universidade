@@ -1,0 +1,151 @@
+@document.meta
+title: Aula 04
+description: Análise da complexidade de algoritmos
+author: João Capucho
+@end
+
+* Exercício 1
+
+** Após a execução
+
+*** Primeira pergunta
+
+    O número de comparações depende apenas do número de elemento no array e não
+    dos seus dados, logo não existe diferença entre o melhor caso e o pior caso
+    (estes são iguais um ao outro). Logo o algoritmo é sistemático.
+
+*** Segunda pergunta
+
+    TODO
+
+    O número de comparações cresce linearmente com o número de elemento do
+    array, o que sugere que a ordem de complexidade do algoritmo será de
+    $O(n)$.
+
+*** Terceira pergunta
+
+    @math
+    \sum_{i=1}^{n-2} 1 = n-2
+    @end
+
+    Logo a ordem de complexidade do algoritmo é $O(n)$.
+
+*** Quarta pergunta
+   
+    @math
+    10-2 = 8
+    @end
+
+    O resultado teórico corresponde ao valor experimental obtido para arrays de
+    tamanho 10 como era esperado.
+
+* Exercício 2
+
+** Após a execução
+
+*** Primeira pergunta
+
+    > Qual é a sequência (ou as sequências) que corresponde(m) ao melhor caso
+      do algoritmo?
+
+    São todas as sequências que não sastifazem a condição
+    `a[ i ] = r × a[ i – 1 ]`, logo no primeiro elemento a ser verificado
+    (terceiro elemento do array).
+
+    Estas correspondem a apenas 2 operações, a divisão inicial para calcular `r`
+    e a operação de multiplicação para verificar o elemento errado.
+
+*** Segunda pergunta
+
+    > Qual é a sequência (ou as sequências) que corresponde(m) ao pior caso do
+      algoritmo?
+
+    São as sequências em que todos os elementos, ou todos exceto o último,
+    satisfazem a condição. Isto porque todos uma multiplicação terá que ser
+    feita para todos os elementos.
+
+*** Terceira pergunta
+
+    > Para as sequências dadas (`n = 10`) qual foi o número médio de operações
+      efetuadas?
+
+    O número médio de operações para as sequências dadas foi de $5 + 8/9 \approx 5.9$.
+
+*** Quarta pergunta
+
+    > Qual é a ordem de complexidade do algoritmo?
+
+    O algoritmo tem ordem de complexidade de `O(n)`.
+
+*** Quinta pergunta
+
+    > *Determine formalmente a ordem de complexidade do algoritmo nas situações
+    do melhor caso, do pior caso e do caso médio, considerando uma sequência de
+    tamanho n.* Deve obter expressões matemáticas exatas e simplificadas.
+
+    O melhor caso como já vimos, requer apenas duas operações a divisão inicial
+    e a primeira multiplicação, logo temos que:
+
+    @math
+    B(n) = 1 + 1 = 2
+    @end
+
+    O que significa que a ordem de complexidade do melhor caso é de `O(1)`.
+
+    O pior caso no entanto requer percorrer os `n` elementos, por isso o número
+    de iterações é dado por:
+
+    @math
+    W(n) = 1 + \sum_{i=2}^{n-1} 1 = 1 + (n-2) = n - 1
+    @end
+
+    Logo a ordem de complexidade do pior caso é `O(n)`.
+
+    Para calcular o caso médio começamos por assumir equiprobabilidade das
+    sequências com posições diferentes do primeiro elemento errado, para
+    $n$ elementos existem $n - 2$ posições possíveis para o erro mais o
+    caso onde não há erro, ou seja existem $n - 1$ casos possíveis.
+
+    @math
+    \begin{align*}
+    A(n) &= \frac{1}{n-1} \left( \left( \sum_{i=2}^{n-1} i \right) + n - 1 \right) \\
+    &= \frac{1}{n-1} \left( \left( \sum_{i=1}^{n-1} i \right) - 1 + n - 1 \right) \\
+    &= \frac{1}{n-1} \left( \frac{(n - 1)n}{2} + n - 2 \right) \\
+    &= \frac{1}{n-1} \frac{(n - 1)n + 2(n - 2)}{2} \\
+    &= \frac{n}{2} + \frac{n - 2}{n - 1} \approx \frac{n}{2}
+    \end{align*}
+    @end
+
+    Logo a ordem de complexidade é `O(n)`.
+
+*** Sexta pergunta
+
+    > Calcule o valor dessas expressões para `n = 10` e compare-os com os
+      resultados obtidos experimentalmente.
+
+    Melhor caso:
+
+    @math
+    B(10) = 2 
+    @end
+
+    Este valor é igual ao que obtemos experimentalmente para as sequências do
+    melhor caso.
+
+    Pior caso:
+
+    @math
+    W(10) = 10 - 1 = 9
+    @end
+
+    Este valor é igual ao que obtemos experimentalmente para as sequências do
+    pior caso.
+
+    Caso médio:
+
+    @math
+    A(10) = \frac{10}{2} + \frac{8}{9} \approx 5.8889
+    @end
+
+    Este valor é igual ao que obtemos experimentalmente para as sequências
+    testadas indicando que estas fazem parte do caso médio.

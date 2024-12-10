@@ -1,0 +1,161 @@
+@document.meta
+title: Aula 05
+description: Análise da complexidade de algoritmos recursivos
+author: João Capucho
+@end
+
+* Experimentalmente
+
+** Função 1
+
+   O número de chamadas da função 1 parece seguir um crescimento logaritmico e
+   de facto se utilizarmos $\lfloor log_2(n) \rfloor$ nos valores de `n`,
+   obtemos o mesmo número de chamadas que o nosso program, logo a ordem de
+   complexidade é de $O(log_2(n))$.
+
+** Função 2
+
+   Se observarmos o número de chamadas, notamos que os resultados crescem
+   linearmente dois a dois, indicando uma ordem de complexidade de $O(n)$.
+
+** Função 3
+
+   A função 3 é bastante volátil mas conseguimos notar um padrão, todos os
+   números que são potências de 2, crescem de maneira mais lenta, sendo neste
+   caso o número de chamadas $log_2(n)$ e sendo assim a ordem de complexidade
+   $\Omega(log_2(n))$. Nos piores dos casos a função faz um número de chamadas
+   que aumenta linearmente com o $n$, sendo assim a ordem de complexidade
+   $O(n)$.
+
+* Formalmente
+
+** Função 1
+
+   @math
+   C_1(n) = \left\{
+   \begin{array}{ll}
+	   0 & n = 1 \\
+      1 + C_1\left( \left\lfloor \frac{n}{2} \right\rfloor \right) & n \gt 1 \\
+   \end{array} 
+   \right.
+   @end
+
+   Assumindo que $n = 2^k$ temos que:
+
+   @math
+   \begin{align}
+   C_1(n)
+   &= 1 + C_1\left( \frac{n}{2} \right) \\
+   &= 2 + C_1\left( \frac{n}{4} \right) \\
+   &= 3 + C_1\left( \frac{n}{8} \right) \\
+   &= \quad ... \\
+   &= k + C_1\left( \frac{n}{2^k} \right) \\
+   \end{align}
+   @end
+
+   @math
+   C_1(n)
+   = k + C_1\left( \frac{2^k}{2^k} \right)
+   = k + C_1(1)
+   = k = \log_2(n)
+   @end
+
+   Como $\log_2(n)$ é uma função "smooth" e acabamos de provar que $C_1(n) \in
+   \Theta\left( \log_2(n) \right)$ para $n = 2^k$, então e de acordo com a
+   /Smoothness Rule/, podemos dizer que $C_1(n) \in \Theta\left( \log_2(n)
+   \right)$ para todo o $n$.
+
+** Função 2
+
+   @math
+   C_2(n) = \left\{
+   \begin{array}{ll}
+	   0 & n = 1 \\
+      2 + C_2\left( \left\lfloor \frac{n}{2} \right\rfloor \right)
+        + C_2\left( \left\lceil \frac{n}{2} \right\rceil \right) & n \gt 1 \\
+   \end{array} 
+   \right.
+   @end
+
+   Assumindo que $n = 2^k$ temos que:
+
+   @math
+   \begin{align}
+   C_2(n)
+   &= 2 + C_2\left( \frac{n}{2} \right) + C_2\left( \frac{n}{2} \right) \\
+   &= 2 + 2C_2\left( \frac{n}{2} \right) \\
+   &= 2 + 2\left( 2 + C_2\left( \frac{n}{4} \right) + C_2\left( \frac{n}{4} \right) \right) \\
+   &= 6 + 4C_2\left( \frac{n}{4} \right) \\
+   &= 6 + 4\left( 2 + C_2\left( \frac{n}{8} \right) + C_2\left( \frac{n}{8} \right) \right) \\
+   &= 14 + 8C_2\left( \frac{n}{8} \right) \\
+   &= \quad ... \\
+   &= 2^{k+1} - 2 + 2^k C_2\left( \frac{n}{2^k} \right)
+   \end{align}
+   @end
+
+   @math
+   \begin{align}
+   C_2(n)
+   &= 2^{k+1} - 2 + 2^k C_2\left( \frac{2^k}{2^k} \right) \\
+   &= 2^{k+1} - 2 + 2^k C_2(1) \\
+   &= 2^{k+1} - 2 \\
+   &= 2\times2^k - 2 \\
+   &= 2n - 2
+   \end{align}
+   @end
+
+   Como $n$ é uma função "smooth" e acabamos de provar que
+   $C_2(n) \in \Theta\left( n \right)$
+   para $n = 2^k$, então e de acordo com a /Smoothness Rule/, podemos dizer que
+   $C_2(n) \in \Theta\left( n \right)$ para todo o $n$.
+
+
+* Exercício 5
+
+  > No caso do terceiro algoritmo indique para que valores de N se obtém o
+    melhor e o pior caso e faça a respetiva análise da complexidade.
+
+  O número de chamadas recursivas para um dado nível da terceira função depende
+  se o número é par ou ímpar. Se o número for par apenas é feita uma chamada
+  recursiva. No entanto, se o número for ímpar são feitas duas chamadas.
+
+  @embed image
+  assets/ex03_calls.png
+  @end
+
+  Logo o melhor caso é quando $N$ causa o ramo do número par ser sempre
+  seguido, para isto precisamos de um número que comece por ser par ou seja um
+  múltiplo de 2. Além disso sempre que este número for dividido o resultado
+  precisa de ser par também, mais uma vez múltiplo de 2. Se tivermos então um
+  número $N$ que precise de $k$ divisões para chegar a 1, seguindo sempre o
+  ramo par podemos definir o valor para todos os $k$ níveis utilizando a
+  seguinte expressão.
+
+  @math
+  N(k) = \left\{
+  \begin{array}{ll}
+     1 & k = 0  \\
+     2N(k-1) & k > 0
+  \end{array} 
+  \right. 
+  @end
+
+  Que podemos transformar na forma fechada para $k > 0$:
+
+  @math
+  \begin{align}
+  N(k)
+  &= 2N(k-1) \\
+  &= 4N(k-2) \\
+  &= 8N(k-3) \\
+  &= \quad ... \\
+  &= 2^k \\
+  \end{align}
+  @end
+
+  Ou seja a sequência do melhor caso são as potências de 2, onde temos uma
+  complexidade de $B(n) = \log_2(n)$ e comprova-se então que a ordem de
+  complexidade é $\Omega(\log_2(n))$.
+
+  O pior caso então será quando $N$ será processado sempre no ramo ímpar. Isto
+  no entanto é impossível pois o último ramo terá sempre de ser sempre 
